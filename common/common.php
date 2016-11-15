@@ -153,7 +153,7 @@ function update_or_insert_field_by_id($link,$table,$id_field,$id_value,$field,$v
 	{
 		//Try to insert
 		$sqli='insert into `'.$table.'` (`'.$id_field.'`,`'.$field.'`) values (\''.$id_value.'\', \''.$value.'\')';
-		echo $sqli;
+		//echo $sqli;
 		if(!$resulti=mysqli_query($link,$sqli)){echo mysqli_error($link);return FALSE;}
 		else
 		{
@@ -169,6 +169,36 @@ function update_or_insert_field_by_id($link,$table,$id_field,$id_value,$field,$v
 		{
 			echo mysqli_error($link);
 			return FALSE;
+		}
+	}
+}
+
+
+function update_or_insert_filename_field_by_id($link,$table,$id_field,$id_value,$field,$value)
+{
+	if(strlen($value)>0)
+	{
+		if(get_raw($link,'select `'.$id_field.'` from `'.$table.'` where `'.$id_field.'`=\''.$id_value.'\'')===FALSE)
+		{
+			//Try to insert
+			$sqli='insert into `'.$table.'` (`'.$id_field.'`,`'.$field.'`) values (\''.$id_value.'\', \''.$value.'\')';
+			echo $sqli;
+			if(!$resulti=mysqli_query($link,$sqli)){echo mysqli_error($link);return FALSE;}
+			else
+			{
+				return mysqli_affected_rows($link);
+			}
+		}
+		else
+		{
+			//Else update
+			$sql='update `'.$table.'` set `'.$field.'`=\''.$value.'\' where `'.$id_field.'`=\''.$id_value.'\'';
+			//echo $sql;
+			if(!$result=mysqli_query($link,$sql))
+			{
+				echo mysqli_error($link);
+				return FALSE;
+			}
 		}
 	}
 }
@@ -308,7 +338,7 @@ function update_or_insert_attachment($link,$table,$id_field,$id_value,$files_fie
 			if(!$result=mysqli_query($link,$sql)){echo mysql_error();}
 			else
 			{
-				echo 'success';
+				//echo 'success';
 			}
 		}
 		//update
@@ -322,11 +352,22 @@ function update_or_insert_attachment($link,$table,$id_field,$id_value,$files_fie
 			if(!$result=mysqli_query($link,$sql)){echo mysql_error();}
 			else
 			{
-				echo 'success';
+				//echo 'success';
 			}			
 		}
 	}
 }
 
+function display_photo($link,$photo)
+{
+		//if($ar['lng']>0)
+		//{
+			echo '<img style="width:3cm;height:4cm;" src="data:image/jpeg;base64,'.base64_encode($photo).'"/>';
+		//}
+		//else
+		//{
+		//	echo 'RECENT PHOTOGRAPH TO BE COUNTER SIGNED BY  THE DEAN/ PRINCIPAL';
+		//}
+}
 
 ?>

@@ -1,9 +1,13 @@
 <?php
 session_start();
 require_once '../common/common.php';
+require_once 'save.php';
 
 $link=connect();
+$save_msg='';
+if(isset($_POST['save'])){if(save()===true){$save_msg='<h5>Saved at --->'.strftime("%T").'</h5>';}}
 
+//even if following variables are false, thet are created and donot result in 'variable not found' error
 $staff_detail=get_raw($link,'select * from staff where id=\''.$_SESSION['login'].'\'');
 $photo=get_raw($link,'select * from photo where id=\''.$_SESSION['login'].'\'');
 
@@ -314,15 +318,22 @@ function get_date_diff(from,to, target)
 
 
 
-<div style="background-color:lightgreen;width:210mm;margin-left:15mm;margin-right:10mm;">
-<?php menu();?>
-</div>
+<?php 
+echo '<div style="background-color:lightgreen;width:210mm;margin-left:15mm;margin-right:10mm;">';
+echo '<table class=noborder><tr><td>';
+menu();
+echo '</td><td>';
+echo $save_msg;
+echo '</td></tr></table>';
+echo '</div>';
+?>
+
 <!-- menu() have its own <form>. Never enclose it in another form -->
-<form method=post action=save.php enctype='multipart/form-data' target=_blank>
+<form method=post  enctype='multipart/form-data' >
 <input type=hidden name=id value=<?php echo '\''.$staff_detail['id'].'\''; ?>>
-<p><input style="background-color:lightgreen;position:fixed;" type=submit value=save title="save frequently to prevent repeat attempts"></p>
-<p style="position:fixed; top:60px;background-color:yellow;" >Click<br> yellow<br> button<br> to get <br>help</p>
-<p style="position:fixed; top:160px;background-color:lightpink;" >Red<br> field<br> need <br> pdf/jpg <br>upload</p>
+<p><input style="background-color:lightgreen;position:fixed;" name=save type=submit value=save title="save frequently to prevent repeat attempts"></p>
+<p style="position:fixed; top:80px;background-color:yellow;" >Click<br> yellow<br> button<br> to get <br>help</p>
+<p style="position:fixed; top:180px;background-color:lightpink;" >Red<br> field<br> need <br> pdf/jpg <br>upload</p>
 
 
 
@@ -359,74 +370,89 @@ function get_date_diff(from,to, target)
 
 <table class="noborder">
 <tr>
-<td class=noborder>
+<td>
 	
-<p>1.(a)Name<input type=text placeholder="Lastname Firstname Middlename" name=name id=name size=40 value=
+	<p>1.(a)Name<input type=text placeholder="Lastname Firstname Middlename" name=name id=name size=40 value=
 
-<?php echo '\''.$staff_detail['fullname'].'\''; ?>
+	<?php echo '\''.$staff_detail['fullname'].'\''; ?>
 
-></p>
+	></p>
 
-<p>1.(b) Date of Birth 
+	<p>1.(b) Date of Birth 
 
-<input readonly	id=dob class="datepicker" size="10" name=dob value=
-<?php echo '\''.mysql_to_india_date($staff_detail['dob']).'\''; ?>
->
+	<input readonly	id=dob class="datepicker" size="10" name=dob value=
+	<?php echo '\''.mysql_to_india_date($staff_detail['dob']).'\''; ?>
+	>
 
-&amp; Age<input readonly type=date name=age value=
+	&amp; Age<input readonly type=date name=age value=
 
-<?php 
-$diff=date_diff_to_year_month_days($staff_detail['dob'],strftime("%Y-%m-%d"));
-echo '\''.$diff.'\'';
-?>
-
->
-
-</p>
-
-<p><button style="background-color:yellow;" type=button onclick="alert('(1) Upload pdf/jpg copy of photo ID proof. (2) Upload pdf/jpg of passport size photo')"><b>1.(c)</b></button> Submit Photo ID proof issued by Govt. Authorities :</p>
-
-<p>Photo ID submitted :
-
-	<?php
-	mk_select_from_sql($link,'select * from photo_id_proof_type','photo_id_proof_type','photo_id','',$photo['proof_type']);
+	<?php 
+	$diff=date_diff_to_year_month_days($staff_detail['dob'],strftime("%Y-%m-%d"));
+	echo '\''.$diff.'\'';
 	?>
 
-</select><input name=photo_id type=file class=upload>
-</p>
-
-<p>
-	
-Number
-	<input type=text name=photo_id_number value=
-	<?php echo '\''.$photo['proof_number'].'\'' ?>
 	>
 
-Issued by 
-	<input type=text name=photo_id_issued_by value=
-	<?php echo '\''.$photo['proof_issued_by'].'\'' ?>
-	>
-	
-</p>
+	</p>
+
+	<p><button style="background-color:yellow;" type=button onclick="alert('(1) Upload pdf/jpg copy of photo ID proof. (2) Upload pdf/jpg of passport size photo')"><b>1.(c)</b></button>Submit Photo ID proof issued by Govt. Authorities :</p>
+
+
+	<p>
+	<?php
+		echo '<table class=border><tr><td>';
+		echo 'Photo ID submitted :';
+		echo '</td>';
+		echo '<td>';
+		mk_select_from_sql($link,'select * from photo_id_proof_type','photo_id_proof_type','photo_id','',$photo['proof_type']);
+		echo '</td></tr>';
+		echo '<tr><td>';
+		echo '<input name=photo_id type=file class=upload>';	
+		echo '</td>';
+		echo '<td class=upload>';
+		echo 'uploaded:'.$photo['photo_id_filename']; 
+		echo '</td></tr>';
+		echo '<tr><td>';
+		echo 'Number:<input type=text name=photo_id_number value=\''.$photo['proof_number'].'\'';	
+		echo '</td>';
+		echo '<td>';
+		echo 'Issued by:<input type=text name=photo_id_issued_by value=\''.$photo['proof_issued_by'].'\'';	
+		echo '</td></tr>';
+		echo '</table>';
+	?>
+	</p>
 
 </td>
-<td style="position:absolute;width: 3.52cm;height: 4.15cm;border: 1px solid black;">
-RECENT PHOTOGRAPH TO BE COUNTER SIGNED BY  THE DEAN/ PRINCIPAL
-<input name=photo type=file class=upload>
-</span>
+
+<td>
+	<?php
+			echo '<table class=noborder>
+			<tr>
+			<td align=center>';
+				display_photo($link,$photo['photo']);
+			echo '</td>
+			</tr>
+			<tr><td>';
+			echo '<input name=photo type=file class=upload>';	
+			echo '</td></tr>
+			<tr>';
+			echo '<td class=upload>';
+			echo 'uploaded:'.$photo['photo_filename']; 
+			echo '</td></tr></table>';
+	?>
+
+</td>
 </tr>
 </table>
 
 <p><b>Note:1) Without Photo ID, Declaration form will be rejected and will notbe considered as teaching   faculty. 2) Original Certificates are mandatory for verification. All Certificates/Documents/Certified Translations, must be in English</b></p>
 <p>1.(d)i.Present Designation:
-<select name=present_designation id=present_designation>
-	<option>Tutor</option>
-	<option>Assistant Professor</option>
-	<option>Associate Professor</option>
-	<option>Professor</option>
-	<option>Dean</option>
-	<option>Medical Superintendent</option>
-</select></p>
+<?php
+	mk_select_from_sql($link,'select * from designation_type','designation_type','present_designation','',
+	$staff_detail['designation']);
+?>
+
+</p>
 
 <p><table class="noborder"><tr><td>
 <button style="background-color:yellow;" type=button onclick="alert('Upload pdf/jpg copy of present institute appointment order')"><b>1.(d)(i)a</b></button> Certified copies of present appointment order at present institute attached.</td><td><input type=file class=upload name=present_appointment_order></td></tr></table></p>
@@ -796,3 +822,9 @@ medical institute to be consider as senior resident.</td></tr>
 </body>
 </html>
 
+<?php
+echo '<pre>';
+print_r($_POST);
+echo '</pre>';
+
+?>
