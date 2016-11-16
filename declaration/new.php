@@ -8,8 +8,14 @@ $save_msg='';
 if(isset($_POST['save'])){if(save()===true){$save_msg='<h5>Saved at --->'.strftime("%T").'</h5>';}}
 
 //even if following variables are false, thet are created and donot result in 'variable not found' error
+//A variable set to FALSE is very useful, to prevent unnesseary errors
+ 
 $staff_detail=get_raw($link,'select * from staff where id=\''.$_SESSION['login'].'\'');
 $photo=get_raw($link,'select * from photo where id=\''.$_SESSION['login'].'\'');
+
+
+//find current appointment
+$current_appointment=get_raw($link,'select * from staff_movement where current=1 and movement=1 and id=\''.$_SESSION['login'].'\'');
 
 ?>
 
@@ -454,8 +460,21 @@ echo '</div>';
 
 </p>
 
-<p><table class="noborder"><tr><td>
-<button style="background-color:yellow;" type=button onclick="alert('Upload pdf/jpg copy of present institute appointment order')"><b>1.(d)(i)a</b></button> Certified copies of present appointment order at present institute attached.</td><td><input type=file class=upload name=present_appointment_order></td></tr></table></p>
+<p><table class="border">
+	<tr>
+		<td>
+			<button style="background-color:yellow;" type=button onclick="alert('Upload pdf/jpg copy of present institute appointment order')"><b>1.(d)(i)a</b></button> Certified copies of present appointment order at present institute attached.</td><td>
+	
+			<?php
+				echo '<input name=present_appointment_order type=file class=upload>';	
+				echo '</td>';
+				echo '<td class=upload>';
+				echo 'uploaded:'.$current_appointment['order_copy']; 
+			?>
+	
+		</td>
+	</tr>	
+</table></p>
 
 <p>1.(d)ii. Department: 
 
@@ -824,7 +843,9 @@ medical institute to be consider as senior resident.</td></tr>
 
 <?php
 echo '<pre>';
-print_r($_POST);
+//print_r($_POST);
+//print_r(find_primary_key_array($link,"staff","select * from staff where fullname like '%kumar%'"));
+
 echo '</pre>';
 
 ?>

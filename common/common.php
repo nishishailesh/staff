@@ -204,6 +204,7 @@ function update_or_insert_filename_field_by_id($link,$table,$id_field,$id_value,
 }
 
 
+
 function india_to_mysql_date($ddmmyyyy)
 {
 	$ex=explode('-',$ddmmyyyy);
@@ -324,6 +325,68 @@ function insert_attachment($link,$array,$files)
 
 
 function update_or_insert_attachment($link,$table,$id_field,$id_value,$files_field,$files_value)
+{	
+	if($files_value['size']>0)
+	{
+		if(get_raw($link,'select `'.$id_field.'` from `'.$table.'` where `'.$id_field.'`=\''.$id_value.'\'')===FALSE)
+		{
+		//insert
+			$str=file_to_str($link,$files_value);
+			$sql='insert into `'.$table.'` 
+					(`'.$files_field.'`) values("'.$str.'")
+					where
+					`'.$id_field.'` =\''.$id_value.'\'';
+			if(!$result=mysqli_query($link,$sql)){echo mysql_error();}
+			else
+			{
+				//echo 'success';
+			}
+		}
+		//update
+		else
+		{
+			$str=file_to_str($link,$files_value);
+			$sql='update `'.$table.'` set 
+					`'.$files_field.'` ="'.$str.'"
+					where
+					`'.$id_field.'` =\''.$id_value.'\'';
+			if(!$result=mysqli_query($link,$sql)){echo mysql_error();}
+			else
+			{
+				//echo 'success';
+			}			
+		}
+	}
+}
+
+
+
+function find_primary_key_array($link,$table,$sql)
+{
+//This function is useful when primary key is madeup of multiple fields
+	if(!$result=mysqli_query($link,$sql)){echo mysqli_error($link);return FALSE;}
+
+	if(mysqli_num_rows($result)==0)
+	{
+		//Nothing , so return empty array.
+		return array();
+	}	
+	elseif(mysqli_num_rows($result)==1)
+	{
+		//only one record, so return primary key
+		$sql_p='SHOW KEYS FROM  `'.$table.'` WHERE Key_name = \'PRIMARY\'';
+		if(!$result_p=mysqli_query($link,$sql_p)){echo mysqli_error($link);return FALSE;}
+		$pk=array();
+		while($array_p=mysqli_fetch_assoc($result_p))
+		{
+			$pk[]=$array_p['Column_name'];
+		}
+	return $pk;
+	}
+}
+
+
+function update_or_insert_attachment_sql($link,$table,$id_field,$id_value,$files_field,$files_value)
 {	
 	if($files_value['size']>0)
 	{
