@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 5.5.39, for debian-linux-gnu (i686)
 --
--- Host: localhost    Database: staff_blank
+-- Host: localhost    Database: staff_bank
 -- ------------------------------------------------------
 -- Server version	5.5.39-1
 
@@ -137,8 +137,44 @@ CREATE TABLE `staff` (
 
 LOCK TABLES `staff` WRITE;
 /*!40000 ALTER TABLE `staff` DISABLE KEYS */;
-INSERT INTO `staff` VALUES (1,'f97c5d29941bfb1b2fdab0874906ab82','Patel Shaileshkumar Manubhai','Biochemistry','','1966-11-20'),(2,'b8a9f715dbb64fd5c56e7783c6820a61','Verma Nimesh Shivnath','General Surgery','','1967-01-01'),(3,'35d6d33467aae9a2e3dccb4b6b027878','Saxena Puneet','Biochemistry','','1968-11-08'),(4,'a87ff679a2f3e71d9181a67b7542122c','Tailor Piyush B','Biochemistry','','1972-02-02'),(5,'e4da3b7fbbce2345d7772b0674a318d5','','Anatomy','','1969-11-08'),(6,'1679091c5a880faf6fb5e6087eb1b2dc','Sarita Patel','Biochemistry','Assistant Professor','1999-11-13'),(7,'8f14e45fceea167a5a36dedd4bea2543',NULL,'','','0000-00-00');
+INSERT INTO `staff` VALUES (1,'f97c5d29941bfb1b2fdab0874906ab82','Patel Shaileshkumar Manubhai','Biochemistry','Professor','1966-11-20'),(2,'b8a9f715dbb64fd5c56e7783c6820a61','Verma Nimesh Shivnath','General Surgery','','1967-01-01'),(3,'35d6d33467aae9a2e3dccb4b6b027878','Saxena Puneet','Biochemistry','','1968-11-08'),(4,'a87ff679a2f3e71d9181a67b7542122c','Tailor Piyush B','Biochemistry','','1972-02-02'),(5,'e4da3b7fbbce2345d7772b0674a318d5','','Anatomy','','1969-11-08'),(6,'1679091c5a880faf6fb5e6087eb1b2dc','Sarita Patel','Biochemistry','Assistant Professor','1999-11-13'),(7,'8f14e45fceea167a5a36dedd4bea2543',NULL,'','','0000-00-00');
 /*!40000 ALTER TABLE `staff` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `staff_movement`
+--
+
+DROP TABLE IF EXISTS `staff_movement`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `staff_movement` (
+  `id` int(11) NOT NULL,
+  `effective_date` date NOT NULL,
+  `effective_time` varchar(15) NOT NULL,
+  `current` int(11) NOT NULL,
+  `order_detail` varchar(400) NOT NULL,
+  `order_copy` mediumblob NOT NULL,
+  `order_copy_filename` varchar(300) NOT NULL,
+  `from_institute` varchar(100) NOT NULL,
+  `to_institute` varchar(100) NOT NULL,
+  `from_dept` varchar(100) NOT NULL,
+  `to_dept` varchar(100) NOT NULL,
+  `from_post` varchar(100) NOT NULL,
+  `to_post` varchar(100) NOT NULL,
+  `type` varchar(50) NOT NULL,
+  `movement` int(11) NOT NULL,
+  PRIMARY KEY (`id`,`effective_date`,`effective_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `staff_movement`
+--
+
+LOCK TABLES `staff_movement` WRITE;
+/*!40000 ALTER TABLE `staff_movement` DISABLE KEYS */;
+/*!40000 ALTER TABLE `staff_movement` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -150,4 +186,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-11-15 23:17:46
+-- Dump completed on 2016-11-16 11:09:08
