@@ -56,7 +56,7 @@ echo '
 		</table>
 		
 </td><td>
-		<button  type=button onclick="showhidemenu(\'button2\')">'.$_SESSION['login'].'</button>
+		<button  type=button onclick="showhidemenu(\'button2\')">Manage My Account('.$_SESSION['login'].')</button>
 		<table  id="button2" class="menu" style="position: absolute;display:none;"><tr><td>
 		
 			<button formaction='.$GLOBALS['rootpath'].'/common/logout.php type=submit onclick="hidemenu()" name=new>Logout</button></td></tr><tr><td>
