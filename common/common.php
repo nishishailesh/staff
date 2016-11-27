@@ -111,6 +111,28 @@ function mk_select_from_sql($link,$sql,$field_name,$form_name,$disabled,$default
 }
 
 
+function mk_select_from_sql_with_separate_id($link,$sql,$field_name,$form_name,$id_name,$disabled,$default)
+{
+
+	if(!$result=mysqli_query($link,$sql)){return FALSE;}
+	
+		echo '<select  '.$disabled.' name='.$form_name.' id='.$id_name.'>';
+		while($result_array=mysqli_fetch_assoc($result))
+		{
+		if($result_array[$field_name]==$default)
+		{
+			echo '<option selected  > '.$result_array[$field_name].' </option>';
+		}
+		else
+			{
+				echo '<option  > '.$result_array[$field_name].' </option>';
+			}
+		}
+		echo '</select>';	
+		return TRUE;
+}
+
+
 function combo_entry($link,$sql,$name,$disabled,$default)
 {
 	echo '<table><tr><td>';
@@ -125,8 +147,9 @@ function combo_entry($link,$sql,$name,$disabled,$default)
 
 function get_raw($link,$sql)
 {
-	if(!$result=mysqli_query($link,$sql)){return FALSE;}
-	if(mysqli_num_rows($result)!=1){return false;}
+	//echo $sql;
+	if(!$result=mysqli_query($link,$sql)){echo mysqli_error($link);return FALSE;}
+	if(mysqli_num_rows($result)!=1){echo mysqli_error($link);return false;}
 	else
 	{
 		return mysqli_fetch_assoc($result);
@@ -137,6 +160,19 @@ function get_raw($link,$sql)
 function update_field_by_id($link,$table,$id_field,$id_value,$field,$value)
 {
 	$sql='update `'.$table.'` set `'.$field.'`=\''.$value.'\' where `'.$id_field.'`=\''.$id_value.'\'';
+	//echo $sql;
+	
+	
+	if(!$result=mysqli_query($link,$sql)){mysql_error();return FALSE;}
+	else
+	{
+		return mysqli_affected_rows($link);
+	}
+}
+
+function delete_raw_by_id($link,$table,$id_field,$id_value)
+{
+	$sql='delete from `'.$table.'` where `'.$id_field.'`=\''.$id_value.'\'';
 	//echo $sql;
 	
 	
@@ -296,50 +332,61 @@ function file_to_str($link,$file)
 	return mysqli_real_escape_string($link,$str);
 }
 
-function insert_attachment($link,$array,$files)
+function insert_attachment($link,$table,$id_field,$id_value,$files_field,$files_value)
 {
-		
-	if(strlen($files['file']['tmp_name'])>0)
-	{
-			$str=file_to_str($files['file']);
-			$sql='insert into attachment values(
-					\''.$array['sample_id'].'\', 
-					\''.$array['attachment_id'].'\',
-					\''.$array['description'].'\',
-					\''.$array['filetype'].'\',
-					\''.$str.'\')';
-			//echo $sql;
+	$str=file_to_str($link,$files_value);
 
-			if(!$result=mysqli_query($link,$sql)){echo mysql_error();}
-			else
-			{
-				echo 'success';
-			}
+	$sql='insert into `'.$table.'` 
+			(`'.$id_field.'`,`'.$files_field.'`) values(\''.$id_value.'\',"'.$str.'")';
+
+		
+	if(!$result=mysqli_query($link,$sql))
+	{		
+		//echo 'Error()';
+		echo mysqli_error($link);
 	}
 	else
 	{
-		echo 'no file to attach<br>';
+		//echo 'insert success';
+		return mysqli_insert_id($link);
 	}
-
 }	
 
+function read_year($name,$y,$yy)
+{
+	echo '<select name=\''.$name.'\'>';
+	for($i=$y;$i<$yy;$i++)
+	{
+			echo '<option>'.$i.'</option>';
+	}
+	echo '</select>';
+	
+}
 
 function update_or_insert_attachment($link,$table,$id_field,$id_value,$files_field,$files_value)
 {	
+	//echo '<pre>'; print_r( $files_value);echo '</pre>';
 	if($files_value['size']>0)
 	{
 		if(get_raw($link,'select `'.$id_field.'` from `'.$table.'` where `'.$id_field.'`=\''.$id_value.'\'')===FALSE)
 		{
 		//insert
+
 			$str=file_to_str($link,$files_value);
+
 			$sql='insert into `'.$table.'` 
-					(`'.$files_field.'`) values("'.$str.'")
-					where
-					`'.$id_field.'` =\''.$id_value.'\'';
-			if(!$result=mysqli_query($link,$sql)){echo mysql_error();}
+					(`'.$id_field.'`,`'.$files_field.'`) values(\''.$id_value.'\',"'.$str.'")';
+
+				
+			if(!$result=mysqli_query($link,$sql))
+			{		
+				//echo 'Error()';
+				echo mysqli_error($link);
+			}
 			else
 			{
-				//echo 'success';
+				echo 'insert success';
+				return mysqli_insert_id($link);
 			}
 		}
 		//update
@@ -350,10 +397,12 @@ function update_or_insert_attachment($link,$table,$id_field,$id_value,$files_fie
 					`'.$files_field.'` ="'.$str.'"
 					where
 					`'.$id_field.'` =\''.$id_value.'\'';
-			if(!$result=mysqli_query($link,$sql)){echo mysql_error();}
+			//echo $sql;
+			if(!$result=mysqli_query($link,$sql)){echo mysqli_error($link);}
 			else
 			{
-				//echo 'success';
+				echo 'update success';
+				return $id_value;
 			}			
 		}
 	}
@@ -361,65 +410,104 @@ function update_or_insert_attachment($link,$table,$id_field,$id_value,$files_fie
 
 
 
-function find_primary_key_array($link,$table,$sql)
+function find_primary_key_array($link,$table)
 {
-//This function is useful when primary key is madeup of multiple fields
+	//This function is useful when primary key is madeup of multiple fields
+	$sql_p='SHOW KEYS FROM  `'.$table.'` WHERE Key_name = \'PRIMARY\'';
+	if(!$result_p=mysqli_query($link,$sql_p)){echo mysqli_error($link);return FALSE;}
+	$pk=array();
+	while($array_p=mysqli_fetch_assoc($result_p))
+	{
+		$pk[]=$array_p['Column_name'];
+	}
+	return $pk;
+}
+
+function read_primary_key($parray,$array)
+{
+	$ret_array=array();
+	foreach($parray as $key=>$value)
+	{
+		$ret_array[$value]=$array[$value];
+	}
+	return $ret_array;
+}
+
+function prepare_where($ar)
+{		
+		if(count($ar)>0)
+		{
+			$where=' where ';
+			foreach($ar as $k=>$v)
+			{
+				$where=$where.'`'.$k.'`='.'\''.$v.'\' and ';
+			}
+			$where=substr($where,0,-4);
+		}
+		else
+		{
+			$where='';
+		}
+		//echo '<h3>'.$where.'</h3>';
+		return $where;
+}
+
+/*
+function update_or_insert_attachment_by_sql($link,$table,$sql)
+{
+	echo $sql.'<br>';
 	if(!$result=mysqli_query($link,$sql)){echo mysqli_error($link);return FALSE;}
 
 	if(mysqli_num_rows($result)==0)
 	{
-		//Nothing , so return empty array.
-		return array();
+		echo 'Nothing';
+		return FALSE;
 	}	
 	elseif(mysqli_num_rows($result)==1)
 	{
-		//only one record, so return primary key
-		$sql_p='SHOW KEYS FROM  `'.$table.'` WHERE Key_name = \'PRIMARY\'';
-		if(!$result_p=mysqli_query($link,$sql_p)){echo mysqli_error($link);return FALSE;}
-		$pk=array();
-		while($array_p=mysqli_fetch_assoc($result_p))
-		{
-			$pk[]=$array_p['Column_name'];
-		}
-	return $pk;
+		$array=mysqli_fetch_assoc($result);
+		$pk=find_primary_key_array($link,$table);
+		$pk_result=read_primary_key($pk,$array);
+		$where=prepare_where($pk_result);
+		echo $where;
+		$sql_attachment='select * from ';
 	}
-}
-
-
-function update_or_insert_attachment_sql($link,$table,$id_field,$id_value,$files_field,$files_value)
-{	
-	if($files_value['size']>0)
+	else
 	{
-		if(get_raw($link,'select `'.$id_field.'` from `'.$table.'` where `'.$id_field.'`=\''.$id_value.'\'')===FALSE)
-		{
-		//insert
-			$str=file_to_str($link,$files_value);
-			$sql='insert into `'.$table.'` 
-					(`'.$files_field.'`) values("'.$str.'")
-					where
-					`'.$id_field.'` =\''.$id_value.'\'';
-			if(!$result=mysqli_query($link,$sql)){echo mysql_error();}
-			else
-			{
-				//echo 'success';
-			}
-		}
-		//update
-		else
-		{
-			$str=file_to_str($link,$files_value);
-			$sql='update `'.$table.'` set 
-					`'.$files_field.'` ="'.$str.'"
-					where
-					`'.$id_field.'` =\''.$id_value.'\'';
-			if(!$result=mysqli_query($link,$sql)){echo mysql_error();}
-			else
-			{
-				//echo 'success';
-			}			
-		}
+		echo 'multiple';
+		return FALSE;
 	}
+	
 }
+*/
+
+function update_or_insert_attachment_by_sql($link,$table,$sql,$id_field,$id_value,$file_field,$file_post)
+{
+	echo $sql.'<br>';
+	if(!$result=mysqli_query($link,$sql)){echo mysqli_error($link);return FALSE;}
+
+	if(mysqli_num_rows($result)==0)
+	{
+		echo 'Nothing';
+		return FALSE;
+	}	
+	elseif(mysqli_num_rows($result)==1)
+	{
+		$array=mysqli_fetch_assoc($result);
+		$pk=find_primary_key_array($link,$table);
+		$pk_result=read_primary_key($pk,$array);
+		$where=prepare_where($pk_result);
+		echo $where;
+		$sql_attachment_update='select * from ';
+	}
+	else
+	{
+		echo 'multiple';
+		return FALSE;
+	}
+	
+}
+
 
 function display_photo($link,$photo)
 {
