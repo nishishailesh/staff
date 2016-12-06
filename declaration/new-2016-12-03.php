@@ -32,7 +32,7 @@ $current_appointment=get_raw($link,'select * from staff_movement where staff_id=
 $current_appointment_order=FALSE;
 $current_joining_order=FALSE;
 $current_joining_attached='No';
-$previous_relieving_order=FALSE;
+
 if($current_appointment)
 {
 	$current_appointment_order=get_raw($link,'select * from staff_movement_attachment 
@@ -77,7 +77,7 @@ function find_staff_movement_details_at_specific_date($link,$dt)
 		if(strlen($ra['to_date'])==0)
 		{
 			$tdate=date("Y-m-d");
-			//echo '<h1>'.$tdate.'</h1>';
+			echo '<h1>'.$tdate.'</h1>';
 		}
 		else
 		{
@@ -146,10 +146,6 @@ table{
 	display:none;diabled:true
 }
 
-.section_header
-{
-	background-color:gray;
-}
 </style>
 
 
@@ -198,7 +194,7 @@ function clearFields(container) {
 
     var fields = container.getElementsByTagName('textarea');
     for(var i=0, len=fields.length; i < len; i++) {
-        fields[i].value = '';
+        fields[i].value = ''
     }
 }
 
@@ -206,17 +202,6 @@ function hide(one) {
 				document.getElementById(one).style.display = "none";
 		}
 
-function hide_class(eclass,tclass) {
-				cls=document.getElementsByClassName(eclass);
-				for(var x=0;x<cls.length;x++){
-					cls[x].style.display ="none";
-					}	
-				tls=document.getElementsByClassName(tclass);
-				for(var x=0;x<tls.length;x++){
-					tls[x].style.background ="gray";
-					}									
-		}
-		
 function showhide(one) {
 				if(document.getElementById(one).style.display == "none")
 				{
@@ -226,39 +211,8 @@ function showhide(one) {
 				{
 					document.getElementById(one).style.display = "none";
 				}
-
 		}
-
-function showhide_with_label(one,labell,textt) {
-				if(document.getElementById(one).style.display == "none")
-				{
-					document.getElementById(one).style.display = "block";
-					labell.innerHTML="hide "+textt;
-				}
-				else
-				{
-					document.getElementById(one).style.display = "none";
-					labell.innerHTML="show "+textt;
-				}
-
-		}
-		
-function showhide_with_tab(one,eclass,tclass,myself) {
-				hide_class(eclass,tclass);
-				if(document.getElementById(one).style.display == "none")
-				{
-					document.getElementById(one).style.display = "block";
-					myself.style.background="#E4DDDD";
-				}
-				else
-				{
-					document.getElementById(one).style.display = "none";
-					myself.style.background="gray";
-
-				}
-
-		}
-								
+						
 function hide_and_clear(one) {
 				document.getElementById(one).style.display = "none";
 				element=document.getElementById(one);
@@ -353,69 +307,25 @@ echo '</td><td valign=top >';
 //Form element at this place (inside a table, with closing outside donot make POST visible if added by javascript
 //echo '<form method=post  enctype=\'multipart/form-data\' >';
 
+echo '<input style="background-color:lightgreen;" name=action type=submit value=save title="save frequently to prevent repeat attempts">';
 echo '</td><td  valign=top>';
 echo $save_msg;
 echo '</td></tr></table>';
 ?>
-<span class=section_header id=genral_help_sh onclick="showhide_with_label('general_help',this,'general help')">hide General Help</span>
 
 
 
 <input type=hidden name=id value=<?php echo '\''.$staff_detail['id'].'\'';?>>
 
-<div id=general_help>
-<table class=border>
+Click <span style="background-color:yellow;">yellow </span> buttons to get help. <span style="background-color:lightpink;">Pink fields</span> need  pdf/jpg upload. <br> Some of the details will be automatically filled, once data is saved.<br>
 
-<tr><td>
-Click <span style="background-color:gray;">Gray </span> buttons to start filling details of respective section.
-</td></tr>
-<tr><td>
-Click <span style="background-color:yellow;">yellow </span> buttons to get help.
-</td></tr> 
-<tr><td>
-<span style="background-color:lightpink;">Pink fields</span> need  pdf/jpg upload. 
-</td></tr> 
-<tr><td>
-If smart phone is used to fill this form, use camara to snap and <span style="background-color:lightpink;">upload</span> documents
-</td></tr> 
-<tr><td>
-Some of the details will be automatically filled, AFTER data is saved.
-</td></tr>
-<tr><td>
-Save frequently(<span style="background-color:lightgreen;">Green Button</span>). Saved data is automatically retrived.
-</td></tr>
-</table>
-</div>
 
-<h2><p align=center><b><u>DECLARATION FORM : 2017 - 2018 - FACULTY</u></b></p></h2>
-
-<p>
-<span>
-<?php
-	echo '<input style="background-color:lightgreen;" name=action type=submit value=save title="save frequently to prevent repeat attempts">';
-?>
-</span>
-<span class=section_header onclick="showhide_with_tab('for_assessors'			,'section','section_header',this)">For Assessors</span>
-<span class=section_header onclick="showhide_with_tab('identity'					,'section','section_header',this)">Identity Information</span>
-<span class=section_header onclick="showhide_with_tab('contact'					,'section','section_header',this)">Contact</span>
-<span class=section_header onclick="showhide_with_tab('service'					,'section','section_header',this)">Service</span>
-<span class=section_header onclick="showhide_with_tab('qualification_section'	,'section','section_header',this)">Qualification</span>
-<span class=section_header onclick="showhide_with_tab('experience_section'		,'section','section_header',this)">Experience</span>
-<span class=section_header onclick="showhide_with_tab('present_appointment'		,'section','section_header',this)">Present Appointment</span>
-<span class=section_header onclick="showhide_with_tab('MET'						,'section','section_header',this)">MET</span>
-<span class=section_header onclick="showhide_with_tab('MCI'						,'section','section_header',this)">MCI</span>
-<span class=section_header onclick="showhide_with_tab('publication'				,'section','section_header',this)">Publication</span>
-<span class=section_header onclick="showhide_with_tab('income'					,'section','section_header',this)">Income</span>
-<span class=section_header onclick="showhide_with_tab('declaration'				,'section','section_header',this)">Declaration</span>
-
-</p>
-<div id=for_assessors style="display:none;"  class=section>
 
 <p><b>NAME OF THE COLLEGE: 
-	<input type=text placeholder="autofilled" readonly size=30 name=declaration_college id=declaration_college value=
+	<input type=text placeholder="click to autofill" readonly size=30 onclick="copyfrom(this,'present_college_name')" name=declaration_college id=declaration_college value=
 	<?php echo '\''.$current_appointment['institute'].'\'';?>
 	>
-	<input type=text placeholder="autofilled" readonly size=15  name=declaration_city id=declaration_city value=
+	<input type=text placeholder="click to autofill" readonly size=15 onclick="copyfrom(this,'present_city')" name=declaration_city id=declaration_city value=
 		<?php 
 			$ex=explode(" ",$current_appointment['institute']);
 			$tot=count($ex);
@@ -443,14 +353,11 @@ Save frequently(<span style="background-color:lightgreen;">Green Button</span>).
 		<td></td>
 	</tr>
 </table>
-</div>
+
+<h2><p align=center><b><u>DECLARATION FORM : 2017 - 2018 - FACULTY</u></b></p></h2>
 
 
 
-
-</p>
-<div id=identity style="display:none;"  class=section>
-	
 
 <table class="noborder">
 <tr>
@@ -463,7 +370,6 @@ Save frequently(<span style="background-color:lightgreen;">Green Button</span>).
 	></p>
 
 	<p>1.(b) Date of Birth 
-
 
 	<input readonly	id=dob class="datepicker" size="10" name=dob value=
 	<?php echo '\''.mysql_to_india_date($staff_detail['dob']).'\''; ?>
@@ -491,8 +397,8 @@ Save frequently(<span style="background-color:lightgreen;">Green Button</span>).
 		echo '<td>';
 		mk_select_from_sql($link,'select * from photo_id_proof_type','photo_id_proof_type','photo_id','',$photo['proof_type']);
 		echo '</td></tr>';
-		echo '<tr><td  class=upload>';
-		echo '<input name=photo_id type=file><--Upload photo id';		
+		echo '<tr><td>';
+		echo '<input name=photo_id type=file class=upload>';	
 		echo '</td>';
 		echo '<td class=upload>';
 		echo 'uploaded:'.$photo['photo_id_filename']; 
@@ -517,9 +423,8 @@ Save frequently(<span style="background-color:lightgreen;">Green Button</span>).
 				display_photo($link,$photo['photo']);
 			echo '</td>
 			</tr>
-			<tr><td  class=upload>';
-			echo '<input name=photo type=file><--Upload photo';
-			
+			<tr><td>';
+			echo '<input name=photo type=file class=upload>';	
 			echo '</td></tr>
 			<tr>';
 			echo '<td class=upload>';
@@ -531,50 +436,7 @@ Save frequently(<span style="background-color:lightgreen;">Green Button</span>).
 </tr>
 </table>
 
-</div>
-<?php
 
-$de=get_raw($link,'select * from departmental_exam where staff_id=\''.$_SESSION['login'].'\'');
-$opt=array('','Yes','No','Exempted');
-
-echo '<div id=service style="display:none;"  class=section>';
-echo '<table align=center class=border>';
-	echo '<tr>';
-		echo '<th colspan=2 >';
-		echo 'Miscellenious Sevice data';
-		echo '</th>';
-	echo '</tr>';	
-	echo '<tr>';
-		echo '<td>';
-			echo 'CCC+ Passed';
-		echo '</td>';
-		echo '<td>';
-			mk_select_from_array($opt,'cccplus','',$de['cccplus']);
-		echo '</td>';
-	echo '</tr>';
-	echo '<tr>';
-		echo '<td>';
-			echo 'Gujarati Passed';
-		echo '</td>';
-		echo '<td>';
-			mk_select_from_array($opt,'gujarati','',$de['gujarati']);
-		echo '</td>';
-	echo '</tr>';
-	echo '<tr>';
-		echo '<td>';
-			echo 'Hindi Passed';
-		echo '</td>';
-		echo '<td>';
-			mk_select_from_array($opt,'hindi','',$de['hindi']);
-		echo '</td>';
-	echo '</tr>';
-echo '</table>';
-
-echo '</div>';
-?>
-
-<div id=qualification_section style="display:none;"  class=section>
-	
 <!---start of qualification and experience -->
 <p>
 <table class="border" style="background-color:#A6AEC8"  id="qualification_table">
@@ -610,9 +472,6 @@ after scoring out whichever is not applicable.</th></tr>
 
 </p>
 
-</div>
-<div id=experience_section style="display:none;"   class=section>
-
 <p>
 <table class="border"   style="background-color:#90939A" id="experience_table">
 <tr><th colspan=7 style="text-align:left;"><button style="background-color:yellow;" type=button 
@@ -624,9 +483,8 @@ after scoring out whichever is not applicable.</th></tr>
 		<tr><td colspan=7 >(3) Change of type of appointment (e.g Adhoc->GPSC) also needs to be indicated saparately in new row.</td></tr>
 		<tr><td colspan=7 >(4) Put CheckMark checkbox in "Name of Institution" column to write name of institute not present in dropdown list.</td></tr>
 		<tr><td colspan=7 >(5) Ex-Army person can use this table to fill their details</td></tr>
-		<tr><td colspan=7 >(6) Appointments with transfers shall be entered as respective appointment type</td></tr>
-		<tr><td colspan=7 >(7) Each transfers will require different entry. Indicate correct TYPE of appointment appicable to transfer.</td></tr>
-		<tr><td colspan=7 >(8) For Current appointment select 'till date' for 'to date'</td></tr>
+		<tr><td colspan=7 >(6) Appintments with transfers shall be entered as respective appointment type</td></tr>
+		<tr><td colspan=7 >(7) For Current appointment select 'till date' for 'to date'</td></tr>
 		</table>
 </td></tr>
 <tr>
@@ -651,8 +509,6 @@ view_table_experience($link);
 <tr><td  colspan=7><b>Note:-</b>Tutor working in Anesthesia and Radio-diagnosis must have 3 years teaching experience in the respective departments in a recognized/permitted
 medical institute to be consider as senior resident.</td></tr>
 </table>
-
-</div>
 <!--
 	<table class=border style="width:100%;">
 		<tr><td colspan=10><b>3(b).</b>To be filled in by Ex Army Personnel only: <b>(Not used for online filling of declaration)</b></td></tr>
@@ -693,7 +549,9 @@ medical institute to be consider as senior resident.</td></tr>
 
 
 
-<div id=present_appointment style="display:none;"   class=section>
+
+
+
 <p><b>Note:1) Without Photo ID, Declaration form will be rejected and will notbe considered as teaching   faculty. 2) Original Certificates are mandatory for verification. All Certificates/Documents/Certified Translations, must be in English</b></p>
 <p>1.(d)i.Present Designation:
 <?php 
@@ -707,10 +565,11 @@ medical institute to be consider as senior resident.</td></tr>
 <p><table class="border">
 	<tr>
 		<td>
-			<button style="background-color:yellow;" type=button onclick="alert('Upload  not implemented yet')"><b>1.(d)(i)a</b></button> Certified copies of present appointment order at present institute attached.</td></tr><tr class=upload><td>
+			<button style="background-color:yellow;" type=button onclick="alert('Upload  not implemented yet')"><b>1.(d)(i)a</b></button> Certified copies of present appointment order at present institute attached.</td></tr><tr><td class=upload>
 	
 			<?php
-				echo '<input name=present_appointment_order type=file ><--Upload appt/trnsfr order</td></tr><tr><td  class=upload>';	
+				
+				echo '<input name=present_appointment_order type=file class=upload>';	
 				echo 'uploaded:'.$current_appointment_order['attachment_filename']; 
 				
 			?>
@@ -772,75 +631,7 @@ medical institute to be consider as senior resident.</td></tr>
 </table>
 </p>
 
-
 <p><table class=noborder style="width:190mm;"><tr><td>Signature of Faculty</td><td><input type=text readonly placeholder="required in physical copy"></td><td>Signature of Dean</td<td><input type=text  placeholder="required in physical copy" readonly></td></tr><table></p>
-
-<tr><td><b>1.(i)</b>Date of joining present institution :</td><td>
-	
-<?php
-//<input readonly id=present_institute_joining_date class="datepicker" size="10" name=present_institute_joining_date >
-
-echo mysql_to_india_date($current_appointment['from_date']).' as '. $current_appointment['post']
-?>
-
-</td><tr>
-</table>
-
-<table class="border">
-	<tr>
-		<td><button style="background-color:yellow;" type=button onclick="alert('Upload pdf/jpg copy of photo ID proof')"><b>1.(j)</b></button> Joining report at the present institute attached:<?php echo $current_joining_attached; ?></td></tr><tr>
-			
-		<td class=upload>
-		<?php
-		echo '<input type=file  name=present_joining_order><--Upload joining order</td></tr><tr><td  class=upload>';
-		?>	
-		Uploaded:
-		<?php  echo $current_joining_order['attachment_filename'] ?>
-		</td>
-	</tr>
-</table>
-
-<?php
-		$previous_institute_details=find_staff_movement_details_of_previous_institute($link,$current_appointment['institute']);
-?>
-	
-<table class=border>
-	<tr>
-		<td>
-			<button style="background-color:yellow;" type=button onclick="alert('Upload pdf/jpg copy of last relieving order ')"><b>4.(a)</b></button> Before joining present institution I was working at 
-				<?php echo $previous_institute_details['institute']; ?> 
-				as 
-				<?php echo $previous_institute_details['post']; ?>
-				 and relieved on
-				<?php echo mysql_to_india_date($previous_institute_details['to_date']); ?>
-				after resigning / retiring .<br> (Relieving order is enclosed from the previous institution)
-		</td>
-	</tr>
-	<tr class=upload>
-		<td>
-		<?php
-		echo '<input  name=last_relieving_order type=file><--Upload relieving order';
-			echo '</td></tr>
-			<tr  class=upload><td>';
-		echo 'Uploaded:';
-		echo $previous_relieving_order['attachment_filename']; 
-		?>
-
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<b>4.(b)</b> I am not working in any other medical college/dental college in the State or outside the State in any capacity Regular / Contractual.
-		</td>
-	</tr>
-</table>
-	
-</p>
-
-</div>
-
-<div id=MET style="display:none;"   class=section>
-
 <p><b>1.(f) </b>Have you undergone Training in "Basic Course Workshop" at MCI Regional Centre in MET or in your college under Regional Centre observership
 
 <?php
@@ -892,21 +683,14 @@ else
 		</tr>
 	</table>
 
-</div>
 
-
-<div id=contact style="display:none;"   class=section>
-	
 <p>
 	<table class="border">
 		<tr>
 			<td colspan=2><button style="background-color:yellow;" type=button onclick="alert('Upload pdf/jpg copy of address proof')"><b>1.(g)</b></button>Copy of Passport /Voter Card / Electricity Bill /Landline Telephone Bill / Aadhar Card / attached as a proof of residence.:
 			<?php
 				echo $proof_of_residence_attached.'</td>';	
-				echo '</tr><tr><td class=upload>';
-				echo '<input name=proof_of_residence type=file><--Upload resi proof';
-				echo '</td></tr>
-							<tr><td class=upload>';	
+				echo '</tr><tr><td class=upload><input name=proof_of_residence type=file>';	
 				echo 'uploaded:'.$r_proof['filename'].'</td>'; 
 			?>
 			
@@ -945,12 +729,28 @@ value=
 ></td><tr>
 </table>
 <table>
+<tr><td><b>1.(i)</b>Date of joining present institution :</td><td>
 	
+<?php
+//<input readonly id=present_institute_joining_date class="datepicker" size="10" name=present_institute_joining_date >
+
+echo mysql_to_india_date($current_appointment['from_date']).' as '. $current_appointment['post']
+?>
+
+</td><tr>
 </table>
-</div>
 
+<table class="border">
+	<tr>
+		<td><button style="background-color:yellow;" type=button onclick="alert('Upload pdf/jpg copy of photo ID proof')"><b>1.(j)</b></button> Joining report at the present institute attached:<?php echo $current_joining_attached; ?></td></tr><tr>
+		<td class=upload><input type=file  name=present_joining_order>Uploaded:
+		<?php  echo $current_joining_order['attachment_filename'] ?>
+		</td>
+	</tr>
+</table>
+	
+</p>
 
-<div id=MCI style="display:none;"   class=section>
 
 <p>
 	<table class=border>
@@ -991,7 +791,7 @@ value=
 	//echo '</pre>';
 	
 	
-		if($last_mci_details['institute']==$current_appointment['institute'] && strlen($current_appointment['institute'])>0)
+		if($last_mci_details['institute']==$current_appointment['institute'])
 		{
 			$last_mci_in_current_institute='Yes';
 		}
@@ -1000,7 +800,7 @@ value=
 			$last_mci_in_current_institute='No';
 		}
 
-		if($last_mci_details['post']==$current_appointment['post'] && strlen($current_appointment['post'])>0)
+		if($last_mci_details['post']==$current_appointment['post'])
 		{
 			$last_mci_as_current_post='Yes';
 		}
@@ -1014,30 +814,46 @@ value=
 		echo '<p>1.(d)viii Whether appeared in Last MCI - UG/PG Assessment on same Designation -<b>'.
 		$last_mci_as_current_post.'</b></p>';
 		 
+		$previous_institute_details=find_staff_movement_details_of_previous_institute($link,$current_appointment['institute']);
 	?>
 
-<table><tr><td><b>7</b> I have appeared in the last inspection of the same College in the same post. </td><td>
 
-<?php
-
-	if($last_mci_as_current_post=='Yes' && $last_mci_in_current_institute=='Yes')
-	{
-		echo '<b>Yes</b>';
-	}
-	else
-	{
-		echo '<b>No</b>';
-	}
-
-?>
-
-</td></tr></table>
+	<p>
+	<table>
 </p>
 
 
-</div>
+<p>
 
-<div id=publication style="display:none;"   class=section>
+	
+<table class=border>
+	<tr>
+		<td>
+			<button style="background-color:yellow;" type=button onclick="alert('Upload pdf/jpg copy of last relieving order ')"><b>4.(a)</b></button> Before joining present institution I was working at 
+				<?php echo $previous_institute_details['institute']; ?> 
+				as 
+				<?php echo $previous_institute_details['post']; ?>
+				 and relieved on
+				<?php echo mysql_to_india_date($previous_institute_details['to_date']); ?>
+				after resigning / retiring . (Relieving order is enclosed from the previous institution)
+		</td>
+	</tr>
+	<tr>
+		<td class=upload>
+			<input  name=last_relieving_order type=file> Uploaded:
+			<?php echo $previous_relieving_order['attachment_filename']; ?>
+
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<b>4.(b)</b> I am not working in any other medical college/dental college in the State or outside the State in any capacity Regular / Contractual.
+		</td>
+	</tr>
+</table>
+
+</p>
+
 <p>
 <table>
 	<tr><td colspan=0><b>5.</b>  Number of  Research publications in Index Journals:</td></tr>
@@ -1060,9 +876,6 @@ value=
 </table>
 </p>
 
-</div>
-
-<div id=income style="display:none;"   class=section>
 <p>
 <table class=border>
 	<tr><td><button type=button style="background-color:yellow;" onclick="alert('Upload scanned / camara-photo of PAN card')" ><b>6.(a)</b></button> My PAN Card No. is 
@@ -1074,13 +887,7 @@ value=
 	?>
 	>
 	</td></tr><td class=upload>
-	<?php	
-	echo '<input type=file name=PAN_card ><--Upload PAN';
-	echo '</td></tr>
-			<tr><td class=upload>';
-	?>
-	
-	Uploaded: <?php echo $pan['attachment_filename'] ?></td></tr>
+	<input type=file name=PAN_card > Uploaded: <?php echo $pan['attachment_filename'] ?></td></tr>
 	
 
 </table>
@@ -1109,14 +916,24 @@ value=
 <table><tr><td><button  type=button style="background-color:yellow;" onclick="alert('PAN uploaded above. Form 16 to be attached manually, when declaration form is printed')"><b>6.(c)</b></button> (Copy of my PAN &amp; Form 16 (TDS certificate) for financial year 2015-16 are attached)</td></tr></table>
 </p>
 
-</div>
+<table><tr><td><b>7</b> I have appeared in the last inspection of the same College in the same post. </td><td>
 
-<div id=declaration style="display:none;"   class=section>
-<p>
+<?php
+
+	if($last_mci_as_current_post=='Yes' && $last_mci_in_current_institute=='Yes')
+	{
+		echo '<b>Yes</b>';
+	}
+	else
+	{
+		echo '<b>No</b>';
+	}
+
+?>
+
+</td></tr></table><p>
 	
 <table align="top" >
-
-
 	
 <tr><th colspan=3>DECLARATION</th></tr>
 <tr><td valign="top" style="width:5%;">1.</td><td style="width:95%;"> I, Dr. 
@@ -1162,9 +979,7 @@ value=
 </p>
 <p>2. I also confirm that Dr.
 <?php
-
-echo $staff_detail['fullname'];
-
+	echo $staff_detail['fullname'];
 ?>
  is not practicing or carrying out any other activity during college working hours i.e. from 9.00 AM to 5 PM , since he/she has joined the Institute.
 </p>
@@ -1225,7 +1040,6 @@ echo $staff_detail['fullname'];
 <p>1. The Declaration Form will not be accepted and the person will not be counted as teacher if any of the above documents are not enclosed /attached with the Declaration Form.</p>
 <p>2. The person will not be counted as a teacher if the original of Photo ID proof, Registration Certificates / Degree certificates / PAN Card /State Medical Council ID (if issued) are not produced for verification at the time of assessment.</p>
 <p>3. All the teachers must submit the revised declaration form in this format only. (Any declaration form submitted in an old format will not be accepted and he will not be counted as a teacher.)</p>
-</div>
 
 </form>
 </body>
@@ -1242,10 +1056,9 @@ function add_qualification_raw($link)
 	
 	$sql_qs='select department from department';
 	mk_select_from_sql($link,$sql_qs,'department','qualification_subject','','');
-	
-	echo '<input  class=upload type=file name=file_qualification_degree ><br>^Upload qualification^';
-	
-	echo '	</td>
+	echo	'
+				<input  class=upload type=file name=file_qualification_degree >
+			</td>
 			<td  ><input  type=text name=college_qualification ></td>
 			<td  ><input  type=text name=university_qualification ></td>
 			<td  >';
@@ -1256,12 +1069,9 @@ function add_qualification_raw($link)
 				<input placeholder="Reg. No" type=text name=reg_no_qualification id=reg_no_qualification>
 				</td></tr><tr><td>
 				<input placeholder="Reg. Dt" readonly name=reg_date_qualification id=reg_date_qualification class="datepicker" >
-				</td></tr><tr><td>';
-
-			echo '<input  type=file class=upload name=file_qualification_reg ><br>^Upload Reg^';
-			echo '</div>';				
-					
-			echo '</td></tr></table>
+				</td></tr><tr><td>
+				<input  type=file class=upload name=file_qualification_reg >
+				</td></tr></table>
 			</td>
 			<td  ><input type=text name=council_qualification id=council_qualification></td>
 			</tr>

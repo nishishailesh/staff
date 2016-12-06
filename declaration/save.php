@@ -1,6 +1,7 @@
 <?php
 //session_start();
 require_once '../common/common.php';
+
 /*
 echo '<pre>';
 print_r($GLOBALS);
@@ -36,6 +37,9 @@ function save($link)
 	/////appointment order upload
 	$staff_movement_raw=get_raw($link,'select * from staff_movement where staff_id=\''.$_POST['id'].'\' and to_date is null');
 	//upload only if appointment entered
+	
+
+
 	if($staff_movement_raw)
 	{
 		//try only if upload supplied
@@ -89,12 +93,9 @@ function save($link)
 	}																				
 
 
-	update_or_insert_field_by_id($link,'last_mci','id',$_POST['id'],'last_mci_date',
-								india_to_mysql_date($_POST['last_mci_date']));	
-	update_or_insert_field_by_id($link,'last_mci','id',$_POST['id'],'same_institute',
-								$_POST['appeared_in_same_institute']);	
-	update_or_insert_field_by_id($link,'last_mci','id',$_POST['id'],'same_designation',
-								$_POST['appeared_with_same_designation']);
+	//update_or_insert_field_by_id($link,'last_mci','id',$_POST['id'],'last_mci_date',
+	//							india_to_mysql_date($_POST['last_mci_date']));	
+	
 
 	update_or_insert_attachment($link,'residencial_address_proof','id',$_POST['id'],'proof',$_FILES['proof_of_residence']);
 	update_or_insert_filename_field_by_id($link,'residencial_address_proof',
@@ -288,6 +289,8 @@ if(isset($_POST['delete_qualification']))
 				}
 			}	
 }	
+
+
 ///////////Qualification management ends here//////////////
 
 ///////////Experience management///////////
@@ -376,11 +379,115 @@ if(isset($_POST['delete_qualification']))
 					}
 				}	
 	}	
+	//680765
 	///////////Experience management ends here//////////////
 
+	if(isset($_POST['action']))
+	{
+		if($_POST['action']=='add_mci_date')
+		{		
+			if(strlen($_POST['mci_date'])>0)
+			{
+				insert_field_by_id($link,'mci','staff_id',$_POST['id'],'date',india_to_mysql_date($_POST['mci_date']));
+			}
+		}
+	}
+	
+	if(isset($_POST['delete_mci']))
+	{
+				$d_sql='delete from mci where 
+						staff_id=\''.$_POST['id'].'\' and 
+						`date`=\''.india_to_mysql_date($_POST['delete_mci']).'\'';
+				//echo $d_sql;
+				if(!$result=mysqli_query($link,$d_sql))
+				{		
+					echo mysqli_error($link);
+				}
+				else
+				{
+					//do nothing
+				}	
+	}	
+	
+//////////////upload last institute relieving order//////////////////
+
+	$staff_movement_raw=get_raw($link,'select * from staff_movement where staff_id=\''.$_POST['id'].'\' and to_date is null');
+	//upload only if last appointment entered
+	
+	if($staff_movement_raw)
+	{
+		//try only if upload supplied
+		if($_FILES['last_relieving_order']['size']>0)
+		{
+			$sql_att='select * from staff_movement_attachment where movement_id=\''.$staff_movement_raw['movement_id'].'\' and type=\'relieving_order\'';		
+			if(!$result_att=mysqli_query($link,$sql_att)){echo mysqli_error($link);return FALSE;}
+			//update  if raw found
+			if($array_att=mysqli_fetch_assoc($result_att))
+			{
+				$pk=find_primary_key_array($link,'staff_movement_attachment');
+				$pk_result=read_primary_key($pk,$array_att);
+				$wr=prepare_where($pk_result);
+				//echo 'trying update';
+				$sql_update_att='update staff_movement_attachment set 
+									attachment=\''.file_to_str($link,$_FILES['last_relieving_order']).'\',
+									attachment_filename=\''.$_FILES['last_relieving_order']['name'].'\' '.$wr;
+									
+				if(!$result_update_att=mysqli_query($link,$sql_update_att)){echo mysqli_error($link);}
+				else
+				{
+					//echo 'update success';
+				}
+									
+			}
+			//insert if no raw found	
+			else
+			{
+				$sql_insert_att='insert into staff_movement_attachment (movement_id,type,attachment,attachment_filename)
+								 values(
+									\''.$staff_movement_raw['movement_id'].'\',
+									\'relieving_order\',
+									\''.file_to_str($link,$_FILES['last_relieving_order']).'\',
+									\''.$_FILES['last_relieving_order']['name'].'\'
+								)';
+						
+				if(!$result=mysqli_query($link,$sql_insert_att))
+				{		
+					echo mysqli_error($link);
+				}
+				else
+				{
+					//echo 'insert success';
+				}
+			}
+		}	
+	}
+	else
+	{
+		//echo 'Please current appointment details in experience table (3.1a), before uploading current appointment order ';
+	}																				
+/////////////////////upload of last releiving order upload ends here////////////////////////////////
+
+
+update_or_insert_field_by_id($link,'publication','staff_id',$_POST['id'],
+										'international',	$_POST['ipublication']);
+update_or_insert_field_by_id($link,'publication','staff_id',$_POST['id'],
+										'national',	$_POST['npublication']);
+update_or_insert_field_by_id($link,'publication','staff_id',$_POST['id'],
+										'state',	$_POST['spublication']);										
+
+
+	update_or_insert_attachment($link,'pan','staff_id',$_POST['id'],'attachment',$_FILES['PAN_card']);
+	update_or_insert_filename_field_by_id($link,'pan','staff_id',$_POST['id'],'attachment_filename',$_FILES['PAN_card']['name']);
+	update_or_insert_field_by_id($link,'pan','staff_id',$_POST['id'],
+										'pan',	$_POST['PAN_number']);
+	
+
+
+update_or_insert_field_by_id($link,'departmental_exam','staff_id',$_POST['id'],'cccplus',$_POST['cccplus']);
+update_or_insert_field_by_id($link,'departmental_exam','staff_id',$_POST['id'],'gujarati',$_POST['gujarati']);
+update_or_insert_field_by_id($link,'departmental_exam','staff_id',$_POST['id'],'hindi',$_POST['hindi']);
 
 	return true;
 }
-
 
 ?>

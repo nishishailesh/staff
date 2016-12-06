@@ -56,6 +56,12 @@ echo '
 		</table>
 		
 </td><td>
+		<button type=button onclick="showhidemenu(\'button3\')">Leave</button>
+		<table  id="button3" class="menu" style="position:absolute; display:none;"><tr><td>
+			<button formaction='.$GLOBALS['rootpath'].'/leave/new_leave.php type=submit onclick="hidemenu()" name=new>Apply</button></td></tr><tr><td>
+		</table>
+		
+</td><td>
 		<button  type=button onclick="showhidemenu(\'button2\')">Manage My Account('.$_SESSION['login'].')</button>
 		<table  id="button2" class="menu" style="position: absolute;display:none;"><tr><td>
 		

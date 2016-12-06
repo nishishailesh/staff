@@ -45,27 +45,31 @@ function connect()
 {
 	if(!$link=login_varify())
 	{
-		//logout();
+		echo 'database login could not be verified<br>';
+		echo '<a href="index.php">Login again</a><br>';
+		echo '<a href=\'http://'.$GLOBALS['homepage'].'\'>Homepage</a>';		
 		exit();
 	}
 
 
 	if(!select_database($link))
 	{
-		//logout();
+		echo 'database could not be selected<br>';
+		echo '<a href="index.php">Login again</a><br>';
+		echo '<a href=\'http://'.$GLOBALS['homepage'].'\'>Homepage</a>';		
 		exit();
 	}
 	
 	if(!check_user($link,$_SESSION['login'],$_SESSION['password']))
 	{
-		//logout();
+		echo 'application user could not be varified<br>';
+		echo '<a href="index.php">Login again</a><br>';
+		echo '<a href=\'http://'.$GLOBALS['homepage'].'\'>Homepage</a>';		
 		exit();
 	}
 	
 return $link;
 }
-
-
 
 function mk_select_from_table($link,$field,$disabled,$default)
 {
@@ -110,6 +114,24 @@ function mk_select_from_sql($link,$sql,$field_name,$form_name,$disabled,$default
 		return TRUE;
 }
 
+function mk_select_from_array($ar,$form_name,$disabled,$default)
+{
+
+		echo '<select  '.$disabled.' name='.$form_name.' id='.$form_name.'>';
+		foreach($ar as $value)
+		{
+			if($value==$default)
+		{
+			echo '<option selected  > '.$value.' </option>';
+		}
+		else
+			{
+				echo '<option  > '.$value.' </option>';
+			}
+		}
+		echo '</select>';	
+		return TRUE;
+}
 
 function mk_select_from_sql_with_separate_id($link,$sql,$field_name,$form_name,$id_name,$disabled,$default)
 {
@@ -209,6 +231,17 @@ function update_or_insert_field_by_id($link,$table,$id_field,$id_value,$field,$v
 	}
 }
 
+function insert_field_by_id($link,$table,$id_field,$id_value,$field,$value)
+{
+		//Try to insert
+		$sqli='insert into `'.$table.'` (`'.$id_field.'`,`'.$field.'`) values (\''.$id_value.'\', \''.$value.'\')';
+		//echo $sqli;
+		if(!$resulti=mysqli_query($link,$sqli)){echo mysqli_error($link);return FALSE;}
+		else
+		{
+			return mysqli_insert_id($link);
+		}
+}
 
 function update_or_insert_filename_field_by_id($link,$table,$id_field,$id_value,$field,$value)
 {
@@ -385,7 +418,7 @@ function update_or_insert_attachment($link,$table,$id_field,$id_value,$files_fie
 			}
 			else
 			{
-				echo 'insert success';
+				//echo 'insert success';
 				return mysqli_insert_id($link);
 			}
 		}
@@ -401,7 +434,7 @@ function update_or_insert_attachment($link,$table,$id_field,$id_value,$files_fie
 			if(!$result=mysqli_query($link,$sql)){echo mysqli_error($link);}
 			else
 			{
-				echo 'update success';
+				//echo 'update success';
 				return $id_value;
 			}			
 		}
@@ -452,62 +485,6 @@ function prepare_where($ar)
 		return $where;
 }
 
-/*
-function update_or_insert_attachment_by_sql($link,$table,$sql)
-{
-	echo $sql.'<br>';
-	if(!$result=mysqli_query($link,$sql)){echo mysqli_error($link);return FALSE;}
-
-	if(mysqli_num_rows($result)==0)
-	{
-		echo 'Nothing';
-		return FALSE;
-	}	
-	elseif(mysqli_num_rows($result)==1)
-	{
-		$array=mysqli_fetch_assoc($result);
-		$pk=find_primary_key_array($link,$table);
-		$pk_result=read_primary_key($pk,$array);
-		$where=prepare_where($pk_result);
-		echo $where;
-		$sql_attachment='select * from ';
-	}
-	else
-	{
-		echo 'multiple';
-		return FALSE;
-	}
-	
-}
-*/
-
-function update_or_insert_attachment_by_sql($link,$table,$sql,$id_field,$id_value,$file_field,$file_post)
-{
-	echo $sql.'<br>';
-	if(!$result=mysqli_query($link,$sql)){echo mysqli_error($link);return FALSE;}
-
-	if(mysqli_num_rows($result)==0)
-	{
-		echo 'Nothing';
-		return FALSE;
-	}	
-	elseif(mysqli_num_rows($result)==1)
-	{
-		$array=mysqli_fetch_assoc($result);
-		$pk=find_primary_key_array($link,$table);
-		$pk_result=read_primary_key($pk,$array);
-		$where=prepare_where($pk_result);
-		echo $where;
-		$sql_attachment_update='select * from ';
-	}
-	else
-	{
-		echo 'multiple';
-		return FALSE;
-	}
-	
-}
-
 
 function display_photo($link,$photo)
 {
@@ -520,5 +497,63 @@ function display_photo($link,$photo)
 		//	echo 'RECENT PHOTOGRAPH TO BE COUNTER SIGNED BY  THE DEAN/ PRINCIPAL';
 		//}
 }
+
+
+function if_in_interval($dt,$from_dt,$to_dt)
+{
+
+
+	//f d t
+	if(strtotime($dt)-strtotime($from_dt)>=0 && strtotime($dt)-strtotime($to_dt)<=0)
+	{
+		return 0;
+	}
+	
+	//d f t
+	elseif(strtotime($dt)-strtotime($from_dt)<0 && strtotime($dt)-strtotime($to_dt)<0)
+	{
+		return -1;
+	}
+
+	//f t d
+	elseif(strtotime($dt)-strtotime($from_dt)>0 && strtotime($dt)-strtotime($to_dt)>0)
+	{
+		return 1;
+	}
+	
+	//t f is illogical
+	else
+	{
+		return FALSE;
+	}
+		
+	/*
+
+	$dtt=date_create($dt);
+	$from_dtt=date_create($from_dt);
+	$to_dtt=date_create($to_dt);
+	
+	$diff_from=date_diff($dtt,$from_dtt);
+	print_r($diff_from);
+	
+	$diff_to=date_diff($dtt,$to_dtt);
+	print_r($diff_to);	
+	*/
+	
+}
+
+function date_diff_grand($from_dt,$to_dt)
+{
+	$from_dtt=date_create($from_dt);
+	$to_dtt=date_create($to_dt);
+	
+	return $diff_from=date_diff($from_dtt,$to_dtt);
+	
+	//echo '<pre>';
+	//print_r($diff_from);
+	//echo '</pre>';
+
+}
+
 
 ?>
