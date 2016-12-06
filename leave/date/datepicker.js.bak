@@ -1,25 +1,14 @@
 // Converts a date into '12-Oct-1984' format
-//function getDateString(dt) {
-//  return dt.getDate() + '-' + 
-//    ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][dt.getMonth()] + 
-//    '-' + dt.getFullYear();
-//}
-
-//function getDateString(dt) {
-//  return dt.getFullYear() + '-' + 
-//    ['01','02','03','04','05','06','07','08','09','10','11','12'][dt.getMonth()] + 
-//    '-' + ['01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31'][dt.getDate()-1];
-//}
-
 function getDateString(dt) {
-  return	['01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31'][dt.getDate()-1]
-+ '-' + 	['01','02','03','04','05','06','07','08','09','10','11','12'][dt.getMonth()]
-+ '-' +		[dt.getFullYear()]
+  return dt.getDate() + '-' + 
+    ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][dt.getMonth()] + 
+    '-' + dt.getFullYear();
 }
 
 // Converts a date into 'July 2010' format
 function getMonthYearString(dt) {
-  return ['01','02','03','04','05','06','07','08','09','10','11','12'][dt.getMonth()] +
+  return ['January','February','March','April','May','June','July',
+          'August','September','October','November','December'][dt.getMonth()] +
          ' ' + dt.getFullYear();
 }
 
@@ -34,7 +23,7 @@ function chooseDate(e) {
   var div = targ.parentNode.parentNode.parentNode.parentNode.parentNode; // Find the div
   var idOfTextbox = div.getAttribute('datepickertextbox'); // Get the textbox id which was saved in the div
   var textbox = document.getElementById(idOfTextbox); // Find the textbox now
-  if (targ.value=='<' || targ.value=='>'|| targ.value=='<<' || targ.value=='>>' || targ.value=='>>>' || targ.value=='<<<') {// Do they want the change the month?
+  if (targ.value=='<' || targ.value=='>') { // Do they want the change the month?
     createCalendar(div, new Date(targ.getAttribute('date')));
     return;
   }
@@ -42,17 +31,7 @@ function chooseDate(e) {
   div.parentNode.removeChild(div); // Remove the dropdown box now
 }
 
-// Parse a date in d-MMM-yyyy format, but altered by SMP for dd-mm-yyyy
-function parseMyDate(d) {
-  if (d=="") return new Date('NotADate'); // For Safari
-  var a = d.split('-');
-  
-  if (a.length!=3) return new Date(d); // Missing 2 dashes
-
-  return new Date(a[2],a[1]-1,a[0],0,0,0,0);
-}
-
-/*
+// Parse a date in d-MMM-yyyy format
 function parseMyDate(d) {
   if (d=="") return new Date('NotADate'); // For Safari
   var a = d.split('-');
@@ -72,34 +51,14 @@ function parseMyDate(d) {
   if (a[1]=='Dec') m=11;
   if (m<0) return new Date(d); // Couldn't find the month
   return new Date(a[2],m,a[0],0,0,0,0);
-  //return new Date(a[2],m,a[0],0,0,0,0);
 }
-*/
 
 // This creates the calendar for a given month
 function createCalendar(div, month) {
   var idOfTextbox = div.getAttribute('datepickertextbox'); // Get the textbox id which was saved in the div
   var textbox = document.getElementById(idOfTextbox); // Find the textbox now
   var tbl = document.createElement('table');
-  
   var topRow = tbl.insertRow(-1);
-  
-  var td = topRow.insertCell(-1);
-  var lastTYearBn = document.createElement('input');
-  lastTYearBn.type='button'; // Have to immediately set the type due to IE
-  td.appendChild(lastTYearBn);
-  lastTYearBn.value='<<<';
-  lastTYearBn.onclick=chooseDate;
-  lastTYearBn.setAttribute('date',new Date(month.getFullYear(),month.getMonth()-120,1,0,0,0,0).toString());
-
-  var td = topRow.insertCell(-1);
-  var lastYearBn = document.createElement('input');
-  lastYearBn.type='button'; // Have to immediately set the type due to IE
-  td.appendChild(lastYearBn);
-  lastYearBn.value='<<';
-  lastYearBn.onclick=chooseDate;
-  lastYearBn.setAttribute('date',new Date(month.getFullYear(),month.getMonth()-12,1,0,0,0,0).toString());
-
   var td = topRow.insertCell(-1);
   var lastMonthBn = document.createElement('input');
   lastMonthBn.type='button'; // Have to immediately set the type due to IE
@@ -107,42 +66,21 @@ function createCalendar(div, month) {
   lastMonthBn.value='<';
   lastMonthBn.onclick=chooseDate;
   lastMonthBn.setAttribute('date',new Date(month.getFullYear(),month.getMonth()-1,1,0,0,0,0).toString());
-   
   var td = topRow.insertCell(-1);
-  td.colSpan=4;
+  td.colSpan=5;
   var mon = document.createElement('input');
   mon.type='text';
   td.appendChild(mon);
   mon.value = getMonthYearString(month);
-  mon.size=7;
+  mon.size=15;
   mon.disabled='disabled';
-  
-  //var td = topRow.insertCell(-1);
+  var td = topRow.insertCell(-1);
   var nextMonthBn = document.createElement('input');
   nextMonthBn.type='button';
   td.appendChild(nextMonthBn);
   nextMonthBn.value = '>';
   nextMonthBn.onclick=chooseDate;
   nextMonthBn.setAttribute('date',new Date(month.getFullYear(),month.getMonth()+1,1,0,0,0,0).toString());
- 
- 
-  //var td = topRow.insertCell(-1);
-  var nextYearBn = document.createElement('input');
-  nextYearBn.type='button';
-  td.appendChild(nextYearBn);
-  nextYearBn.value = '>>';
-  nextYearBn.onclick=chooseDate;
-  nextYearBn.setAttribute('date',new Date(month.getFullYear(),month.getMonth()+12,1,0,0,0,0).toString());
-  
- 
-  var td = topRow.insertCell(-1);
-  var nextTYearBn = document.createElement('input');
-  nextTYearBn.type='button'; // Have to immediately set the type due to IE
-  td.appendChild(nextTYearBn);
-  nextTYearBn.value='>>>';
-  nextTYearBn.onclick=chooseDate;
-  nextTYearBn.setAttribute('date',new Date(month.getFullYear(),month.getMonth()+120,1,0,0,0,0).toString());
-   
   var daysRow = tbl.insertRow(-1);
   daysRow.insertCell(-1).innerHTML="Mon";
   daysRow.insertCell(-1).innerHTML="Tue";
@@ -231,8 +169,6 @@ function insertAfter(newItem, existingItem) {
   }
 }
 
-
-
 /*
  * onDOMReady
  * Copyright (c) 2009 Ryan Morr (ryanmorr.com)
@@ -250,7 +186,7 @@ onDOMReady(function(){
       // Found one! Now lets add a datepicker next to it  
       var a = document.createElement('a');
       a.href='#';
-      a.className="datepickershow";      
+      a.className="datepickershow";
       a.setAttribute('onclick','return showDatePicker("' + allElements[i].id + '")');
       var img = document.createElement('img');
       img.src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAABGdBTUEAAK/INwWK6QAAABh0RVh0U29mdHdhcmUAUGFpbnQuTkVUIHYzLjM2qefiJQAAAdtJREFUOE+Vj+9PUnEUxvPvar3xja96Q1hGEKG0ubZqbfHCNqIVA4eYLAwFp0LYD4iIJEdeRGGZwDAEcUOn9oNIvPcGgjBQfHE69/YFihe1zs59du7d83nOuR0AcOq/CgEqWbaHDqaD+clF1rLAmija6MsZ5vb0s9nB1xm168s9x67y6Y7q2TaXjo8tVKjUTv7Zt61pAkwt/UA3zFwFuxysV2BKAuYeMAnBcBaGukDdCaozaLg5sUGAiQDLA3IIDIBfAfO34N118PaDRwYvRfBcCMrTaLg2liTAOEW3NjzpBZsMpqUwKQaLCMYvwGMhjArQIDfGCTDqy3EAX47lfVTnCo3qCnOzJ8IpW6pJR2IEGHn7/bBaR5MLO8y8CtPuKO2J0nMfGdKr+5uZ4kVdhAD6N99K1bo7ynB5vHpj3AZ0NxWBbs0KAbTur8VKfTbGeFcbkc1sfnBHuA1CzTIB7js/H5SPffFW3q9sau2PDdLhxkl3X+wiQCVYf4Jt3h1Itmb8iBvEusZJd2a2CuXjxXUWU5dSnAZ5/b0QkOobgMKWzh8eMcXaXr6aYSqfcuXtbAkdbS3RfSD/MGDfvGFO9ZuSfY/ilx/GLumi57Vhgfp9W597ECJA2/a/v/4ENLpYKsDo3kgAAAAASUVORK5CYII=';
@@ -260,9 +196,3 @@ onDOMReady(function(){
     }
   }
 });
-
-
-
-
- 
-  
