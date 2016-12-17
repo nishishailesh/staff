@@ -112,21 +112,6 @@ $publication=get_raw($link, 'select * from publication where staff_id=\''.$_SESS
 
 $pan=get_raw($link,'select * from pan where staff_id=\''.$_SESSION['login'].'\' ');
 
-$donot_hide='';
-if(isset($_POST['action']))
-{
-	if($_POST['action']=='add_experience')
-	{
-		$donot_hide='experience';
-	}
-	
-	if($_POST['action']=='add_qualification')
-	{
-		$donot_hide='qualification';
-	}
-}
-
-
 ?>
 
 <!DOCTYPE html>
@@ -399,12 +384,6 @@ Some of the details will be automatically filled, AFTER data is saved.
 <tr><td>
 Save frequently(<span style="background-color:lightgreen;">Green Button</span>). Saved data is automatically retrived.
 </td></tr>
-<tr><th align=left>
-Keep elctronic/physical copy of photo id, photo, degree, registration, current appointment order, current joining order, last relieving order, PAN, address proof ready
-</th></tr>
-<tr><th align=left>
-Keep dates of each and every appointments/transfers/promotions ready
-</th></tr>
 </table>
 </div>
 
@@ -602,28 +581,7 @@ echo '</table>';
 echo '</div>';
 ?>
 
-<?php
-if($donot_hide=='qualification')
-{
-	$qualification_style='display:block';
-}
-else
-{
-	$qualification_style='display:none';
-}
-
-if($donot_hide=='experience')
-{
-	$experience_style='display:block';
-}
-else
-{
-	$experience_style='display:none';
-}
-
-?>
-
-<div id=qualification_section style="<?php echo $qualification_style; ?>"  class=section>
+<div id=qualification_section style="display:none;"  class=section>
 	
 <!---start of qualification and experience -->
 <p>
@@ -631,7 +589,7 @@ else
 <tr><th colspan=7 style="text-align:left;"><button style="background-color:yellow;" type=button 
 			onclick="showhide('qualification_help')"> <b>2.</b></button> Qualifications :</th></tr>
 <tr><td colspan=7>
-	<table class=border style="background-color:lightblue;display:block;" id=qualification_help>
+	<table class=border style="background-color:lightblue;display:none;" id=qualification_help>
 		<tr><td colspan=7 >(1) Fill Qualification details in blue row</td></tr>
 		<tr><td colspan=7 >(2) Click [[Add qualification]]</td></tr>
 		<tr><td colspan=7 >(3) College, University and Year are must for saving data</td></tr>
@@ -661,16 +619,16 @@ after scoring out whichever is not applicable.</th></tr>
 </p>
 
 </div>
-<div id=experience_section style="<?php echo $experience_style; ?>"   class=section>
+<div id=experience_section style="display:none;"   class=section>
 
 <p>
 <table class="border"   style="background-color:#90939A" id="experience_table">
 <tr><th colspan=7 style="text-align:left;"><button style="background-color:yellow;" type=button 
 			onclick="showhide('experience_help')"> <b>3.(a)</b></button> Details of the teaching experience till date.</th></tr>
 <tr><td colspan=7>
-	<table class=border style="background-color:lightblue;display:block;" id=experience_help>
-		<tr><td colspan=7 >(1) Add all appointments/transfers/promotions saparately in new row.</td></tr>
-		<tr><td colspan=7 >(2) Click [[Add experience]].</td></tr>
+	<table class=border style="background-color:lightblue;display:none;" id=experience_help>
+		<tr><td colspan=7 >(1) Click [[Add experience]]</td></tr>
+		<tr><td colspan=7 >(2) Add all appointments/transfers/promotions saparately in new row.</td></tr>
 		<tr><td colspan=7 >(3) Change of type of appointment (e.g Adhoc->GPSC) also needs to be indicated saparately in new row.</td></tr>
 		<tr><td colspan=7 >(4) Put CheckMark checkbox in "Name of Institution" column to write name of institute not present in dropdown list.</td></tr>
 		<tr><td colspan=7 >(5) Ex-Army person can use this table to fill their details</td></tr>

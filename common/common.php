@@ -2,7 +2,7 @@
 
 
 require_once 'menu.php';
-require_once '/var/staffconf/staff.conf';
+require_once '/var/gmcs_config/staff.conf';
 
 function login_varify()
 {

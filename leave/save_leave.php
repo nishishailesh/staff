@@ -54,11 +54,12 @@ if (!isset($_POST["save_leave"]))
 	exit();
 }
 
+//$ret=insert_field_by_id($link,"leave","application_id","","nature",$_POST["nature"]);
 
+//staff_id is foreign key, it must be added first
 
+$ret=insert_field_by_id($link,"leave","application_id",'',"staff_id",$_SESSION['login']);
 
-
-$ret=insert_field_by_id($link,"leave","application_id","","nature",$_POST["nature"]);
 //echo $ret;
 if($ret === false)
 {
@@ -71,7 +72,8 @@ update_field_by_id($link,"leave","application_id",$ret,"prefix",$_POST["prefix_d
 
 update_field_by_id($link,"leave","application_id",$ret,"postfix",$_POST["postfix_date"]);
 
-update_field_by_id($link,"leave","application_id",$ret,"staff_id",$_SESSION['login']);
+//update_field_by_id($link,"leave","application_id",$ret,"staff_id",$_SESSION['login']);
+update_field_by_id($link,"leave","application_id","","nature",$_POST["nature"]);
 
 
 $from=india_to_mysql_date($_POST["from_date"]);

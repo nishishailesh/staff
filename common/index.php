@@ -46,6 +46,7 @@ echo '
 <table style="background-color:lightgreen;"" align=center class=border>
 <tr><th colspan=2>Government Medical College Surat</th></tr>
 <tr><th  colspan=2>Staff Database</th></tr>
+<tr><th colspan=2 style="color:red;">Login for TEACHING Staff</th>
 <tr>
 <td>Login ID</td>
 <td><input style="width:100%" type=text name=login placeholder=Username></td>

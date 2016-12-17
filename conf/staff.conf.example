@@ -23,8 +23,8 @@
  * */
  
  
-$GLOBALS['rootpath']='/html/staff'; // slash in begining is required, otherwise path relative to this file will be used
-$GLOBALS['main_user']='write username';
-$GLOBALS['main_pass']='write password';
-
+$GLOBALS['rootpath']='/staff'; // slash in begining is required, otherwise path relative to this file will be used
+$GLOBALS['main_user']='staffroot';
+$GLOBALS['main_pass']='something';
+$GLOBALS['homepage']='gmcsurat.edu.in';
 ?>
