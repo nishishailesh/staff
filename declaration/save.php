@@ -2,11 +2,9 @@
 //session_start();
 require_once '../common/common.php';
 
-/*
-echo '<pre>';
-print_r($GLOBALS);
-echo '</pre>';
-*/
+
+//echo '<pre>';print_r($GLOBALS);echo '</pre>';
+
 
 
 function save($link)
@@ -19,9 +17,10 @@ function save($link)
 	//update_field_by_id($link,'staff','id',$_POST['id'],'department',$_POST['present_department']);
 	update_field_by_id($link,'staff','id',$_POST['id'],'dob',india_to_mysql_date($_POST['dob']));
 //	update_field_by_id($link,'staff','id',$_POST['id'],'residencial_address',rtrim($_POST['residencial_address']));
-	update_field_by_id($link,'staff','id',$_POST['id'],'residencial_address',mysql_escape_string(rtrim($_POST['residencial_address'])));
+	update_field_by_id($link,'staff','id',$_POST['id'],'residencial_address',mysqli_real_escape_string($link,rtrim($_POST['residencial_address'])));
 	//following may not be existing for a given user, so update, if it fail, insert is required
 	//photo and photo id
+	//empty select will give Notice, if no proof_type added
 	update_or_insert_field_by_id($link,'photo','id',$_POST['id'],'proof_type',$_POST['photo_id']);
 	update_or_insert_field_by_id($link,'photo','id',$_POST['id'],'proof_number',$_POST['photo_id_number']);
 	update_or_insert_field_by_id($link,'photo','id',$_POST['id'],'proof_issued_by',$_POST['photo_id_issued_by']);
@@ -197,8 +196,9 @@ function save($link)
 */
 if(isset($_POST['action']))
 	{
-		if($_POST['action']=='add_qualification')
-		{
+		//removed to use save button 
+		//if($_POST['action']=='add_qualification')
+		//{
 			if(	strlen($_POST['college_qualification'])>0 &&
 				strlen($_POST['university_qualification'])>0 &&
 				strlen($_POST['year_qualification'])>0
@@ -271,7 +271,7 @@ if(isset($_POST['action']))
 				}	
 				
 			}
-		}
+		//}
 	}
 
 if(isset($_POST['delete_qualification']))
@@ -311,9 +311,10 @@ if(isset($_POST['delete_qualification']))
 
 	if(isset($_POST['action']))
 	{
-		if($_POST['action']=='add_experience')
-		{
-
+		//removed to use save button
+		//if($_POST['action']=='add_experience')
+		//{
+			//empty institute table will result in Notice
 			if(	(strlen($_POST['experience_institute_text'])>0 || strlen($_POST['experience_institute_select'])>0) &&
 				strlen($_POST['from_experience'])>0 &&
 				(strlen($_POST['to_experience_text'])>0 || strlen($_POST['to_experience_pk'])>0)
@@ -360,7 +361,7 @@ if(isset($_POST['delete_qualification']))
 				}	
 				
 			}
-		}
+		//}
 	}
 
 

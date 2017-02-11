@@ -33,12 +33,54 @@ function check_user($link,$u,$p)
 	}
 }
 
+function check_office_user($link,$u,$p)
+{
+	$sql='select * from office_staff where id=\''.$u.'\'';
+	//echo $sql;
+	if(!$result=mysqli_query($link,$sql)){return FALSE;}
+	$result_array=mysqli_fetch_assoc($result);
+	//print_r($result_array);
+	//echo md5($p);
+	if(md5($p)==$result_array['password'])
+	{
+	//echo 'ok';
+	return true;
+	}
+	else
+	{
+	//echo ' not ok';
+	return false;
+	}
+}
 
-function logout()
+function connect_office()
+{
+if(!$link=login_varify())
+{
+	echo 'database login could not be verified<br>';
+	logout("message=database login could not be verified");
+	exit();
+	}
+	if(!select_database($link))
+	{
+	echo 'database could not be selected<br>';
+	logout("message=database could not be selected");
+	exit();
+	}
+	if(!check_office_user($link,$_SESSION['login'],$_SESSION['password']))
+	{
+	echo 'application user could not be varified<br>';
+	logout("message=Wrong Password");
+	exit();
+	}
+	return $link;
+}
+function logout($message='')
 {
 	session_start(); //Start the current session
-	session_destroy(); //Destroy it! So we are logged out now
-	header("location:".$GLOBALS['rootpath']."/common/index.php"); //configure absolute path of this file for access from anywhere
+	//$GLOBALS['rootpath']."/index.php";
+	session_destroy(); //Destroy it! So we are logged out now	
+	header("location:".$GLOBALS['rootpath']."/index.php?".$message); //configure absolute path of this file for access from anywhere
 }
 ///////////////////////////////////
 function connect()
@@ -46,8 +88,7 @@ function connect()
 	if(!$link=login_varify())
 	{
 		echo 'database login could not be verified<br>';
-		echo '<a href="index.php">Login again</a><br>';
-		echo '<a href=\'http://'.$GLOBALS['homepage'].'\'>Homepage</a>';		
+		logout("message=database not connected");	
 		exit();
 	}
 
@@ -55,16 +96,14 @@ function connect()
 	if(!select_database($link))
 	{
 		echo 'database could not be selected<br>';
-		echo '<a href="index.php">Login again</a><br>';
-		echo '<a href=\'http://'.$GLOBALS['homepage'].'\'>Homepage</a>';		
+		logout("message=database not connected");	
 		exit();
 	}
 	
 	if(!check_user($link,$_SESSION['login'],$_SESSION['password']))
 	{
 		echo 'application user could not be varified<br>';
-		echo '<a href="index.php">Login again</a><br>';
-		echo '<a href=\'http://'.$GLOBALS['homepage'].'\'>Homepage</a>';		
+		logout("message=Wrong Password");		
 		exit();
 	}
 	
@@ -547,12 +586,20 @@ function date_diff_grand($from_dt,$to_dt)
 	$from_dtt=date_create($from_dt);
 	$to_dtt=date_create($to_dt);
 	
-	return $diff_from=date_diff($from_dtt,$to_dtt);
+	$diff=date_diff($from_dtt,$to_dtt);
 	
 	//echo '<pre>';
-	//print_r($diff_from);
+	//print_r($diff);
 	//echo '</pre>';
+	
+	return $diff;
 
+}
+
+function get_date_diff_as_ymd($from_dt,$to_dt)
+{
+	$diff=date_diff_grand($from_dt,$to_dt);
+	return date_interval_format($diff,'%r%Y y,%r%M m,%r%D d');
 }
 
 

@@ -33,6 +33,9 @@ $current_appointment_order=FALSE;
 $current_joining_order=FALSE;
 $current_joining_attached='No';
 $previous_relieving_order=FALSE;
+
+	$current_appointment=get_raw($link,'select * from staff_movement where staff_id=\''.$_SESSION['login'].'\' and to_date is NULL');
+	
 if($current_appointment)
 {
 	$current_appointment_order=get_raw($link,'select * from staff_movement_attachment 
@@ -409,6 +412,7 @@ Keep dates of each and every appointments/transfers/promotions ready
 </div>
 
 <h2><p align=center><b><u>DECLARATION FORM : 2017 - 2018 - FACULTY</u></b></p></h2>
+<h4><p align=center><b><u><span style="background:lightpink;">Note: Use Declaration->Check menu to varify the correctness of details filled</span></u></b></p></h4>
 
 <p>
 <span>
@@ -493,7 +497,8 @@ Keep dates of each and every appointments/transfers/promotions ready
 	&amp; Age<input readonly type=text name=age value=
 
 	<?php 
-	$diff=date_diff_to_year_month_days($staff_detail['dob'],strftime("%Y-%m-%d"));
+	//$diff=date_diff_to_year_month_days($staff_detail['dob'],strftime("%Y-%m-%d"));
+	$diff=get_date_diff_as_ymd($staff_detail['dob'],strftime("%Y-%m-%d"));
 	echo '\''.$diff.'\'';
 	?>
 
@@ -502,7 +507,6 @@ Keep dates of each and every appointments/transfers/promotions ready
 	</p>
 
 	<p><button style="background-color:yellow;" type=button onclick="alert('(1) Upload pdf/jpg copy of photo ID proof. (2) Upload pdf/jpg of passport size photo')"><b>1.(c)</b></button>Submit Photo ID proof issued by Govt. Authorities :</p>
-
 
 	<p>
 	<?php
@@ -1433,14 +1437,14 @@ function view_table_experience($link)
 	if(strlen($ra['to_date'])==0)
 	{
 		$to_date='<span style="background-color:lightpink;">till_date</span>';
-		$diff=date_diff_to_year_month_days($ra['from_date'],date('Y-m-d'));
+		$diff=get_date_diff_as_ymd($ra['from_date'],date('Y-m-d'));
 	}
 	else
 	{
 		$to_date=$ra['to_date'];
-		$diff=date_diff_to_year_month_days($ra['from_date'],$ra['to_date']);
+		$diff=get_date_diff_as_ymd($ra['from_date'],$ra['to_date']);
 	}
-	$raw_html='<tr style="background-color:lightgray;">
+	/*$raw_html='<tr style="background-color:lightgray;">
 			<td><button type=submit name=delete_experience value=\''.$ra['movement_id'].'\'>X</button></td><td>
 			'.$ra['post'].'
 			</td>
@@ -1449,6 +1453,17 @@ function view_table_experience($link)
 			<td  >'.$ra['institute'].'</td>
 			<td>From:'.$ra['from_date'].','.$ra['from_time'].'<br>To:'.$to_date.','.$ra['to_time'].'<br>
 			Total:'.$diff.'</td>
+			';
+			* */
+			
+	$raw_html='<tr style="background-color:lightgray;">
+			<td><button type=submit name=delete_experience value=\''.$ra['movement_id'].'\'>X</button></td><td>
+			'.$ra['post'].'
+			</td>
+			<td  >'.$ra['type'].'</td>
+			<td  >'.$ra['department'].'</td>
+			<td  >'.$ra['institute'].'</td>
+			<td>'.$ra['from_date'].','.$ra['from_time'].'>>'.$to_date.','.$ra['to_time'].' ('.$diff.')</td>
 			';
 			echo $raw_html;
 		}
@@ -1476,7 +1491,7 @@ function view_table_mci($link)
 ?>
 
 <?php
-echo '<pre>';
+//echo '<pre>';
 //print_r($_POST);
 //print_r($_FILES);
 //echo if_in_interval("2010-11-01","2010-11-01","2010-11-01");
@@ -1484,6 +1499,7 @@ echo '<pre>';
 //echo if_in_interval("2010-11-01","2011-11-01","2011-11-01");
 //echo if_in_interval("2010-11-01","2009-11-01","2009-11-01");
 //echo if_in_interval("2010-11-01","2012-11-01","2009-11-01");
-echo '</pre>';
+//echo get_exterience("2016-12-12","2016-12-13");
+//echo '</pre>';
 
 ?>
