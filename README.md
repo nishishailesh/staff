@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # staff database management
 Download project
 Copy it to its own folder in webroot.
@@ -50,3 +51,6 @@ date difference function altered in common.php	-->done
 logout.php and logout() in common.php fixed to get starting index.php	-->done
 common/index.php modified to include message by GET variable			-->done
 
+=======
+# staff
+>>>>>>> d86d58346dc484f64ebc74011145810cadf3b3ee
