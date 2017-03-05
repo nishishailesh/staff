@@ -58,6 +58,10 @@ echo '
 			<tr><td>
 				<button formtarget=_blank formaction='.$GLOBALS['rootpath'].'/declaration/check.php type=submit onclick="hidemenu()" name=new>Check</button>
 			</td></tr>
+                        <tr><td>
+                                <button formaction='.$GLOBALS['rootpath'].'/declaration/view.php type=submit onclick="hidemenu()" name=view>View</button>
+                        </td></tr>
+
 		</table>
 		
 </td><td>

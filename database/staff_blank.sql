@@ -149,7 +149,7 @@ DROP TABLE IF EXISTS `office_staff`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `office_staff` (
-  `id` int(11) NOT NULL,
+  `id` bigint(20) NOT NULL,
   `fullname` varchar(300) NOT NULL,
   `office` varchar(200) NOT NULL,
   `catagory` varchar(100) NOT NULL,
@@ -246,7 +246,7 @@ CREATE TABLE `qualification` (
   PRIMARY KEY (`qualification_id`),
   KEY `sidq` (`staff_id`),
   CONSTRAINT `qualification_ibfk_1` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=666 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=681 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -265,7 +265,7 @@ CREATE TABLE `qualification_attachment` (
   PRIMARY KEY (`attachment_id`),
   KEY `qid_qa` (`qualification_id`),
   CONSTRAINT `qualification_attachment_ibfk_1` FOREIGN KEY (`qualification_id`) REFERENCES `qualification` (`qualification_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=741 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=765 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -361,7 +361,7 @@ CREATE TABLE `staff_movement` (
   PRIMARY KEY (`movement_id`),
   KEY `sidsm` (`staff_id`),
   CONSTRAINT `staff_movement_ibfk_1` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1227 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1266 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -380,7 +380,7 @@ CREATE TABLE `staff_movement_attachment` (
   PRIMARY KEY (`attachment_id`),
   KEY `movement_id` (`movement_id`),
   CONSTRAINT `staff_movement_attachment_ibfk_1` FOREIGN KEY (`movement_id`) REFERENCES `staff_movement` (`movement_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=410 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=431 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -407,4 +407,4 @@ CREATE TABLE `view_data` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-02-11 20:50:57
+-- Dump completed on 2017-03-05 16:40:39
