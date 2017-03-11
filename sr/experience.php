@@ -79,56 +79,6 @@ if($pe!==false)
 echo '</table>';
 
 
-function get_experience_good($link,$id)
-{
-
-	$sql='select * from staff_movement where staff_id=\''.$id.'\' order by `from_date`';
-	echo '<table border=1>';
-	if(!$result=mysqli_query($link,$sql)){return FALSE;}
-	
-	while($ra=mysqli_fetch_assoc($result))
-	{
-		$raw_data[]=$ra;
-	}
-
-	foreach($raw_data as $key=>$value)
-	{
-		$first_summary[]=array('department'=>$value['department'],'post'=>$value['post'],'from_date'=>$value['from_date'],'to_date'=>$value['to_date']);
-	}
-	
-	$num=count($first_summary);
-
-	$mrg=array();
-	$final_count=0;
-	for($i=0;$i<$num;$i++)
-	{
-		if(count($mrg)==0)
-		{
-				$mrg[$final_count]=array('department'=>$first_summary[$i]['department'],'post'=>$first_summary[$i]['post'],
-								'from_date'=>$first_summary[$i]['from_date'], 
-								'to_date'=>$first_summary[$i]['to_date']);					
-		}
-		else
-		{
-			if($first_summary[$i]['department']==$mrg[$final_count]['department'] 
-			&& $first_summary[$i]['post']==$mrg[$final_count]['post'])
-			{
-				$mrg[$final_count]['to_date']=$first_summary[$i]['to_date'];
-			}
-			else
-			{
-				$final_count++;
-				$mrg[$final_count]=array('department'=>$first_summary[$i]['department'],'post'=>$first_summary[$i]['post'],
-								'from_date'=>$first_summary[$i]['from_date'],
-								'to_date'=>$first_summary[$i]['to_date']);				
-			}
-		}
-		
-	}
-	return $mrg;
-	//print_r($mrg);
-}
-
 
 function get_current_experience($link,$id)
 {

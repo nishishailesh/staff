@@ -45,6 +45,9 @@ echo '<tr><td  align=center><br><a href=common/index_office.php>Login for Admini
 echo '</table>';
 echo '<br><br>';
 echo '<table align=center class=border style="background-color:lightgreen;">';
+;
+echo '<tr><td>After complating declaration form use Declaration->Print menu to print.</td></tr>';
+echo '<tr><td>Read printed declaration and fill remaining details by pen. Apply photo and signature</td></tr>';
 echo '<tr><td><h4 style=\'color:red;\' >Information provided by you in declaration form is confidential. <br>It can be retrived by only YOU and office staff authorized by the office of the dean.</h4></td></tr>';
 echo '<tr><td><h4 style=\'color:red;\' >The information is not shared and not available to general public on Internet</h4></td></tr>';
 echo '<tr><td><h4 style=\'color:blue;\' >There is separate login for Admin office staff</h4></td></tr>';

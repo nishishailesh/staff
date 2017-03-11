@@ -59,9 +59,11 @@ echo '
 				<button formtarget=_blank formaction='.$GLOBALS['rootpath'].'/declaration/check.php type=submit onclick="hidemenu()" name=new>Check</button>
 			</td></tr>
                         <tr><td>
-                                <button formaction='.$GLOBALS['rootpath'].'/declaration/view.php type=submit onclick="hidemenu()" name=view>View</button>
+                                <button formaction='.$GLOBALS['rootpath'].'/declaration/view.php type=submit onclick="hidemenu()" formtarget="_blank" name=view>Print</button>
                         </td></tr>
-
+                        <tr><td>
+                                <button formaction='.$GLOBALS['rootpath'].'/declaration/download_attachment.php type=submit onclick="hidemenu()" formtarget="_blank" name=download_attachment>Download Attachment</button>
+                        </td></tr>
 		</table>
 		
 </td><td>
