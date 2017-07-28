@@ -246,7 +246,7 @@ CREATE TABLE `qualification` (
   PRIMARY KEY (`qualification_id`),
   KEY `sidq` (`staff_id`),
   CONSTRAINT `qualification_ibfk_1` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=736 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=763 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -265,7 +265,7 @@ CREATE TABLE `qualification_attachment` (
   PRIMARY KEY (`attachment_id`),
   KEY `qid_qa` (`qualification_id`),
   CONSTRAINT `qualification_attachment_ibfk_1` FOREIGN KEY (`qualification_id`) REFERENCES `qualification` (`qualification_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=807 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=843 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -361,7 +361,7 @@ CREATE TABLE `staff_movement` (
   PRIMARY KEY (`movement_id`),
   KEY `sidsm` (`staff_id`),
   CONSTRAINT `staff_movement_ibfk_1` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1313 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1377 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -380,7 +380,7 @@ CREATE TABLE `staff_movement_attachment` (
   PRIMARY KEY (`attachment_id`),
   KEY `movement_id` (`movement_id`),
   CONSTRAINT `staff_movement_attachment_ibfk_1` FOREIGN KEY (`movement_id`) REFERENCES `staff_movement` (`movement_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=458 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=483 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -407,4 +407,4 @@ CREATE TABLE `view_data` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-03-11 23:23:17
+-- Dump completed on 2017-07-28 11:20:21
