@@ -1,0 +1,330 @@
+* {
+box-sizing: border-box;
+
+}
+
+*:focus {
+	outline: none;
+}
+body {
+font-family: Arial;
+background-color: #696969;
+padding: 50px;
+}
+.login {
+margin: 20px auto;
+width: 300px;
+}
+.login-screen {
+background-color: #FFF;
+padding: 20px;
+border-radius: 5px
+}
+container{width:100%;}
+#left{
+float:left;width:50%;
+}
+h1{
+ 
+}
+h2{
+ font-size: 28px;
+background-color: #FFF;
+}
+h3{
+
+ font-size: 22px;
+color:white;
+}
+h4{
+  font-size: 20px;
+}
+h4 li{
+font-size: 23px;
+color:white;
+
+}
+
+#right{
+float:right;width:50%;
+}
+.app-title {
+text-align: center;
+color: #777;
+}
+.login-form {
+text-align: center;
+}
+.control-group {
+margin-bottom: 10px;
+}
+
+
+.btn {
+  border: 2px solid transparent;
+  background: #696969;
+  color: #ffffff;
+  font-size: 20px;
+  line-height: 25px;
+  padding: 10px 0;
+  text-decoration: none;
+  text-shadow: none;
+  border-radius: 3px;
+  box-shadow: none;
+  transition: 0.25s;
+  display: block;
+  width: 250px;
+  margin: 0 auto;
+}
+
+.btn:hover {
+
+  background-color:#808080;
+}
+
+.login-link {
+  font-size: 12px;
+  color: #444;
+  display: block;
+  margin-top: 12px;
+}
+.b1 {
+  font: bold 11px Arial;
+  text-decoration: none;
+  font-size: 20px;
+  border-radius: 15px;
+  background-color: #EEEEEE;
+  color: #333333;
+  padding: 6px 12px 6px 12px;
+  border-top: 1px solid #CCCCCC;
+  border-right: 1px solid #333333;
+  border-bottom: 1px solid #333333;
+  border-left: 1px solid #CCCCCC;
+}
+
+a:link {
+    color: red;
+}
+a:visited {
+    color: #696969;
+}
+a:hover {
+    color:blue;
+}
+a:active {
+    color: blue;
+}
+.button {
+  padding: 15px 25px;
+  font-size: 24px;
+  text-align: center;
+  outline: none;
+  color: #fff;
+background-color: #4CAF50;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 9px #999;
+}
+
+.button:hover {background-color: #3e8e41}
+
+.button:active {
+  background-color: #3e8e41;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+
+
+table {
+    border:0px solid black;border-spacing: 0;border-collapse: collapse;margin:0px;padding:0px;font-size:20px;
+}
+
+
+h4 li{
+color:black;
+}
+	
+	.menu {border:0px;border-spacing: 0;border-collapse: collapse;margin:0px;padding:0px;}
+	
+	button {  
+    color: white;
+    padding:4px 4px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin:0px}
+
+ 
+	.dropdownbutton {    
+		width:100%;
+		background-color: lightgray;	
+		border: 2px solid lightgray;
+		color: black;
+		} 
+		
+	.dropdownbutton:hover
+	{
+		background-color: gray;	
+		color: white;
+		border: 2px solid gray;
+	}
+    
+	.mainmenubutton {  
+	    color: white;
+		background-color: black;	  
+		border: 4px solid black;
+	}
+	
+	.mainmenubutton:hover
+	{
+		background-color:black;
+		border-color:black;	
+		border-bottom: 4px solid red;
+		margin:0px;
+    }
+ 
+ /*style="background-color:#5BC0DE;color:white;font-size:20px;border-radius: 8px;padding:10px;"*/
+ 
+   .menub:hover{
+        color: blue;
+        border-radius: 8px;
+		background-color: black;	  
+		border: 2px solid black;
+    }
+    .menub{
+         border-radius: 8px;
+		color:black;
+		font-size: 20px;
+		background-color: black;	  
+		border: 2px solid black;
+    }
+	.submit
+	{
+		background-color:red;
+		border-color:red;	
+		border-bottom: 2px solid red;
+	    color: white;
+    }
+ 
+	.submit:hover
+	{
+		background-color:red;
+		border-color:red;	
+		border-bottom: 2px solid black;
+	    color: white;
+    }
+ 
+   p {
+    font-size : 24px;
+    padding : 0;
+    margin : 0;
+    line-height : 20px;
+ }
+
+	.tabbutton {  
+	    color: white;
+		background-color: black;	  
+		border: 1px solid black;
+		border-bottom: 4px solid black;
+		
+		
+		border-top-right-radius: 0.5em;
+		border-top-left-radius: 0.5em;
+	}
+	
+	.tabbutton:hover
+	{
+		background-color:black;
+		border-color:black;	
+
+		border-bottom: 4px solid red !important;
+	 
+    }
+
+.bordertable{  border:1px solid black;}
+
+
+.main_div{margin:0px;padding:5px;}
+   
+.submitbutton{
+    font-size: 25px;
+    padding: 12px;
+
+    border-radius: 3px;
+    background-color: white;
+    color: black;
+    width: 250px;
+    border: 4px solid #4CAF50;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+}
+.submitbutton:hover{
+    background-color:lightgreen; /* Green */
+    color: black;
+        
+}
+/*input {
+text-align: center;
+background-color: #ECF0F1;
+border: 2px solid transparent;
+border-radius: 3px;
+font-size: 16px;
+font-weight: 200;
+padding: 10px 0;
+width: 250px;
+transition: border .5s;
+}
+*/
+input:focus {
+border: 2px solid gray;
+box-shadow: none;
+}
+
+input[type=text] {
+    text-align: center;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: 200;
+    border-radius: 3px;
+    background-color:  #ECF0F1;
+}
+
+input[type=password] {
+    width: 200px;
+    text-align: center;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: 200;
+    border-radius: 3px;
+    background-color:  #ECF0F1;
+}
+
+.submitbutton{
+    text-align: center;
+    font-size: 22px;
+    padding: 8px;
+    border-radius: 12px;
+    background-color: white;
+    color: black;
+    width: 220px;
+    border: 4px solid #4CAF50;
+    -webkit-transition-duration: 0.4s; 
+    transition-duration: 0.4s;
+}
+.submitbutton:hover{
+    background-color:lightgreen; 
+        
+}
+
+input[type=file]{
+
+    
+}
+.upload-btn-wrapper {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+}
+
+

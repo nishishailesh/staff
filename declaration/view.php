@@ -138,7 +138,7 @@ if(isset($_POST['action']))
 <script type="text/javascript" src="../date/datepicker.js"></script>
 <script src="../js/jquery-3.1.1.min.js"></script>
 <link rel="stylesheet" type="text/css" href="../date/datepicker.css" /> 
--->
+
 <style>
 	
 table{
@@ -161,7 +161,7 @@ table{
 
 .hidedisable
 {
-	display:block;diabled:true
+	display:block;
 }
 
 .section_header
@@ -170,6 +170,7 @@ table{
 }
 </style>
 
+-->
 
 
 <script>
@@ -350,6 +351,7 @@ function get_date_diff(from,to, target)
 		
 </head>
 
+<div style="display:table;width:20cm;background-color:white;margin:1cm 1cm 1cm 1cm;">
 <body>
 
 
@@ -357,18 +359,15 @@ function get_date_diff(from,to, target)
 
 
 
-<div style="display:table;width:20cm;background-color:white;margin:1cm 1cm 1cm 1cm;border:1px solid lightgray;">
-<input type=hidden name=id value=<?php echo '\''.$staff_detail['id'].'\'';?>
-
-<p><b>NAME OF THE COLLEGE: 
+<b>NAME OF THE COLLEGE: 
 	<?php echo $current_appointment['institute'];?>
 </b></p>
-
-<table class="border">
+<br>
+<table border=1 width="90%">
 	<tr>
 		<td><b>Date of <br>Assessment</b></td>
 		<td style="width:40mm;"></td>
-		<td style="width:120mm;" align=center><b>Remarks</b></td>
+		<td><b>Remarks</b></td>
 	</tr>
 	<tr>
 		<td><b>Accepted?<br>(YES/NO)</b></td>
@@ -385,39 +384,24 @@ function get_date_diff(from,to, target)
 	</tr>
 </table>
 
+<h3><center><b><u>DECLARATION FORM : 2018 - 2019 - FACULTY</u></b></center></h3>
 
-<h3><p align=center><b><u>DECLARATION FORM : 2017 - 2018 - FACULTY</u></b></p></h3>
+(Note: It is responsibility of Dean, HOD & Faculty to submit only the declaration form of faculty who has not
+appeared for assessment in ny other college during the academic year and working fulltime)</h4>
+<br><br>
+<table >
+  <tr>
+     <td>
+	    1.(a)Name: 
+	    <?php echo $staff_detail['fullname']; ?>
+        <br><br>1.(b) Date of Birth 
+       <?php echo mysql_to_india_date($staff_detail['dob']); ?>
+        &amp; Age:
+       <?php $diff=get_date_diff_as_ymd($staff_detail['dob'],strftime("%Y-%m-%d"));
+	   echo $diff;?>
+	    <br><br>1.(c)Submit Photo ID proof issued by Govt. Authorities :
 
-
-</p>
-	
-
-<table class="noborder">
-<tr>
-<td>
-	
-	<p>1.(a)Name: 
-
-	<?php echo $staff_detail['fullname']; ?>
-
-	</p>
-
-	<p>1.(b) Date of Birth 
-
-
-	<?php echo mysql_to_india_date($staff_detail['dob']); ?>
-
-	&amp; Age:
-
-	<?php 
-	$diff=get_date_diff_as_ymd($staff_detail['dob'],strftime("%Y-%m-%d"));
-	echo $diff;
-	?>
-	</p>
-
-	<p><b>1.(c)</b>Submit Photo ID proof issued by Govt. Authorities :</p>
-
-	<p>
+ <br><br>
 	<?php
 		echo '<table class=noborder><tr><td>';
 		echo 'Photo ID submitted: '.$photo['proof_type'];
@@ -428,7 +412,7 @@ function get_date_diff(from,to, target)
 		echo '</td></tr>';
 		echo '</table>';
 	?>
-	</p>
+
 
 </td>
 
@@ -452,49 +436,39 @@ function get_date_diff(from,to, target)
 ?>
 
 
-
-<p>Note:1) Without Photo ID, Declaration form will be rejected and will notbe considered as teaching   faculty. 2) Original Certificates are mandatory for verification. All Certificates/Documents/Certified Translations, must be in English</p>
-<p>1.(d)i.Present Designation:
+<br>
+Note:
+<br>1) Without Photo ID, Declaration form will be rejected and will notbe considered as teaching   faculty. 
+2) Original Certificates are mandatory for verification. All Certificates/Documents/Certified Translations, must be in English
+<br><br>1.(d)i.Present Designation:
 <?php 
 	echo $current_appointment['post'];
 ?>
-</p>
-<p>1.(d)(i)a Certified copies of present appointment order at present institute attached.</p>
 
-<p>1.(d)ii. Department: 
+<br><br>1.(d)(i)a Certified copies of present appointment order at present institute attached.
+
+<br><br>1.(d)ii. Department: 
 
 	<?php
 		echo $current_appointment['department'];
 	?>
 
-</p>
-<p>1.(d)iii.College: 
+
+<br><br>1.(d)iii.College: 
 	<?php
 		echo $current_appointment['institute'];
 	?>
 
-<p>1.(d)iv.City:
+<br><br>1.(d)iv.City:
 	<?php
 		$ex=explode(' ', $current_appointment['institute']);
 		$city=$ex[count($ex)-1];
 		echo $city;
 	?>
 
-<p>1.(d)v.Nature of appointment: 
-<?php
-	if($current_appointment['type']=='Contract'){echo 'Contactual';}else{echo 'Regular';}
-?>
-
-</p>
-
-<p>
-
-
-
-
-
-
-
+<br><br>1.(d)v.Nature of appointment: 
+s<?php if($current_appointment['type']=='Contract'){echo '(a)Contactual';}else{echo '(a)Regular';}
+	echo '(b) Full time (c) Without private practice';?>
 
 	<?php
 		if($last_mci_details['institute']==$current_appointment['institute'] && strlen($current_appointment['institute'])>0)
@@ -515,64 +489,79 @@ function get_date_diff(from,to, target)
 			$last_mci_as_current_post='No';
 		}
 		
-		echo '<p>1.(d)vi. Date of appearance in Last MCI – UG/PG/Any Other Assessment:'.$last_mci_date['md'].'</p>';
-		echo '<p>1.(d)vii Whether appeared in Last MCI - UG/PG Assessment in the same Institute - <b>'.$last_mci_in_current_institute.'</b></p>';
+		echo '<br><br>1.(d)vi. Date of appearance in Last MCI – UG/PG/Any Other Assessment:'.$last_mci_date['md'].'';
+		echo '<br><br>1.(d)vii Whether appeared in Last MCI - UG/PG Assessment in the same Institute - <b>'.$last_mci_in_current_institute.'</b>';
 
-		echo '<p>1.(d)viii Whether appeared in Last MCI - UG/PG Assessment on same Designation -<b>'.
+		echo '<br><br>1.(d)viii Whether appeared in Last MCI - UG/PG Assessment on same Designation -<b>'.
 		$last_mci_as_current_post.'</b></p>';
-		 
+		
+		echo '<br>1.(d)ix</td><td>Whether you have retired from Government Medical College - Yes/No.<br><br><table ><tr><td></td><td>If Yes, Designation ____________________</td></tr></table>';		 
 	?>
+<div>
+<br><br><br><table style="width:95%"><tr><td>_____________</td><td align=right>_______________</td></tr><tr><td>Signature of Faculty</td><td align=right>Signature of Dean with stamp</td></tr><table>
+</div>
 
-
-
-<table>
+<p style="page-break-after:always;"></p>
+<div>
+<br>
+<table >
 	<tr>
-		<td>1.(e)Residential  Address of employee :</td>
-		<td><?php
-
-		echo '<pre>'.$staff_detail['residencial_address'].'</pre>';
-
+		<td >1.(e) (a) Present Residential  Address of employee :
+		<?php
+/*
+ * residencial address column spelling changed and permanent added SMP
+ * */
+   echo ''.$staff_detail['present_residential_address'].'';?>		
+		</td>
+	</tr>
+	<tr>
+		<td>1.(e) (b) Permanent Residential  Address of employee :
+		<?php
+ 
+/*
+ * residencial address column spelling changed and permanent added SMP
+ * */
+ 
+		echo ''.$staff_detail['permanent_residential_address'].'';
 ?>		
 		</td>
 	</tr>
 </table>
-</p>
+</div>
 
+<br>
+<!-- <p style="page-break-after:always;"></p> -->
 
-<p><table class=noborder style="width:190mm;"><tr><td>_____________</td><td>_______________</td></tr><tr><td>Signature of Faculty</td><td>Signature of Dean</td></tr><table></p>
-
-<p style="page-break-after:always;"></p>
-<p><b>1.(f) </b>Have you undergone Training in "Basic Course Workshop" at MCI Regional Centre in MET or in your college under Regional Centre observership
+1.(f) Have you undergone Training in "Basic Course Workshop" at MCI Regional Centre<br>in MET or in your college under Regional Centre observership
 
 <?php
 //find if met is found, if yes, change radio and default display
 if($met!==FALSE)
 {
 	echo ':Yes';	
+
 	
-	echo '<table class=border id=MET_details style="display:block;">';
+	echo '<br><br><div width="110%" ><table border="1" id=MET_details style="display:block;">';
 }
 else
 {
 	echo ':No';
  
-	echo '<table class=border id=MET_details style="display:block;">';
 }
-
 ?>
 		
 		<tr>
-			<th colspan=2  style="width:60%">Name of MCI Regional Centre where Training was done/If training was done in college, give the details of the observer from RC</th>
-			<th colspan=2>Date and place of training</th>
+			<th colspan=2 width="65%">Name of MCI Regional Centre where Training was done/If<br> training was done in college, give the details of the<br> observer from RC</th>
+			<th colspan=2 width="30%">Date and place of training</th>
 		</tr>
 		<tr>
-			<td style="width:20%">MET Center:</td><td>
+			<td >MET Center:</td><td>
 			<?php 
 					echo $met['center'];
 			?>
 			
 			</td>
-			<td style="width:20%">MET Place:</td><td>
+			<td >MET Place:</td><td>
 			<?php 
 					echo $met['place'];
 			?>
@@ -580,39 +569,36 @@ else
 			</td>
 
 		</tr><tr>
-			<td  style="width:20%">MET Observer:</td><td>
+			<td >MET Observer:</td><td>
 			<?php 
 					echo $met['observer'];
-			?></td><td>Date</td><td>
+			?>
+			</td>
+			<td>Date</td><td>
 			<?php 
 					echo mysql_to_india_date($met['date']);
 			?></td>
 
 		</tr>
 	</table>
-
+</div>
 
 
 	
-<p>
-	<table class="noborder">
+<br>
+	<table >
 		<tr>
 			<td colspan=2>
-<b>1.(g)</b>
-Copy of Passport /Voter Card / Electricity Bill /Landline Telephone Bill / Aadhar Card / attached as a proof of residence.:
-			<?php
-				echo '<td>'.$proof_of_residence_attached.'</td>';
-				echo '</tr>';
-			?>
-			
+                   <b>1.(g)</b>
+                  Copy of Passport /Voter Card / Electricity Bill /Landline Telephone Bill / Aadhar Card / attached as a proof of residence.:
+		       	  <?php echo $proof_of_residence_attached.'</td>';?>
 		</tr>
 	</table>
-</p>
-			
-
-<p><b>1.(h)</b>	Contact Particulars:</p>
-<p>
-<table>
+<br>
+<table >
+<tr><td>1.(h)	Contact Particulars:</td></tr>
+</table>
+<table >
 <tr><td>Tel (Office)(with STD code):</td><td>
 			<?php 
 					echo $staff_detail['office_phone'];
@@ -635,10 +621,10 @@ Copy of Passport /Voter Card / Electricity Bill /Landline Telephone Bill / Aadha
 			?>
 </td><tr>
 </table>
+<br>
+<table >
 
-
-</td></tr></table>
-<tr><td><b>1.(i)</b>Date of joining present institution :</td><td>
+<tr><td><b>1.(i)</b>Date of joining present institution :-</td><td>
 	
 <?php
 //<input readonly id=present_institute_joining_date class="datepicker" size="10" name=present_institute_joining_date >
@@ -648,22 +634,19 @@ echo mysql_to_india_date($current_appointment['from_date']).' as '. $current_app
 
 </td><tr>
 </table>
-
-<table class="noborder">
+<br>
+<table ></table>
 	<tr>
-		<td><b>1.(j)</b>Joining report at the present institute attached:<?php echo $current_joining_attached; ?></td>
+		<td><b>1.(j)</b>Joining report at the present institute attached:-<?php echo $current_joining_attached; ?></td>
 	</tr>
 </table>
-
-</p>
-
 	
 <!---start of qualification and experience -->
-<p>
-
+<br>
 <b>2.</b>
  Qualifications :</p>
-<table class="border" id="qualification_table">
+ <br>
+<table border="1" id="qualification_table">
 <tr>
 	<th>Qualification</th><th>College</th><th>	University	</th><th >Year</th><th>Registration No of UG & PG with date</th><th>	Name of the State Medical Council</th>
 </tr>
@@ -671,28 +654,24 @@ echo mysql_to_india_date($current_appointment['from_date']).' as '. $current_app
 view_table_qualification($link);
 ?>
 </table>
-
-<p>Note: For PG-Post PG qualification additional Registration certificate particulars be furnished and subject be indicated within brackets after scoring out whichever is not applicable.</p>
-<p><b>2.(a)</b>Copy of Degree certificates  of MBBS and PG degree attached - 
-<?php 
-if(strlen($degree_attachment_str)>0){echo 'Yes';}else{echo 'No';} 
+<br><br>
+Note: For PG-Post PG qualification additional Registration certificate particulars be furnished and subject be indicated within brackets after scoring out whichever is not applicable.</p>
+<br><br>
+2.(a)Copy of Degree certificates  of MBBS and PG degree attached - 
+<?php if(strlen($degree_attachment_str)>0){echo 'Yes';}else{echo 'No';} 
 ?>
-</p>
-<p>
-<b>2.(b)</b> Copy of Registration of MBBS and PG degree attached -  
-<?php 
-if(strlen($reg_attachment_str)>0){echo 'Yes';}else{echo 'No';} 
-?>
-</p>
+
+<br><br>
+2.(b) Copy of Registration of MBBS and PG degree attached -  
+<?php if(strlen($reg_attachment_str)>0){echo 'Yes';}else{echo 'No';} ?>
 
 
 
-<p>
+
+<br><br>
  <b>3.(a)</b> Details of the teaching experience till date.
- </p>
- 
-<p>
-	<table class="border"   id="experience_table">
+    <br><br>                                                                 
+	<table border="1"  id="experience_table">
 
 <?php
 $ar=get_experience_mci($link,$_SESSION['login']);
@@ -702,14 +681,14 @@ print_experience_delcaration($ar);
 ?>
 </table>
 </font>
-</p>
 
+<br><br>
+Note:-Tutor/Resident working in Anesthesia and Radio-diagnosis must have 3 years teaching experience in the respective departments in a recognized /permitted medical institute to be consider as senior resident.
+<br><br>
 
-<p><b>Note:-</b>Tutor working in Anesthesia and Radio-diagnosis must have 3 years teaching experience in the respective departments in a recognized /permitted medical institute to be consider as senior resident.</p>
-
-
-<p><b>3(b).</b>To be filled in by Ex Army Personnel only</p>
-	<table class=border style="width:100%;">
+3(b).To be filled in by Ex Army Personnel only
+<br><br>
+	<table border="1" style="width:100%;">
 		<tr>
 		<tr>
 			<th rowspan=2 >S.No.</th>
@@ -741,127 +720,109 @@ print_experience_delcaration($ar);
 			<td></td>
 		</tr>
 </table>
-<b>Note:</b>Have you been considered in any UG/PG inspection at any other institution/medical college during last 3 years.  <br>If yes, please give details.
-<br>Date of appearance:
+<br><br>
+Note:Have you been considered in any UG/PG inspection at any other institution/medical college during last 3 years.  <br>If yes, please give details.
+
+Date of appearance:
 <?php echo mysql_to_india_date($last_mci_date['md']);?> 
-</p>
-
 <!-- end of qualification and experience -->
-
-
-
-<?php
-		$previous_institute_details=find_staff_movement_details_of_previous_institute($link,$current_appointment['institute']);
-?>
+<br><br>
+<?php $previous_institute_details=find_staff_movement_details_of_previous_institute($link,$current_appointment['institute']);?>
 	
-<table class=noborder>
+
+            4.Before joining present institution I was working at 
+			<?php echo $previous_institute_details['institute']; ?> 
+			as 
+			<?php echo $previous_institute_details['post']; ?>
+		    and relieved on
+			<?php echo mysql_to_india_date($previous_institute_details['to_date']); ?>
+			after resigning / retiring / transfering  .
+			<br> (Relieving order is enclosed from the previous institution)
+	<br><br>
+<table class="tbstyle">
 	<tr>
 		<td>
-<b>4.(a)</b>
-Before joining present institution I was working at 
-				<?php echo $previous_institute_details['institute']; ?> 
-				as 
-				<?php echo $previous_institute_details['post']; ?>
-				 and relieved on
-				<?php echo mysql_to_india_date($previous_institute_details['to_date']); ?>
-				after resigning / retiring .<br> (Relieving order is enclosed from the previous institution)
+			5. Number of  Research publications in Index Journals:
 		</td>
 	</tr>
 	<tr>
 		<td>
-			<b>4.(b)</b> I am not working in any other medical college/dental college in the State or outside the State in any capacity Regular / Contractual.
+			5.(a)International Journals:
 		</td>
+		<td>
+	        <?php echo $publication['international'];?>
+	    </td>
 	</tr>
+	<tr>
+		<td>
+			5.(b)National Journals:
+		</td>
+		<td>
+           <?php echo $publication['national'];?>
+	    </td>
+	</tr>
+	<tr>
+		<td>
+			5.(c)State/Institutional Journals:
+		</td>
+	    <td>
+	       <?php echo $publication['state'];?>
+	    </td>
+   </tr>
 </table>
-	
-</p>
 
 
+<br><br>
 
 
-
-<p>
-<table>
-	<tr><td colspan=0><b>5.</b>  Number of  Research publications in Index Journals:</td></tr>
-	<tr><td><b>5.(a)</b> International Journals:</td><td>
-	<?php
-	echo $publication['international'];
-	?>
-	
-	</td></tr>
-	<tr><td><b>5.(b)</b> National Journals:</td><td>
-	<?php
-	echo $publication['national'];
-	?>
-	</td></tr>
-	<tr><td><b>5.(c)</b> State/Institutional Journals:</td><td>
-	<?php
-	echo $publication['state'];
-	?>
-	</td></tr>
-</table>
-</p>
-
-
-
-<p>
 <table class=noborder>
-	<tr><td><b>6.(a)</b>My PAN Card No. is 
-
-	
-	
+	<tr><td><b>6.(a)</b>My PAN Card No. is :
 	<?php
 		echo $pan['pan'];
 	?>
 	
 	</td><tr>
+	<tr><td><b>6.(b)</b>My AADHAR Card No. is :
+	<?php
+		echo $staff_detail['id'];
+	?>
 	
+	</td><tr>
 
 </table>
-</p>
-<p>
-	<b>6.(b)</b>I have drawn total emoluments from this college in the current financial year as under:-
-<table class=border style="width:80%;" >	
 
-	
-	
-	<tr><th>Month</th><th>Amount Received</th><th width=30%>TDS</th></tr>
-	<tr><td>Apr 2016</td><td></td><td></td></tr>	
-	<tr><td>May 2016</td><td></td><td></td></tr>	
-	<tr><td>Jun 2016</td><td></td><td></td></tr>	
-	<tr><td>Jul 2016</td><td></td><td></td></tr>	
-	<tr><td>Aug 2016</td><td></td><td></td></tr>	
-	<tr><td>Sep 2016</td><td></td><td></td></tr>	
-	<tr><td>Oct 2016</td><td></td><td></td></tr>	
-	<tr><td>Nov 2016</td><td></td><td></td></tr>	
-	<tr><td>Dec 2016</td><td></td><td></td></tr>	
-	<tr><td>Jan 2017</td><td></td><td></td></tr>	
-	<tr><td>Feb 2017</td><td></td><td></td></tr>	
-	<tr><td>Mar 2017</td><td></td><td></td></tr>	
+<br>
+6.(c)I have drawn total emoluments from this college in the current financial year as under:-
+<br><br>
+<table border="1" width="90%">	
+	<tr><th >Month</th><th>Amount Received</th><th>TDS</th></tr>
+	<tr><td>Apr 2017</td><td></td><td></td></tr>	
+	<tr><td>May 2017</td><td></td><td></td></tr>	
+	<tr><td>Jun 2017</td><td></td><td></td></tr>	
+	<tr><td>Jul 2017</td><td></td><td></td></tr>	
+	<tr><td>Aug 2017</td><td></td><td></td></tr>	
+	<tr><td>Sep 2017</td><td></td><td></td></tr>	
+	<tr><td>Oct 2017</td><td></td><td></td></tr>	
+	<tr><td>Nov 2017</td><td></td><td></td></tr>	
+	<tr><td>Dec 2017</td><td></td><td></td></tr>	
+	<tr><td>Jan 2018</td><td></td><td></td></tr>	
+	<tr><td>Feb 2018</td><td></td><td></td></tr>	
+	<tr><td>Mar 2018</td><td></td><td></td></tr>	
 	</table>
 </table>
+<br><br>
+<table>
+  <tr>
+	  <td>
+		 6.(d)(Copy of my PAN and Form 16 (TDS certificate) for financial year 2016-17 are attached)
+	  </td>
+  </tr>
+</table>
 
-<table><tr><td><b>6.(c)</b>(Copy of my PAN &amp; Form 16 (TDS certificate) for financial year 2015-16 are attached)</td></tr></table>
-</p>
-<table><tr><td><b>7</b> I have appeared in the last inspection of the same College in the same post. </td><td>
+<br>
+<!--<p style="page-break-after:always;"></p>-->
 
-<?php
-
-	if($last_mci_as_current_post=='Yes' && $last_mci_in_current_institute=='Yes')
-	{
-		echo '<b>Yes</b>';
-	}
-	else
-	{
-		echo '<b>No</b>';
-	}
-
-?>
-</tr></td></table>
-<p style="page-break-after:always;"></p>
-<p>
-	
-<table align="top" >
+<table  >
 
 
 	
@@ -879,7 +840,7 @@ Before joining present institution I was working at
  and do hereby give an undertaking that I am a full time teacher in 
 <?php echo $current_appointment['department'] ?>, working from  9 A.M. to 5 P.M. daily at this Institute.</td></tr>
 <tr><td  valign="top">2.</td><td>I have not presented myself to any other Institution as a faculty in the current academic year for the purpose of MCI assessment.</td></tr>
-<tr><td  valign="top"><b>3</b></td>
+<tr><td  valign="top">3</td>
 <td>
 	<table>
 	<tr><td>
@@ -891,32 +852,31 @@ Before joining present institution I was working at
 	</table>
 </td></tr>
 <tr><td valign="top">4.</td><td>Complete details with regard to work experience has been provided; nothing has been concealed by me.</td></tr>
-<tr><td valign="top">5.</td><td>It is declared that each statement and/or contents of this declaration and /or documents, certificates submitted along with the declaration form, by the undersigned are absolutely true, correct and authentic.  In the event of any statement made in this declaration subsequently turning out to be incorrect or false the undersigned has understood and accepted that such misdeclaration in respect to any content of this declaration shall also be treated as a gross misconduct thereby rendering the undersigned liable for necessary disciplinary action (including removal of his name from Indian Medical Register).</td></tr>
+<tr><td valign="top">5.</td><td>I am not working in any other medical/dental college in the state or outside the state in any capacity Regular/Contractual/Adhoc, Fulltime/Part time/Honorary.</td></tr>
+<tr><td valign="top">6.</td><td>It is declared that each statement and/or contents of this declaration and /or documents, certificates submitted along with the declaration form, by the undersigned are absolutely true, correct and authentic.  In the event of any statement made in this declaration subsequently turning out to be incorrect or false the undersigned has understood and accepted that such misdeclaration in respect to any content of this declaration shall also be treated as a gross misconduct thereby rendering the undersigned liable for necessary disciplinary action (including removal of his name from Indian Medical Register).</td></tr>
 </table>
 
+<br><br>
 
-</p>
-<p>
 <table class=noborder style="width:90%">
 	<tr><td  style="width:15%">Date:</td><td  style="width:15%">__________</td><td   align=right style="width:50%">SIGNATURE OF THE EMPLOYEE</td></tr>
 	<tr><td >Place:</td><td>__________</td><td align=right >__________</td></tr>
 </table>
-</p>
 
 
 <H3 align=center>ENDORSEMENT</H3>
-<p>1. This endorsement is the certification that the undersigned has satisfied himself /herself about the correctness and veracity of each content of this declaration and endorses the above mentioned declaration as true and correct.I have verified the certificates / documents submitted by the candidate with the original certificates/documents as submitted by the teacher to the Institute and with the concerned Institute and have found themto be correct and authentic.
-</p>
-<p>2. I also confirm that Dr.
+<br>1. This endorsement is the certification that the undersigned has satisfied himself /herself about the correctness and veracity of each content of this declaration and endorses the above mentioned declaration as true and correct.I have verified the certificates / documents submitted by the candidate with the original certificates/documents as submitted by the teacher to the Institute and with the concerned Institute and have found themto be correct and authentic.
+
+<br><br>2. I also confirm that Dr.
 <?php
 
 echo $staff_detail['fullname'];
 
 ?>
  is not practicing or carrying out any other activity during college working hours i.e. from 9.00 AM to 5 PM , since he/she has joined the Institute.
-</p>
-<p>3.	In the event of this declaration turning out to be either incorrect or any part of this declaration subsequently turning out to be incorrect or false it is understood and accepted that the undersigned shall also be equally responsible besides the declarant himself/herself for any such misdeclaration or misstatement.                             
-</p>
+
+<br><br>3.	In the event of this declaration turning out to be either incorrect or any part of this declaration subsequently turning out to be incorrect or false it is understood and accepted that the undersigned shall also be equally responsible besides the declarant himself/herself for any such misdeclaration or misstatement.                             
+<br><br>
 <table class=noborder style="width:100%">
 	<tr>
 		<td  style="width:10%">Date:</td>
@@ -931,16 +891,16 @@ echo $staff_detail['fullname'];
 		<td>__________</td>
 	</tr>
 </table>
-</p>
 <p style="page-break-after:always;"></p>
-<p>
+
 <H3 align=center>REMARKS</H3>
-<table class=border align=center>
+<table border="1" align=center>
 <tr><td>S.No</td><td>Documents</td><td>Submitted</td></tr>
 <tr><td>1</td><td>Recent Passport size photo of the Employee Signed by Dean / Principal of the college.</td><td>Yes / No</td></tr>
 <tr><td>2</td><td>Photo ID proof issued by Govt. Authorities : Passport / PAN Card / Voter ID / Aadhar Card</td><td>Yes / No</td></tr>
 <tr><td>3</td><td>Certified copies of present appointment order at present Institute.</td><td>Yes / No</td></tr>
-<tr><td>4</td><td>Copy of Passport /Voter Card / Electricity Bill / Telephone Bill / Aadhar Card attached as a proof of residence. </td><td>Yes / No</td></tr>
+<tr><td>4</td><td>Copy of Passport /Voter Card / Electricity Bill / Telephone Bill / Aadhar Card attached as a proof of present residence. </td><td>Yes / No</td></tr>
+<tr><td>4(a)</td><td>Copy of Passport /Voter Card / Electricity Bill / Telephone Bill / Aadhar Card attached as a proof of permanent residence. </td><td>Yes / No</td></tr>
 <tr><td>5</td><td>Joining report at the present institute.</td><td>Yes / No</td></tr>
 <tr><td>6</td><td>Copies of Degree certificates of MBBS and PG degree.</td><td>Yes / No</td></tr>
 <tr><td>7</td><td>Copies of Registration of MBBS and PG degree.</td><td>Yes / No</td></tr>
@@ -949,37 +909,35 @@ echo $staff_detail['fullname'];
 <tr><td>10</td><td>PAN Card</td><td>Yes / No</td></tr>
 <tr><td>11</td><td>Form 16 (TDS certificate) for the last financial year. </td><td>Yes / No</td></tr>
 <tr><td>12</td><td>Letter head (in case of teachers who are practicing)</td><td>Yes / No</td></tr>
-</table>
-</p>
+<tr><td>13</td><td>Copy of UG recognized teacher, letter from affiliated university</td><td>Yes / No</td></tr>
+<tr><td>14</td><td>Copy of PG recognized teacher, letter from affiliated university (for PG Assessment)</td><td>Yes / No</td></tr>
+<tr><td>15</td><td>Copy of AADHAR card</td><td>Yes / No</td></tr>
 
-<p>
-<table class=noborder style="width:100%;">
-<tr><td><b>Signed by the Teacher</td><td><b>Signed by the HOD</td></tr>
+</table>
+
+<table  style="width:100%;">
+<tr><td><br><b>Signed by the Teacher</td><td><br><b>Signed by the HOD</td></tr>
 <tr><td><b>Date</td><td><b>Date</td></tr>
 </table>
-</p>
 
-<p>
 <table>
-<tr><th>Countersigned by Dean / Principal:</th></tr>
+<tr><th><br>Countersigned by Dean / Principal:</th></tr>
 
 <tr><td><b>Date</td></tr>
 
 </table>
-</p>
 
-<p>
 <table>
-<tr><th>Signed & Verified by the Assessor:</th></tr>
+<tr><th><br>Signed & Verified by the Assessor:</th></tr>
 
 <tr><td><b>Date</td></tr>
 </td></tr>
 </table>
-</p>
-<p align=center><b>Note:</b></p>
-<p>1. The Declaration Form will not be accepted and the person will not be counted as teacher if any of the above documents are not enclosed /attached with the Declaration Form.</p>
-<p>2. The person will not be counted as a teacher if the original of Photo ID proof, Registration Certificates / Degree certificates / PAN Card /State Medical Council ID (if issued) are not produced for verification at the time of assessment.</p>
-<p>3. All the teachers must submit the revised declaration form in this format only. (Any declaration form submitted in an old format will not be accepted and he will not be counted as a teacher.)</p>
+
+<center><b>Note:</b></center>
+<br>1. The Declaration Form will not be accepted and the person will not be counted as teacher if any of the above documents are not enclosed /attached with the Declaration Form.<br>
+<br>2. The person will not be counted as a teacher if the original of Photo ID proof, Registration Certificates / Degree certificates / PAN Card /State Medical Council ID (if issued) are not produced for verification at the time of assessment.<br>
+<br>3. All the teachers must submit the revised declaration form in this format only. (Any declaration form submitted in an old format will not be accepted and he will not be counted as a teacher.)<br>
 
 
 </div>
@@ -1079,10 +1037,10 @@ function add_experience_raw($link)
 			'department','experience_department','','');
 	echo '	</td>
 			<td >';
-					mk_select_from_sql_with_separate_id($link,'select institute from institute',
+			mk_select_from_sql_with_separate_id($link,'select institute from institute',
 						'institute','experience_institute_select','experience_institute_select','','');
 						
-					echo 	'<table class="noborder" ><tr><td>
+	echo 	'<table class="noborder" ><tr><td>
 								<input size=30 placeholder="Write Institute Name Here" style="display:block;" 
 								type=text name=experience_institute_text id=experience_institute_text>	
 									</td></tr><tr><td>Other Institutes:
@@ -1126,38 +1084,6 @@ function add_experience_raw($link)
 }
 
 
-function view_table_experience($link)
-{
-	//Designation 	Type 	Department 	Name of Institution 	From - To - Total
-
-	$sql='select * from staff_movement where staff_id=\''.$_SESSION['login'].'\' order by `from_date`';
-	if(!$result=mysqli_query($link,$sql)){return FALSE;}
-	while($ra=mysqli_fetch_assoc($result))
-	{		
-	if(strlen($ra['to_date'])==0)
-	{
-		$to_date='<span style="background-color:lightpink;">till_date</span>';
-		$diff=get_date_diff_as_ymd($ra['from_date'],date('Y-m-d'));
-	}
-	else
-	{
-		$to_date=$ra['to_date'];
-		$diff=get_date_diff_as_ymd($ra['from_date'],$ra['to_date']);
-	}
-			
-	$raw_html='<tr>
-			<td>
-			'.$ra['post'].'('.$ra['type'].')</td>
-			<td  >'.$ra['department'].'</td>
-			<td  >'.$ra['institute'].'</td>
-			<td>'.$ra['from_date'].'</td>
-			<td>'.$to_date.'</td>
-			<td>'.$diff.'</td>
-			';
-			echo $raw_html;
-		}
-}
-
 
 function view_table_mci($link)
 {
@@ -1180,7 +1106,7 @@ function view_table_mci($link)
 
 function print_experience_delcaration($ar)
 {
-	echo 	'<table class=border>';
+	echo 	'<table border="1">';
 	echo '<th>Designation</th><th>Department</th><th>Institute</th><th>From</th><th>To</th><th width=17%>Total</th>';
 	foreach($ar as $v)
 	{
@@ -1192,7 +1118,7 @@ function print_experience_delcaration($ar)
 		}
 		else
 		{
-			$to_date=$v['to_date'];
+			$to_date=mysql_to_india_date($v['to_date']);
 			$diff=get_date_diff_as_ymd($v['from_date'],$v['to_date']);
 		}
 	
@@ -1200,7 +1126,7 @@ function print_experience_delcaration($ar)
 		echo '<td>'.$v['post'].'</td>';
 		echo '<td>'.$v['department'].'</td>';
 		echo '<td>'.$v['institute'].'</td>';
-		echo '<td>'.$v['from_date'].'</td>';
+		echo '<td>'.mysql_to_india_date($v['from_date']).'</td>';
 		echo '<td>'.$to_date.'</td>';
 		echo '<td>'.$diff.'</td>';
 		echo 	'</tr>';
@@ -1212,3 +1138,4 @@ function print_experience_delcaration($ar)
 ?>
 
 
+<div>

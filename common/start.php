@@ -1,3 +1,4 @@
+
 <?php
 session_start();
 
@@ -14,13 +15,18 @@ echo '<html><head><script type="text/javascript" >
 				document.getElementById(one).style.display = "block";
 			}	
 		}
-		</script></head>';
+		</script>
+		
+		<link rel="stylesheet" href="../css/style.css">
+		</head>';
 			
-echo '<body>';
+echo '<body>
 
-/////////////////////////////////
-
-
+      <div >
+		 <img src="../image/college_logo.png"  width="15%" height="130">
+	     <img src="../image/hostel.png" width="65%" height="130">
+	     <img src="../image/gujarat.png"  width="15%" height="130">
+	  </div><br><br>';
 
 
 if(!isset($_SESSION['login']))
@@ -36,7 +42,7 @@ if(!isset($_SESSION['password']))
 
 $link=connect();
 
-menu();
+menu($link);
 
 
 //echo '<pre>';print_r($_POST);echo '</pre>';

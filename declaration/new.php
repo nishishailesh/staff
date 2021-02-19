@@ -13,7 +13,7 @@ if(		isset($_POST['action']) ||
 {
 	if(save($link)===true )
 	{
-		$save_msg='Saved at --->'.strftime("%T").'';
+		$save_msg='Saved at --->'.strftime("%T");
 	}
 }
 
@@ -70,6 +70,7 @@ $last_mci_date=get_raw($link,'select max(`date`) md from mci where staff_id=\''.
 
 
 //if same date joining-relieving with FN,AN, this function will give wrong result
+
 function find_staff_movement_details_at_specific_date($link,$dt)
 {
 	$sql='select * from staff_movement where staff_id=\''.$_SESSION['login'].'\'';
@@ -130,50 +131,23 @@ if(isset($_POST['action']))
 }
 
 
+
+if(isset($_FILES))
+{
+	upload_misc_attachment($link,$_FILES,$_SESSION['login']);
+}
+
+
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-
-<script type="text/javascript" src="../date/datepicker.js"></script>
-<script src="../js/jquery-3.1.1.min.js"></script>
-<link rel="stylesheet" type="text/css" href="../date/datepicker.css" /> 
-
-<style>
-	
-table{
-   border-collapse: collapse;
-}
-
-.border td , .border th{
-    border: 1px solid gray;
-}
-
-.upload{
-	background-color:lightpink;	
-}
-
-.noborder{
- border: none;
-}
-
-
-.hidedisable
-{
-	display:none;diabled:true
-}
-
-.section_header
-{
-	background-color:gray;
-}
-</style>
-
-
-
-<script>
-	
+     <script type="text/javascript" src="../date/datepicker.js"></script>
+     <script src="../js/jquery-3.1.1.min.js"></script>
+     <link rel="stylesheet" type="text/css" href="../date/datepicker.css" /> 
+<!--JAVASCRIPT-->
+<script>	
 qr=0;
 er=0;
 
@@ -185,7 +159,9 @@ function copyfrom(target,source) {
 			target.value =document.getElementById(source).value
 		}
 		
-
+function copy_paste_id_to_id(target,source) {
+			document.getElementById(target).value =document.getElementById(source).value
+		}
 function show(one) {
 				document.getElementById(one).style.display = "block";
 		}
@@ -231,7 +207,9 @@ function hide_class(eclass,tclass) {
 					}	
 				tls=document.getElementsByClassName(tclass);
 				for(var x=0;x<tls.length;x++){
-					tls[x].style.background ="gray";
+					tls[x].style.background ="black";
+					tls[x].style.borderColor ="black";
+					tls[x].style.color ="white";
 					}									
 		}
 		
@@ -248,31 +226,39 @@ function showhide(one) {
 		}
 
 function showhide_with_label(one,labell,textt) {
+	//style="background-color:#5BC0DE;color:white;font-size:20px;border-radius: 8px;padding:10px;"
 				if(document.getElementById(one).style.display == "none")
 				{
 					document.getElementById(one).style.display = "block";
-					labell.innerHTML="hide "+textt;
+					labell.style="background-color:#5BC0DE;font-size:20px;border-radius: 8px;padding:10px;";
+					labell.innerHTML="Hide "+textt;
 				}
 				else
 				{
 					document.getElementById(one).style.display = "none";
-					labell.innerHTML="show "+textt;
+					labell.innerHTML="Show "+textt;
 				}
 
 		}
 		
+		/* one is section-id, two and three are section class and tabclass four is button */
+		
 function showhide_with_tab(one,eclass,tclass,myself) {
+				
 				hide_class(eclass,tclass);
+				
 				if(document.getElementById(one).style.display == "none")
 				{
 					document.getElementById(one).style.display = "block";
-					myself.style.background="#E4DDDD";
+					document.getElementById(one).style.background="lightgray";
+					myself.style.background="lightgray";
+					myself.style.borderColor="lightgray";
+					myself.style.color="black";
 				}
 				else
 				{
-					document.getElementById(one).style.display = "none";
-					myself.style.background="gray";
-
+					//document.getElementById(one).style.display = "none";
+					alert("bye");
 				}
 
 		}
@@ -349,23 +335,16 @@ function get_date_diff(from,to, target)
 </script>
 		
 </head>
-
-
-
-
 <!-- A4=210x297 so width=840 height=1200 -->
-
-<body style="background-color:lightgray;">
-
-
-
+<body>
 <?php 
+menu($link);
 //Form element at this place (outside table below , with closing outside required to make  POST visible if added by javascript
 echo '<form method=post  enctype=\'multipart/form-data\' >';
 
-echo '<table class=noborder style="background-color:lightblue;"><tr><td>';
+echo '<table class=noborder ><tr><td>';
 //<!-- menu() have its own <form>. Never enclose it in another form -->
-menu();
+//menu();
 echo '</td><td valign=top >';
 
 //Form element at this place (inside a table, with closing outside donot make POST visible if added by javascript
@@ -375,236 +354,248 @@ echo '</td><td  valign=top>';
 echo $save_msg;
 echo '</td></tr></table>';
 ?>
-<span class=section_header id=genral_help_sh onclick="showhide_with_label('general_help',this,'general help')">hide General Help</span>
 
 
-
-<input type=hidden name=id value=<?php echo '\''.$staff_detail['id'].'\'';?>>
-
-<div id=general_help>
-<table class=border>
-
-<tr><td>
-Click <span style="background-color:gray;">Gray </span> buttons to start filling details of respective section.
-</td></tr>
-<tr><td>
-Click <span style="background-color:yellow;">yellow </span> buttons to get help.
-</td></tr> 
-<tr><td>
-<span style="background-color:lightpink;">Pink fields</span> need  pdf/jpg upload. 
-</td></tr> 
-<tr><td>
-If smart phone is used to fill this form, use camara to snap and <span style="background-color:lightpink;">upload</span> documents
-</td></tr> 
-<tr><td>
-Some of the details will be automatically filled, AFTER data is saved.
-</td></tr>
-<tr><td>
-Save frequently(<span style="background-color:lightgreen;">Green Button</span>). Saved data is automatically retrived.
-</td></tr>
-<tr><th align=left>
-Keep elctronic/physical copy of photo id, photo, degree, registration, current appointment order, current joining order, last relieving order, PAN, address proof ready
-</th></tr>
-<tr><th align=left>
-Keep dates of each and every appointments/transfers/promotions ready
-</th></tr>
-</table>
-</div>
-
-<h2><p align=center><b><u>DECLARATION FORM : 2017 - 2018 - FACULTY</u></b></p></h2>
-<h4><p align=center><b><u><span style="background:lightpink;">Note: Use Declaration->Check menu to varify the correctness of details filled</span></u></b></p></h4>
-
-<p>
-<span>
-<?php
-	echo '<input style="background-color:lightgreen;" name=action type=submit value=save title="save frequently to prevent repeat attempts">';
-?>
-</span>
-<span class=section_header onclick="showhide_with_tab('for_assessors'			,'section','section_header',this)">For Assessors</span>
-<span class=section_header onclick="showhide_with_tab('identity'					,'section','section_header',this)">Identity Information</span>
-<span class=section_header onclick="showhide_with_tab('contact'					,'section','section_header',this)">Contact</span>
-<span class=section_header onclick="showhide_with_tab('service'					,'section','section_header',this)">Service</span>
-<span class=section_header onclick="showhide_with_tab('qualification_section'	,'section','section_header',this)">Qualification</span>
-<span class=section_header onclick="showhide_with_tab('experience_section'		,'section','section_header',this)">Experience</span>
-<span class=section_header onclick="showhide_with_tab('present_appointment'		,'section','section_header',this)">Present Appointment</span>
-<span class=section_header onclick="showhide_with_tab('MET'						,'section','section_header',this)">MET</span>
-<span class=section_header onclick="showhide_with_tab('MCI'						,'section','section_header',this)">MCI</span>
-<span class=section_header onclick="showhide_with_tab('publication'				,'section','section_header',this)">Publication</span>
-<span class=section_header onclick="showhide_with_tab('income'					,'section','section_header',this)">Income</span>
-<span class=section_header onclick="showhide_with_tab('declaration'				,'section','section_header',this)">Declaration</span>
-
-</p>
-<div id=for_assessors style="display:none;"  class=section>
-
-<p><b>NAME OF THE COLLEGE: 
-	<input type=text placeholder="autofilled" readonly size=30 name=declaration_college id=declaration_college value=
-	<?php echo '\''.$current_appointment['institute'].'\'';?>
-	>
-	<input type=text placeholder="autofilled" readonly size=15  name=declaration_city id=declaration_city value=
-		<?php 
-			$ex=explode(" ",$current_appointment['institute']);
-			$tot=count($ex);
-			echo $ex[$tot-1];
-		?>
-	>
-</b></p>
-<table class="border">
-	<tr>
-		<td><b>Date of <br>Assessment</b></td>
-		<td style="width:40mm;"></td>
-		<td style="width:120mm;" align=center><b>Remarks</b></td>
-	</tr>
-	<tr>
-		<td><b>Accepted?<br>(YES/NO)</b></td>
-		<td></td>
-		<td rowspan="3"></td>
-	</tr>
-	<tr>
-		<td><b>Name of the <br>Assessor</b></td>
-		<td></td>
-	</tr>
-	<tr>
-		<td><b>Signature of <br>Assessor</b></td>
-		<td></td>
-	</tr>
-</table>
-</div>
-
-
-
-
-</p>
-<div id=identity style="display:none;"  class=section>
-	
-
-<table class="noborder">
-<tr>
-<td>
-	
-	<p>1.(a)Name<input type=text placeholder="Lastname Firstname Middlename" name=name id=name size=40 value=
-
-	<?php echo '\''.$staff_detail['fullname'].'\''; ?>
-
-	></p>
-
-	<p>1.(b) Date of Birth 
-
-
-	<input readonly	id=dob class="datepicker" size="10" name=dob value=
-	<?php echo '\''.mysql_to_india_date($staff_detail['dob']).'\''; ?>
-	>
-
-	&amp; Age<input readonly type=text name=age value=
-
-	<?php 
-	//$diff=date_diff_to_year_month_days($staff_detail['dob'],strftime("%Y-%m-%d"));
-	$diff=get_date_diff_as_ymd($staff_detail['dob'],strftime("%Y-%m-%d"));
-	echo '\''.$diff.'\'';
-	?>
-
-	>
-
+<h1 style="color:white;">
+	<p align=center>
+		<b>
+			DECLARATION FORM : 2020 - 2021 - FACULTY
+		</b>
 	</p>
-
-	<p><button style="background-color:yellow;" type=button onclick="alert('(1) Upload pdf/jpg copy of photo ID proof. (2) Upload pdf/jpg of passport size photo')"><b>1.(c)</b></button>Submit Photo ID proof issued by Govt. Authorities :</p>
-
-	<p>
-	<?php
-		echo '<table class=border><tr><td>';
-		echo 'Photo ID submitted :';
-		echo '</td>';
-		echo '<td>';
-		mk_select_from_sql($link,'select * from photo_id_proof_type','photo_id_proof_type','photo_id','',$photo['proof_type']);
-		echo '</td></tr>';
-		echo '<tr><td  class=upload>';
-		echo '<input name=photo_id type=file><--Upload photo id';		
-		echo '</td>';
-		echo '<td class=upload>';
-		echo 'uploaded:'.$photo['photo_id_filename']; 
-		echo '</td></tr>';
-		echo '<tr><td>';
-		echo 'Number:<input type=text name=photo_id_number value=\''.$photo['proof_number'].'\'';	
-		echo '</td>';
-		echo '<td>';
-		echo 'Issued by:<input type=text name=photo_id_issued_by value=\''.$photo['proof_issued_by'].'\'';	
-		echo '</td></tr>';
-		echo '</table>';
-	?>
+</h1>
+<h3>
+	<p align=center>
+		<u>
+			<span style="background:#cc0000;">
+				Note: Use Declaration->Check menu to varify the correctness of details filled
+			</span>
+		</u>
 	</p>
+</h3>
 
-</td>
+<!--menu-->
 
-<td>
-	<?php
-			echo '<table class=noborder>
-			<tr>
-			<td align=center>';
-				display_photo($link,$photo['photo']);
-			echo '</td>
-			</tr>
-			<tr><td  class=upload>';
-			echo '<input name=photo type=file><--Upload photo';
-			
-			echo '</td></tr>
-			<tr>';
-			echo '<td class=upload>';
-			echo 'uploaded:'.$photo['photo_filename']; 
-			echo '</td></tr></table>';
-	?>
-
-</td>
-</tr>
-</table>
-
+<div>
+<!--General Help-->
+<div>
+ 
+ <span class="menub" style="background-color:#5BC0DE;font-size:20px;border-radius: 8px;padding:10px;" id=genral_help_sh onclick="showhide_with_label('general_help',this,'General Help')"> Show General Help</span>
+  <input type=hidden name=id value=<?php echo '\''.$staff_detail['id'].'\'';?>>
+    <br><br>
+     <div id=general_help style="border-style: solid;padding:10px;background-color:#f2f2f2;display:none;">
+       <div>
+           <h1 style='color:black;padding:5px;' >Help</h1>
+          <ol>
+             <h4><li >Click  <span style="background-color:black;color:white;margin:2px;">  Black  </span>  buttons to start filling details of respective section.</li></h4>
+             <h4><li> Click <span style="background-color:lightblue;margin:2px;">Blue </span> buttons to get help.</li></h4>           
+             <h4><li> If smart phone is used to fill this form, use camara to snap and upload documents.</li></h4>
+             <h4><li>Some of the details will be automatically filled, AFTER data is saved.</li></h4>
+             <h4><li>Save frequently (<span style="background-color:lightgreen;margin:2px;">Green Button</span>) . Saved data is automatically retrived.</li></h4>
+             <h4><li>Keep elctronic/physical copy of photo id, photo, degree, registration, current appointment order, current joining order, last relieving order, PAN, address proof ready.</li></h4>
+             <h4><li>Keep dates of each and every appointments/transfers/promotions ready.</li></h4>
+          </ol>
+       </div>
+  </div>
 </div>
-<?php
+<?php echo '<button style="background-color:lightgreen" class="menub" name=action type=submit value=save title="save frequently to prevent repeat attempts">Save</button>';?>
+	
+<button type=button class="section_header tabbutton" onclick="showhide_with_tab('identity'	,'section','section_header',this)">
+	Identity Information
+</button>
+<button type=button class="section_header tabbutton" onclick="showhide_with_tab('contact'					,'section','section_header',this)">
+	Contact
+</button>
+<button type=button class="section_header tabbutton" onclick="showhide_with_tab('service'					,'section','section_header',this)">
+	Service
+</button>
+<button type=button class="section_header tabbutton" onclick="showhide_with_tab('qualification_section'	,'section','section_header',this)">
+	Qualification
+</button>
+<button type=button class="section_header tabbutton" onclick="showhide_with_tab('experience_section'		,'section','section_header',this)">
+	Experience
+</button>
+<button type=button class="section_header tabbutton" onclick="showhide_with_tab('present_appointment'		,'section','section_header',this)">
+	Present Appointment
+</button>
+<button type=button class="section_header tabbutton" onclick="showhide_with_tab('MET'						,'section','section_header',this)">
+	MET
+</button>
+<button type=button class="section_header tabbutton" onclick="showhide_with_tab('MCI'						,'section','section_header',this)">
+	MCI
+</button>
+<button type=button class="section_header tabbutton" onclick="showhide_with_tab('publication'				,'section','section_header',this)">
+	Publication
+</button>
+<button type=button class="section_header tabbutton" onclick="showhide_with_tab('income'					,'section','section_header',this)">
+	Income
+</button>
+<button type=button class="section_header tabbutton" onclick="showhide_with_tab('misc_upload'					,'section','section_header',this)">
+	Misc. Uploads
+</button>
+</div>	
 
+<!--For Assessors-->
+
+
+<!--identity-->
+
+<div id=identity style="display:none;"  class="section main_div">
+ <table class="border" border="1" width="100%">
+	<tr>
+		<th>
+			1.(a)
+		</th>
+		<th>
+			Name
+		</th>
+		<td>
+			<input type=text placeholder="Lastname Firstname Middlename" name=name id=name size=40 value=<?php echo '\''.$staff_detail['fullname'].'\''; ?>>
+		</td>
+	</tr>
+	<tr>
+		<th>
+			1.(b)
+		</th>
+		<th>
+			Date of Birth
+		</th>
+		<td>
+			<input readonly	id=dob class="datepicker" size="10" name=dob value=<?php echo '\''.mysql_to_india_date($staff_detail['dob']).'\''; ?>> &amp; Age <input readonly type=text name=age value=<?php 
+				$diff=get_date_diff_as_ymd($staff_detail['dob'],strftime("%Y-%m-%d"));
+				echo '\''.$diff.'\'';?>>
+		</td>
+		</tr> 
+
+	<tr>
+		<th>
+			1.(c)
+			<table>
+				<tr>
+			     <button class="menub" style="background-color:#5BC0DE;font-size:20px;border-radius: 8px;margin-top:5px;"  type=button onclick="alert('(1) Upload pdf/jpg copy of photo ID proof. (2) Upload jpg of passport size photo')">
+			        Help
+			     </button>
+			     </tr>
+			</table>
+		</th>
+		<th>
+			Photo ID proof
+		</th>
+		<td>
+			<?php
+			echo'<table border="1"  width="100%">
+					<tr>
+							<tr style="background-color:#E7DEDE;">
+								<td >
+									Photo ID submitted
+								</td>
+								<td colspan=2>';
+									mk_select_from_sql($link,'select * from photo_id_proof_type','photo_id_proof_type','photo_id','',$photo['proof_type']);
+						  echo '</td>
+							</tr>
+							<tr>
+								<td>
+									Number: 
+								</td>
+								<td colspan=2>
+									<input type=text name=photo_id_number value=\''.$photo['proof_number'].'\'>
+								</td>
+							</tr>
+							<tr style="background-color:#E7DEDE;">
+								<td>
+									Issued by: 
+								</td>
+								<td colspan=2>
+									<input type=text name=photo_id_issued_by value=\''.$photo['proof_issued_by'].'\'>
+								</td>
+							</tr>
+							<tr >
+								<td>
+									Upload photo id
+								</td>
+								<td>
+									<input name=photo_id type="file">		
+								</td>
+								<td>
+									uploaded:<div style="color:blue;display:inline;">'.$photo['photo_id_filename'] ;
+									echo'</div>';								
+						echo '</td>
+							</tr>';
+	
+				echo '
+						<tr  style="background-color:#E7DEDE;">
+							<td>
+								Upload photo
+							</td>
+							<td>
+								<input name=photo type=file>
+							</td>
+							<td>';
+								display_photo($link,$photo['photo']);
+				   echo 	'</td>
+						</tr>';
+		   echo'</table>';?>
+		</td>
+	</tr>
+ </table>
+</div>
+
+<!--service-->
+
+
+<?php
 $de=get_raw($link,'select * from departmental_exam where staff_id=\''.$_SESSION['login'].'\'');
 $opt=array('','Yes','No','Exempted');
 $catagory=array('','General','SEBC','ST','SC');
-echo '<div id=service style="display:none;"  class=section>';
-echo '<table align=center class=border>';
-	echo '<tr>';
-		echo '<th colspan=2 >';
-		echo 'Miscellenious Sevice data';
-		echo '</th>';
-	echo '</tr>';
-	echo '<tr>';
-		echo '<td>';
-			echo 'Catagory';
-		echo '</td>';
-		echo '<td>';
-			mk_select_from_array($catagory,'catagory','',$staff_detail['catagory']);
-		echo '</td>';
-	echo '</tr>';	
-	echo '<tr>';
-		echo '<td>';
-			echo 'CCC+ Passed';
-		echo '</td>';
-		echo '<td>';
-			mk_select_from_array($opt,'cccplus','',$de['cccplus']);
-		echo '</td>';
-	echo '</tr>';
-	echo '<tr>';
-		echo '<td>';
-			echo 'Gujarati Passed';
-		echo '</td>';
-		echo '<td>';
-			mk_select_from_array($opt,'gujarati','',$de['gujarati']);
-		echo '</td>';
-	echo '</tr>';
-	echo '<tr>';
-		echo '<td>';
-			echo 'Hindi Passed';
-		echo '</td>';
-		echo '<td>';
-			mk_select_from_array($opt,'hindi','',$de['hindi']);
-		echo '</td>';
-	echo '</tr>';
-echo '</table>';
-
-echo '</div>';
 ?>
+
+<div id=service style="display:none;"  class="section main_div" align=center >  
+        <table border=1>
+	       <tr>
+		      <th colspan=2 >
+		         <h4 style="display:inline">
+		             Miscellaneous Service data
+		         </h4>
+		      </th>
+	       </tr>
+			<tr>
+	          <th>
+			       Catagory
+	          </th>
+		      <th>
+			      <?php mk_select_from_array($catagory,'catagory','',$staff_detail['catagory']);?>
+		      </th>
+          </tr>
+	      <tr>
+		      <th>
+			       CCC+ Passed
+		      </th>
+	          <th>
+				<?php     mk_select_from_array($opt,'cccplus','',$de['cccplus']); ?>
+		      </th>
+          </tr>
+          <tr>
+		       <th>
+		            Gujarati Passed
+	           </th>
+	           <th>
+			        <?php   mk_select_from_array($opt,'gujarati','',$de['gujarati']); ?>
+		       </th>
+          </tr>
+          <tr>
+	           <th>
+	                Hindi Passed
+	           </th>
+		       <th>
+			        <?php   mk_select_from_array($opt,'hindi','',$de['hindi']); ?>
+		       </th>
+	      </tr>
+		</table>
+	</div>
+
+
+
+<!---Qualification -->
+
 
 <?php
 if($donot_hide=='qualification')
@@ -627,590 +618,627 @@ else
 
 ?>
 
-<div id=qualification_section style="<?php echo $qualification_style; ?>"  class=section>
+<div id=qualification_section style="<?php echo $qualification_style; ?>"  class="section main_div" >
 	
 <!---start of qualification and experience -->
-<p>
-<table class="border" style="background-color:#A6AEC8"  id="qualification_table">
-<tr><th colspan=7 style="text-align:left;"><button style="background-color:yellow;" type=button 
-			onclick="showhide('qualification_help')"> <b>2.</b></button> Qualifications :</th></tr>
-<tr><td colspan=7>
-	<table class=border style="background-color:lightblue;display:block;" id=qualification_help>
-		<tr><td colspan=7 >(1) Fill Qualification details in blue row</td></tr>
-		<tr><td colspan=7 >(2) Click [[Add qualification]]</td></tr>
-		<tr><td colspan=7 >(3) College, University and Year are must for saving data</td></tr>
-		<tr><td colspan=7 >(4) Click "X" beside the qualification to delete it</td></tr>
-		<tr><td colspan=7 >(4) Upload Degree and Registration certificates where relavent</td></tr>
-		<tr><td colspan=7 >(4) Delete if any mistake is done/ upload not done and add again</td></tr>
-		
-		</table>
-</td></tr>	
-	
-<tr>
-	<th>del</th><th>Qualification</th><th>College</th><th>	University	</th><th >Year</th><th>Registration No of UG & PG with date</th><th>	Name of the State Medical Council</th>
-</tr>
+
+ 
+
+
+ <table border="1" style="background-color:lightgray;" width="100%">
+	        <tr>
+	        <th>Del</th>
+	        <th>Qualification </th>
+	        <th>College </th>
+	        <th>University </th>
+	        <th>Year </th>
+	        <th>Registration No of UG &<br> PG with date </th>
+	        <th>Name of the State <br>Medical Council </th>
+	        <th>Degree certificates</th>
+	        <th>Registration certificates</th>
+	        </tr>
 <?php
-add_qualification_raw($link);
+//add_qualification_raw($link);
 view_table_qualification($link);
 ?>
-
-
-<tr>
-	<th  colspan=6 style="text-align:left;">Note: For PG-Post PG qualification additional Registration certificate particulars be furnished and subject be indicated within brackets
-after scoring out whichever is not applicable.</th></tr>
-<tr><td  colspan=6 ><b>2.(a)</b> Copy of Degree certificates  of MBBS and PG degree attached - <?php echo $degree_attachment_str; ?></td></tr>
-<tr><td  colspan=6 ><b>2.(b)</b> Copy of Registration of MBBS and PG degree attached -  <?php echo $reg_attachment_str; ?></td></tr>
-</table>
-
-</p>
-
-</div>
-<div id=experience_section style="<?php echo $experience_style; ?>"   class=section>
-
-<p>
-<table class="border"   style="background-color:#90939A" id="experience_table">
-<tr><th colspan=7 style="text-align:left;"><button style="background-color:yellow;" type=button 
-			onclick="showhide('experience_help')"> <b>3.(a)</b></button> Details of the teaching experience till date.</th></tr>
-<tr><td colspan=7>
-	<table class=border style="background-color:lightblue;display:block;" id=experience_help>
-		<tr><td colspan=7 >(1) Add all appointments/transfers/promotions saparately in new row.</td></tr>
-		<tr><td colspan=7 >(2) Click [[Add experience]].</td></tr>
-		<tr><td colspan=7 >(3) Change of type of appointment (e.g Adhoc->GPSC) also needs to be indicated saparately in new row.</td></tr>
-		<tr><td colspan=7 >(4) Put CheckMark checkbox in "Name of Institution" column to write name of institute not present in dropdown list.</td></tr>
-		<tr><td colspan=7 >(5) Ex-Army person can use this table to fill their details</td></tr>
-		<tr><td colspan=7 >(6) Appointments with transfers shall be entered as respective appointment type</td></tr>
-		<tr><td colspan=7 >(7) Each transfers will require different entry. Indicate correct TYPE of appointment appicable to transfer.</td></tr>
-		<tr><td colspan=7 >(8) For Current appointment select 'till date' for 'to date'</td></tr>
-		</table>
+<tr><td colspan=10>
+<button type=button id=addnq style="background-color:lightgreen" class="menub"  
+onclick="showhide('qualification_table');"
+><img height=35 src="../image/add.png"/></button>
 </td></tr>
-<tr>
-	<th>Del</th>
-	<th >Designation</th>
-	<th >Type</th>
-	<th >Department</th>
-	<th >Name of Institution</th>
-	<th >From - To - Total</th>
-</tr>
-
-<?php
-add_experience_raw($link);
-
-view_table_experience($link);
-
-?>
-
-
-
-<tr>
-<tr><td  colspan=7><b>Note:-</b>Tutor working in Anesthesia and Radio-diagnosis must have 3 years teaching experience in the respective departments in a recognized/permitted
-medical institute to be consider as senior resident.</td></tr>
 </table>
+
+<table style="margin: 0 auto;background-color:#ADAD3E;padding:20px;display:none;border:solid red 5px;" id="qualification_table" >
+   <tr>
+	   <th colspan=2 style="text-align:center;" width="15%">
+		     Add Qualifications
+		     <button style="background-color:#5BC0DE;font-size:20px;border-radius:8px;" class="menub" type=button id=genral_help_sh onclick="showhide_with_label('qualification_help',this,' Help')"> Show Help </button>  
+	   </th>		   
+   </tr>
+   <tr>
+       <td colspan=7>
+	     <h2>
+	        <table class=border style="background-color:#EBF4FA;display:none;border-color:gray;position:absolute" id=qualification_help>		      
+		       <tr><td colspan=7 ><br>(1) After Inserting all details Click Add qualification</td></tr>
+		       <tr><td colspan=7 ><br>(2) Click "X" beside the qualification to delete it</td></tr>
+		       <tr><td colspan=7 ><br>(3) Upload Degree and Registration certificates where relavent</td></tr>
+		       <tr><td colspan=7 ><br>(4) Delete if any mistake is done/ upload not done and add again</td></tr>
+		    </table>
+	     </h2>
+	   </td>
+   </tr>
+   <tr>
+ <!--      <th rowspan=3>
+		   Qualification
+	   </th>-->
+
+		 <th width="35%">
+	        Degree
+		 </th>  
+         <td>
+			<?php mk_select_from_table($link,'qualification_degree','','');?>
+		 </td>
+	  </tr>
+	  <tr>
+		 <th>
+	        Subject
+		 </th>  
+         <td>
+			<?php $sql_qs='select department from department';?>
+			<?php  mk_select_from_sql($link,$sql_qs,'department','qualification_subject','',''); ?>
+		 </td>
+	  </tr>		
+	  <tr>
+		 <th>
+			 Upload qualification
+		 </th>
+		 <td>						
+	         <input  class=upload type=file name=file_qualification_degree >
+	         
+		 </td> 
+
+   </tr>
+   <tr>
+       <th>
+		   College
+	   </th>
+	   <td colspan=2>
+	       <input  type=text name=college_qualification >
+	   </td>
+   </tr>
+   <tr>
+       <th>
+		   University
+	  </th>
+	  <td colspan=2>
+		  <input  type=text name=university_qualification >
+	  </td>
+   </tr>
+   <tr>
+       <th>
+		   Year
+	   </th>
+	   <td colspan=2>
+	       <?php read_year('year_qualification',date("Y")-100,date("Y"));?>
+	   </td>
+   </tr>
+   <tr>
+       <th>
+		   Registration No
+	   </th>
+	   <td>
+	      <input placeholder="Reg. No" type=text name=reg_no_qualification id=reg_no_qualification>
+	   </td>
+   </tr>
+   <tr>
+       <th >
+		   Registration Date
+	   </th>	  
+	   <td>
+	      <input placeholder="Reg. Dt" readonly name=reg_date_qualification id=reg_date_qualification class="datepicker" >
+	   </td>
+	</tr>
+	<tr colspan=2>
+		<th>
+		    Upload Registration
+		</th>
+		<td>
+            <input  type=file class=upload name=file_qualification_reg >
+           
+    	</td>
+    </tr>
+    <tr>
+	    <th>
+		   	Name of the State Medical Council
+		</th>
+		<td colspan=2>
+		   <input type=text name=council_qualification id=council_qualification>
+		</td>
+    </tr>
+    <tr>
+	   <th>Click this button to save--></th>
+       <td colspan=2>
+		   <button type=submit name=action value=add_qualification style="background-color:lightgreen" class="menub"  >Add Qualification</button>
+       </td>
+   </tr>
+   
+ </table>
+ 
 
 </div>
-<!--
-	<table class=border style="width:100%;">
-		<tr><td colspan=10><b>3(b).</b>To be filled in by Ex Army Personnel only: <b>(Not used for online filling of declaration)</b></td></tr>
-		<tr>
-			<th rowspan=2 >S.No.</th>
-			<th  rowspan=2 >Designation</th>
-			<th  rowspan=2 >Institution</th>
-			<th colspan=2>Period</th>
-		</tr>
-		<tr>
-			<th>From</th>
-			<th>To</th>
-		</tr>
-		<tr>
-			<td>1.</td>
-			<td>Graded Specialist</td>
-			<td></td>
-			<td></td>
-			<td></td>
-		</tr>		<tr>
-			<td>1.</td>
-			<td>Classified Specialist</td>
-			<td></td>
-			<td></td>
-			<td></td>
-		</tr>		<tr>
-			<td>1.</td>
-			<td>Adviser</td>
-			<td></td>
-			<td></td>
-			<td></td>
-		</tr>
-</table>
--->
-</p>
+
+
+<!--Experience Section -->
+
+<div id=experience_section style="<?php echo $experience_style; ?>"   class="section main_div">
+  <table class="border"   style="background-color:lightgray" id="experience_table" border="1">
+      <tr>
+	     <th>
+			 3.(a)	
+		 </th>
+		 <th colspan=2>
+			  <button class="menub" style="background-color:#5BC0DE;font-size:20px;border-radius:8px;" type=button id=genral_help_sh onclick="showhide_with_label('experience_help',this,' Help')"> Show Help </button>
+		 </th>
+		 <th colspan=4>
+		     Details of the teaching experience till date.
+		 </th>
+	  </tr>
+      <tr>
+		  <td colspan=7>
+	           <table class=border  style="background-color:#EBF4FA;display:none;" id=experience_help>
+		            <tr><td colspan=7 ><br>(1) Add all appointments/transfers/promotions saparately by clicking manage/edit experience.</td></tr>
+		       </table>
+          </td>
+      </tr>
+      <tr>
+		  <td colspan=5>
+			   <button type=submit style="background-color:lightgreen;margin:15px;" class="menub" name=action value=manage_exp formaction=experience_management.php>
+				   Manage/Edit Experience
+				</button>
+		  </td>
+	  </tr>
+      <tr>
+	      
+	      <th width="10%" >Designation</th>
+	      <th width="10%">Type</th>
+	      <th width="20%">Department</th>
+	      <th width="30%">Name of Institution</th>
+	      <th width="30%">From-To-Total</th>
+     </tr>
+ 
+  
+        <?php //add_experience_raw($link);
+          view_table_experience($link);?>
+        
+           </table>
+   
+</div>
 
 <!-- end of qualification and experience -->
 
 
+<!--present appointment -->
 
-<div id=present_appointment style="display:none;"   class=section>
-<p><b>Note:1) Without Photo ID, Declaration form will be rejected and will notbe considered as teaching   faculty. 2) Original Certificates are mandatory for verification. All Certificates/Documents/Certified Translations, must be in English</b></p>
-<p>1.(d)i.Present Designation:
-<?php 
-	echo '<input type=text readonly value=\''.$current_appointment['post'].'\'>';
-	//mk_select_from_sql($link,'select * from designation_type','designation_type','present_designation','',
-	//$current_appointment['post']);
-?>
+<div id=present_appointment style="display:none;padding:10px;" width="100%"  class="section main_div">
+       <!--Note:
+           1) Without Photo ID, Declaration form will be rejected and will notbe considered as teaching   faculty.
+           2) Original Certificates are mandatory for verification. All Certificates/Documents/Certified Translations, must be in English-->
 
-</p>
-
-<p><table class="border">
+ <table class="border" border="1" width="100%">
 	<tr>
+		<th>
+			  1.(d)(i)a.
+			<button class="menub" style="background-color:#5BC0DE;font-size:20px;border-radius: 8px;margin-top:5px;"  type=button onclick="alert('Upload pdf/jpg copy of present appointment order')">
+		         Help
+		    </button>
+		</th>
+		<th width="32%">
+		    Uploaded present appointment order:
+		</th>
 		<td>
-			<button style="background-color:yellow;" type=button onclick="alert('Upload  not implemented yet')"><b>1.(d)(i)a</b></button> Certified copies of present appointment order at present institute attached.</td></tr><tr class=upload><td>
-	
-			<?php
-				echo '<input name=present_appointment_order type=file ><--Upload appt/trnsfr order</td></tr><tr><td  class=upload>';	
-				echo 'uploaded:'.$current_appointment_order['attachment_filename']; 
-				
-			?>
-	
-		</td>
-	</tr>	
-</table></p>
+             <?php echo '<input name=present_appointment_order type=file >';?>
+         </td>
+         <td>
+               <?php echo 'Uploaded:<div style="color:blue;display:inline">'.$current_appointment_order['attachment_filename'];?></div>
+        </td>
+    </tr>
 
-<p>1.(d)ii. Department: 
-
-	<?php
-		echo '<input type=text readonly value=\''.$current_appointment['department'].'\'>';
-
-	//mk_select_from_sql($link,'select department from department','department','present_department','',$current_appointment['department']);
-	?>
-
-</p>
-<p>1.(d)iii.College: 
-	<?php
-		echo '<input  size=40  type=text 
-				id=present_college_name 
-				name=present_college_name readonly 
-				value=\''.$current_appointment['institute'].'\'>';
-	?>
-
-<!-- <input size=40 type=text name=present_college_name id=present_college_name value="Government Medical College" ></p> -->
-
-
-<p>1.(d)iv.City:
-	<?php
-		$ex=explode(' ', $current_appointment['institute']);
-		$city=$ex[count($ex)-1];
-		echo '<input  size=10  type=text 
-				id=present_city 
-				name=present_city readonly 
-				value=\''.$city.'\'>';
-	?>
-
-<p>1.(d)v.Nature of appointment: 
-<?php
-	if($current_appointment['type']=='Contract'){echo 'Contactual';}else{echo 'Regular';}
-?>
-
-</p>
-
-<p>
-
-
-	<tr>
-		<td>1.(e)Residential  Address of employee :</td>
-		<td><textarea cols=40 name=residencial_address>
-<?php
-
-		echo $staff_detail['residencial_address'];
-
-?>		
-		</textarea></td>
-	</tr>
-</table>
-</p>
-
-
-<p><table class=noborder style="width:190mm;"><tr><td>Signature of Faculty</td><td><input type=text readonly placeholder="required in physical copy"></td><td>Signature of Dean</td<td><input type=text  placeholder="required in physical copy" readonly></td></tr><table></p>
-
-<tr><td><b>1.(i)</b>Date of joining present institution :</td><td>
-	
-<?php
-//<input readonly id=present_institute_joining_date class="datepicker" size="10" name=present_institute_joining_date >
-
-echo mysql_to_india_date($current_appointment['from_date']).' as '. $current_appointment['post']
-?>
-
-</td><tr>
-</table>
-
-<table class="border">
-	<tr>
-		<td><button style="background-color:yellow;" type=button onclick="alert('Upload pdf/jpg copy of photo ID proof')"><b>1.(j)</b></button> Joining report at the present institute attached:<?php echo $current_joining_attached; ?></td></tr><tr>
-			
-		<td class=upload>
-		<?php
-		echo '<input type=file  name=present_joining_order><--Upload joining order</td></tr><tr><td  class=upload>';
-		?>	
-		Uploaded:
-		<?php  echo $current_joining_order['attachment_filename'] ?>
-		</td>
-	</tr>
-</table>
-
-<?php
-		$previous_institute_details=find_staff_movement_details_of_previous_institute($link,$current_appointment['institute']);
-?>
-	
-<table class=border>
-	<tr>
+      <tr>
+		 <th>
+		     1.(e) 
+		 </th>
+		 <th>
+			  Present Residential Address of employee :
+		</th>
+		 <td  colspan=2>
+             <textarea cols=40 id=present_residential_address name=present_residential_address><?php echo $staff_detail['present_residential_address'];?></textarea>
+         </td>
+      </tr>
+      <tr>
+		 <th>
+		     1.(f) 
+		 </th>
+		 <th>
+			  Permanent Residential  Address of employee : 
+		</th>
 		<td>
-			<button style="background-color:yellow;" type=button onclick="alert('Upload pdf/jpg copy of last relieving order ')"><b>4.(a)</b></button> Before joining present institution I was working at 
-				<?php echo $previous_institute_details['institute']; ?> 
-				as 
-				<?php echo $previous_institute_details['post']; ?>
-				 and relieved on
-				<?php echo mysql_to_india_date($previous_institute_details['to_date']); ?>
-				after resigning / retiring .<br> (Relieving order is enclosed from the previous institution)
+			<textarea cols=40 id=permanent_residential_address name=permanent_residential_address><?php echo $staff_detail['permanent_residential_address'];?></textarea>
 		</td>
-	</tr>
-	<tr class=upload>
 		<td>
-		<?php
-		echo '<input  name=last_relieving_order type=file><--Upload relieving order';
-			echo '</td></tr>
-			<tr  class=upload><td>';
-		echo 'Uploaded:';
-		echo $previous_relieving_order['attachment_filename']; 
-		?>
-
+			<button  style="background-color:lightgreen;display:inline;" class="menub" type=button  id=copy_add onclick="copy_paste_id_to_id('permanent_residential_address','present_residential_address')" >
+			Copy From Above
+		    </button>
 		</td>
-	</tr>
-	<tr>
+      </tr>
+
+	  <tr>
+		 <th>
+			  1.(j)
+			<button class="menub" style="background-color:#5BC0DE;font-size:20px;border-radius: 8px;margin-top:5px;"  type=button onclick="alert('Upload pdf/jpg copy of current joining order.')">
+              Help
+            </button>
+         </th>
+         <th>
+             Upload joining order:
+         </th>
+
 		<td>
-			<b>4.(b)</b> I am not working in any other medical college/dental college in the State or outside the State in any capacity Regular / Contractual.
+            <?php echo '<input type=file  name=present_joining_order>';?>
 		</td>
-	</tr>
-</table>
-	
-</p>
+		<td>
+			 Uploaded:<div style="color:blue;display:inline">
+			 <?php  echo $current_joining_order['attachment_filename'] ?>
+			 </div>
+		</td>
 
+      </tr>
+	  <tr>
+		  <?php $previous_institute_details=find_staff_movement_details_of_previous_institute($link,$current_appointment['institute']);?>
+		  <th width="10%">
+			    4.(a)
+		      <button class="menub" style="background-color:#5BC0DE;font-size:20px;border-radius: 8px;margin-top:5px;"  type=button onclick="alert('Upload pdf/jpg copy of last relieving order ')">
+				 Help
+		      </button>
+		  </th>
+		  <th>
+		    <!--  Before joining present institution I was working at 
+		      <?php echo $previous_institute_details['institute']; ?> 
+			  as 
+			  <?php echo $previous_institute_details['post']; ?>
+			  and relieved on
+			  <?php echo mysql_to_india_date($previous_institute_details['to_date']); ?>
+			  after resigning / retiring .<br> (Relieving order is enclosed from the previous institution)-->
+			  Upload relieving order :
+		  </th>
+
+			<td>
+				<?php echo '<input  name=last_relieving_order type=file>';?>
+			 </td>
+			 <td>
+				 Uploaded:<div <div style="color:blue;display:inline">
+				 <?php  echo $previous_relieving_order['attachment_filename']; ?>
+				 </div>
+			 </td>                 
+			</td>
+
+	  </tr>
+<!--  <tr>
+		  <th>
+			  4.(b)
+		  </th>
+		  <th>
+			  I am not working in any other medical college/dental college in the State or outside the State in any capacity Regular / Contractual.
+		  </th>
+	      <td>
+	      
+	      </td>
+	  </tr>-->
+  </table>
 </div>
 
-<div id=MET style="display:none;"   class=section>
+<!--MET-->
 
-<p><b>1.(f) </b>Have you undergone Training in "Basic Course Workshop" at MCI Regional Centre in MET or in your college under Regional Centre observership
+<div id=MET style="display:none;padding:10px;"   class="section main_div">
+
+<p>1.(f) Have you undergone Training in "Basic Course Workshop" at MCI Regional Centre in MET or in your college under Regional Centre observership
 
 <?php
 //find if met is found, if yes, change radio and default display
 if($met!==FALSE)
 {
-	echo '<input type=radio name=MET value=yes checked onclick="show(\'MET_details\')">Yes /<input type=radio name=MET value=no onclick="hide(\'MET_details\')">No</p>';	
+	echo '<input type=radio name=MET value=yes checked onclick="show(\'MET_details\')">Yes<input type=radio name=MET value=no onclick="hide(\'MET_details\')">No</p>';	
 	
 	echo '<table class=border id=MET_details style="display:block;">';
 }
 else
 {
-	echo '<input type=radio name=MET value=yes onclick="show(\'MET_details\')">Yes /<input type=radio name=MET checked value=no onclick="hide(\'MET_details\')">No</p>';
+	echo '<input type=radio name=MET value=yes onclick="show(\'MET_details\')">Yes<input type=radio name=MET checked value=no onclick="hide(\'MET_details\')">No</p>';
  
 	echo '<table class=border id=MET_details style="display:none;">';
 }
 
 ?>
-		
-		<tr>
-			<th colspan=2  style="width:60%">Name of MCI Regional Centre where Training was done/If training was done in college, give the details of the observer from RC</th>
-			<th colspan=2>Date and place of training</th>
-		</tr>
-		<tr>
-			<td style="width:20%">MET Center:</td><td><input type=text style="width:95%;height:100%;" name=met_center value=
-			<?php 
-					echo '\''.$met['center'].'\'';
-			?>
-			
-			></td>
-			<td style="width:20%">MET Place:</td><td><input type=text  style="width:95%;height:100%;"  name=met_place
-			value=
-			<?php 
-					echo '\''.$met['place'].'\'';
-			?>
-			
-			></td>
 
-		</tr><tr>
-			<td  style="width:20%">MET Observer:</td><td><input type=text style="width:95%;height:100%;"  name=met_observer value=
-			<?php 
-					echo '\''.$met['observer'].'\'';
-			?>></td>
-			<td  style="width:20%">MET Date:</td><td><input readonly	id=met_date class="datepicker" size="10" name=met_date value=
-			<?php 
-					echo '\''.mysql_to_india_date($met['date']).'\'';
-			?>></td>
-
+		<tr><BR><BR>
+			<td style="width:20%">
+				MET Center:
+			</td>
+			<td>
+				 <input type=text style="width:95%;height:100%;" name=met_center value=<?php echo '\''.$met['center'].'\'';?>>
+			</td>
+			<td style="width:10%">
+				MET Place:
+			</td>
+			<td>
+				<input type=text  style="width:95%;height:100%;"  name=met_place value=<?php echo '\''.$met['place'].'\'';?>>
+			</td>
+        </tr>
+        <tr>
+			<td  style="width:20%">
+				MET Observer:
+			</td>
+			<td>
+				<input type=text style="width:95%;height:100%;"  name=met_observer value=<?php echo '\''.$met['observer'].'\'';?>>
+			</td>
+			<td  style="width:10%">
+				MET Date:
+			</td>
+			<td>
+				<br>
+				<input readonly	id=met_date class="datepicker" size="10" name=met_date value=<?php echo '\''.mysql_to_india_date($met['date']).'\'';?>>
+			</td>
 		</tr>
 	</table>
+</div>
 
+<!--contact -->
+
+<div id=contact style="display:none;"   class="section main_div">	
+	<table border="1" width="100%">
+		<tr>
+			<th width="10%">
+					1.(g)
+				<button class="menub" style="background-color:#5BC0DE;font-size:20px;border-radius: 8px;margin-top:5px;" type=button onclick="alert('Upload pdf/jpg copy of address proof')">
+				    Help
+			    </button>    
+			</th>
+			<th width="20%">
+		        Upload present residence proof<br>
+		        <button 
+						type=button 
+						style="background-color:#5BC0DE;font-size:20px;border-radius: 8px;margin-top:5px;"
+						class="menub" 
+						id=sharp 
+						onclick="showhide('accepted_rp');">
+						Accepted Proofs
+				</button>
+		        <span style="position:absolute;display:none;" id="accepted_rp">
+					<table style="background-color:white" >	<tr><td>Passport</td></tr>
+							<tr><td>Voter Card</td></tr>
+							<tr><td>Electricity Bill</td></tr>
+							<tr><td>Landline Telephone Bill</td></tr>
+							<tr><td>Aadhar Card</td></tr>
+					</table>
+				</span>
+			  
+			
+		    </th>
+	        <th width="35%">
+		         <input name=proof_of_residence type=file>
+		    </th>
+		    <th width="35%">
+				  <?php echo 'uploaded:<div style=color:blue;display:inline;>'.$r_proof['filename'].'
+			</div></th>';?>
+	    </tr>
+        <tr>
+             <th rowspan=4>
+				 1.(h)
+		     </th>
+		     <th rowspan=4>
+				  Contact Particulars:
+		     </th>
+		     <th>   
+		                   Tel (Office)(with STD code):
+		              </th>
+		              <th>
+				          <input type=text  size=17 name=office_phone value="0261-2244175" value=<?php echo '\''.$staff_detail['office_phone'].'\'';?>>
+			           </th>
+			       </tr>
+                   <tr>
+                       <th>
+				           Tel(Residence): (with STD code)
+			           </th>
+			           <th>
+				           <input size=17 type=text name=residencial_phone value=<?php echo '\''.$staff_detail['residencial_phone'].'\'';?>>
+                       </th>
+                   </tr>
+                   <tr>
+			           <th>
+			               E-mail address:
+			           </th>
+			           <th>
+				           <input type=text  size=27  name=email value=<?php echo '\''.$staff_detail['email'].'\'';?>>
+                       </th>
+                   </tr>
+			       <tr>
+			           <th>
+				           Mobile Number:
+			           </th>
+			           <th>
+				           <input type=text  size=17  name=mobile value=<?php echo '\''.$staff_detail['mobile'].'\'';?>>
+                       </th>
+                  </tr>
+   </table>
+</div>
 </div>
 
 
-<div id=contact style="display:none;"   class=section>
-	
-<p>
-	<table class="border">
-		<tr>
-			<td colspan=2><button style="background-color:yellow;" type=button onclick="alert('Upload pdf/jpg copy of address proof')"><b>1.(g)</b></button>Copy of Passport /Voter Card / Electricity Bill /Landline Telephone Bill / Aadhar Card / attached as a proof of residence.:
-			<?php
-				echo $proof_of_residence_attached.'</td>';	
-				echo '</tr><tr><td class=upload>';
-				echo '<input name=proof_of_residence type=file><--Upload resi proof';
-				echo '</td></tr>
-							<tr><td class=upload>';	
-				echo 'uploaded:'.$r_proof['filename'].'</td>'; 
-			?>
-			
-		</tr>
-	</table>
-</p>
-			
-
-<p><b>1.(h)</b>	Contact Particulars:</p>
-<p>
-<table>
-<tr><td>Tel (Office)(with STD code):</td><td><input type=text  size=30 name=office_phone value="0261-2244175"
-value=
-			<?php 
-					echo '\''.$staff_detail['office_phone'].'\'';
-			?>
-			
-></td><tr>
-<tr><td>Tel(Residence): (with STD code)</td><td><input size=30 type=text name=residencial_phone
-value=
-			<?php 
-					echo '\''.$staff_detail['residencial_phone'].'\'';
-			?>
-></td><tr>
-<tr><td>E-mail address: </td><td><input type=text  size=30 name=email
-value=
-			<?php 
-					echo '\''.$staff_detail['email'].'\'';
-			?>
-></td><tr>
-<tr><td>Mobile Number: </td><td><input type=text  size=30 name=mobile
-value=
-			<?php 
-					echo '\''.$staff_detail['mobile'].'\'';
-			?>
-></td><tr>
-</table>
-<table>
-	
-</table>
-</div>
-
-
-<div id=MCI style="display:none;"   class=section>
-
-<p>
-	<table class=border>
-	<tr><td  colspan=2><b>Note:</b>Have you been considered in any UG/PG inspection at any other institution/medical college during last 3 years.  <br>If yes, please give details.</td></tr>
-	<tr><td   colspan=2 align=center>Give at least date of last appearance</td></tr>
-	<tr><td   colspan=2 align=center>other details are automatically obtained from complated experience table</td></tr>
-	<tr><th align=center >Dates of appearance in MCI Inspection:</th></tr>
-	<tr><td align=center><input name=mci_date id=mci_date class=datepicker>
-	<input name=action value=add_mci_date type=submit></td>
+<div id=MCI style="display:none;"   class="section main_div">
+  <table class=border border="1" width="100%">
+	<tr>
+		<th>
+			Dates of appearance in MCI Inspection:
+		</th>
 	</tr>
 	<tr>
-	<td colspan=3 align=center><?php view_table_mci($link); ?></td>
+
+
+        <tr><td>
+				<input name=mci_designation placeholder=designation>
+				<input name=mci_subject placeholder=subject>
+				<input name=mci_college placeholder=college>
+				<input name=mci_date placeholder=dates>
+                <input style="background-color:lightgreen;height:40;" class="menub" class=submitbutton 
+		name=action value=add_mci_date type=submit>
+	    </td></tr>
+	<tr>
+	     <td  colspan=3 align=center><?php view_table_mci($link); ?></td>
 	</tr>
-	</table>
-	
-	<table>
-		<tr>
-			<td>1.(d)vi. Date of appearance in Last MCI - UG/PG/Any Other Assessment:</td><td><b>
-	
-	
-	<?php
-			echo mysql_to_india_date($last_mci_date['md']); 
-			//echo '<td><input readonly	value=\''.mysql_to_india_date($last_mci['last_mci_date']).'\' type=text id=last_mci_date class="datepicker" size="10" name=last_mci_date></td>';
-	?>
-	
-		</b></td></tr>
-	</table>
-
-	</p>
-
-	<?php
-	//echo '<pre>';
-	//echo 'a';
-	//print_r($last_mci_details);
-	//echo 'b';
-
-	//print_r($current_appointment);
-	//echo '</pre>';
-	
-	
-		if($last_mci_details['institute']==$current_appointment['institute'] && strlen($current_appointment['institute'])>0)
-		{
-			$last_mci_in_current_institute='Yes';
-		}
-		else
-		{			
-			$last_mci_in_current_institute='No';
-		}
-
-		if($last_mci_details['post']==$current_appointment['post'] && strlen($current_appointment['post'])>0)
-		{
-			$last_mci_as_current_post='Yes';
-		}
-		else
-		{			
-			$last_mci_as_current_post='No';
-		}
-		
-		echo '<p>1.(d)vii Whether appeared in Last MCI - UG/PG Assessment in the same Institute - <b>'.$last_mci_in_current_institute.'</b></p>';
-
-		echo '<p>1.(d)viii Whether appeared in Last MCI - UG/PG Assessment on same Designation -<b>'.
-		$last_mci_as_current_post.'</b></p>';
-		 
-	?>
-
-<table><tr><td><b>7</b> I have appeared in the last inspection of the same College in the same post. </td><td>
-
-<?php
-
-	if($last_mci_as_current_post=='Yes' && $last_mci_in_current_institute=='Yes')
-	{
-		echo '<b>Yes</b>';
-	}
-	else
-	{
-		echo '<b>No</b>';
-	}
-
-?>
-
-</td></tr></table>
-</p>
-
-
+   </table>
 </div>
 
-<div id=publication style="display:none;"   class=section>
-<p>
-<table>
-	<tr><td colspan=0><b>5.</b>  Number of  Research publications in Index Journals:</td></tr>
-	<tr><td><b>5.(a)</b> International Journals:</td><td><input type=text name=ipublication value=
-	<?php
-	echo '\''.$publication['international'].'\'';
-	?>
-	
-	></td></tr>
-	<tr><td><b>5.(b)</b> National Journals:</td><td><input type=text name=npublication  value=
-	<?php
-	echo '\''.$publication['national'].'\'';
-	?>
-	></td></tr>
-	<tr><td><b>5.(c)</b> State/Institutional Journals:</td><td><input type=text name=spublication  value=
-	<?php
-	echo '\''.$publication['state'].'\'';
-	?>
-	></td></tr>
-</table>
-</p>
+<!--publication-->
 
-</div>
+<div id=publication style="display:none;"   class="section main_div">
+<table width="100%" border="1">
+	<tr>
+		<th>
+			5.
+	    </th>
+	    <th>
+	       Number of  Research publications<br> in Index Journals:
+	    </th>
+	    <td colspan=2>   
+                 <table width="100%" border="1">
+				   <tr>
+			          <td>
+		                  (a) International Journals:
+		              </td>
+		              <td>
+				          <input type=text name=ipublication value=<?php echo '\''.$publication['international'].'\'';?>
+			           </td>
+			       </tr>
+			       <tr>
+			          <td>
+		                  (b) National Journals:
+		              </td>
+		              <td>
+				          <input type=text name=npublication  value=<?php echo '\''.$publication['national'].'\'';?>
+			           </td>
+			       </tr>
+			       <tr>
+			          <td>
+		                  (c) State/Institutional Journals: 
+		              </td>
+		              <td>
+				          <input type=text name=spublication  value=<?php echo '\''.$publication['state'].'\'';?>
+			          </td>
+			       </tr>
+			     </table> 
+		</td>     
+	</tr>	    
+  </table>
+ </div>
+
+<!--income-->
 
 <div id=income style="display:none;"   class=section>
-<p>
-<table class=border>
-	<tr><td><button type=button style="background-color:yellow;" onclick="alert('Upload scanned / camara-photo of PAN card')" ><b>6.(a)</b></button> My PAN Card No. is 
+  <br>
+  <table width="100%" border="1">
+		<tr>
+			<th rowspan=2>
+				6.(a)
+				<button class="menub" style="background-color:#5BC0DE;font-size:20px;border-radius: 8px;margin-top:5px;display:inline;"   type=button onclick="alert('Upload jpg/pdf copy of PAN card')">
+				    Help
+			    </button>    
+			</th>
+			<th>
+		        My PAN Card No. is:
+		    </th>
+	        <td colspan=2>
+		        <input type=text name=PAN_number value=<?php echo $pan['pan'];?>>     
+		    </td>
+	   </tr>
+	   <tr>
+			<th>
+		        Upload PAN Card:
+		    </th>
 
-	
-	<input type=text name=PAN_number value=
-	<?php
-		echo $pan['pan'];
-	?>
-	>
-	</td></tr><td class=upload>
-	<?php	
-	echo '<input type=file name=PAN_card ><--Upload PAN';
-	echo '</td></tr>
-			<tr><td class=upload>';
-	?>
-	
-	Uploaded: <?php echo $pan['attachment_filename'] ?></td></tr>
-	
-
-</table>
-</p>
-<p>
-<table class=border style="width:70%;" >	
-
-	<tr><td colspan=3><button type=button style="background-color:yellow;" type=button onclick="alert('To be of filled manually when declaration form is printed')"><b>6.(b)</b></button> I have drawn total emoluments from this college in the current financial year as under:-</td></tr>
-	
-	<tr><th>Month</th><th>Amount Received</th><th>TDS</th></tr>
-	<tr><td>Apr 2016</td><td></td><td></td></tr>	
-	<tr><td>May 2016</td><td></td><td></td></tr>	
-	<tr><td>Jun 2016</td><td></td><td></td></tr>	
-	<tr><td>Jul 2016</td><td></td><td></td></tr>	
-	<tr><td>Aug 2016</td><td></td><td></td></tr>	
-	<tr><td>Sep 2016</td><td></td><td></td></tr>	
-	<tr><td>Oct 2016</td><td></td><td></td></tr>	
-	<tr><td>Nov 2016</td><td></td><td></td></tr>	
-	<tr><td>Dec 2016</td><td></td><td></td></tr>	
-	<tr><td>Jan 2017</td><td></td><td></td></tr>	
-	<tr><td>Feb 2017</td><td></td><td></td></tr>	
-	<tr><td>Mar 2017</td><td></td><td></td></tr>	
-	</table>
-</table>
-
-<table><tr><td><button  type=button style="background-color:yellow;" onclick="alert('PAN uploaded above. Form 16 to be attached manually, when declaration form is printed')"><b>6.(c)</b></button> (Copy of my PAN &amp; Form 16 (TDS certificate) for financial year 2015-16 are attached)</td></tr></table>
-</p>
-
+            <td>
+	            <?php echo '<input type=file name=PAN_card >';?>
+            </td>
+            <td>
+                 Uploaded:<div style="color:blue;display:inline">
+                 <?php echo $pan['attachment_filename'] ?>
+                 </div>
+            </td>
+	   </tr>
+  </table>
+  <br>
 </div>
 
-<div id=declaration style="display:none;"   class=section>
-<p>
-	
-<table align="top" >
+<!-- Declaration-->
 
-
-	
-<tr><th colspan=3>DECLARATION</th></tr>
-<tr><td valign="top" style="width:5%;">1.</td><td style="width:95%;"> I, Dr. 
-<?php echo $staff_detail['fullname'] ?> am working as 
-<?php echo $current_appointment['post'] ?> in the Department of 
-<?php echo $current_appointment['department'] ?>  at 
-<?php echo $current_appointment['institute'] ?>,
-<?php 
-	$ex=explode(' ', $current_appointment['institute']);
-	$city=$ex[count($ex)-1]; 
-	echo $city ;
-?>
- and do hereby give an undertaking that I am a full time teacher in 
-<?php echo $current_appointment['department'] ?>, working from  9 A.M. to 5 P.M. daily at this Institute.</td></tr>
-<tr><td  valign="top">2.</td><td>I have not presented myself to any other Institution as a faculty in the current academic year for the purpose of MCI assessment.</td></tr>
-<tr><td  valign="top"><button  type=button style="background-color:yellow;" onclick="alert('If doing private practice fill details, when declaration form is printed')"><b>3</b></button></td>
-<td>
-	<table>
-	<tr><td>
-		I am not having private practice anywhere.
-	</td></tr>
-	<tr><td>
-	I am practicing at ___________ in the city of __________ and my hours of practice are _____ to _____ .Further I state that I am not doing any Private Practice or not working in any other hospital during college hours.
-	</td></tr>
-	</table>
-</td></tr>
+<div id=declaration style="display:none;"   class=section>	
+  <table align="top" >	
+     <tr> 
+		 <th colspan=3>
+			    DECLARATION
+		 </th>
+	</tr>
+    <tr>
+		 <td valign="top" style="width:5%;">
+			 1.
+		 </td>
+		 <td style="width:95%;">
+			 I, Dr. 
+            <?php echo $staff_detail['fullname'] ?> am working as 
+            <?php echo $current_appointment['post'] ?> in the Department of 
+            <?php echo $current_appointment['department'] ?>  at 
+            <?php echo $current_appointment['institute'] ?>,
+            <?php $ex=explode(' ', $current_appointment['institute']);$city=$ex[count($ex)-1]; echo $city ; ?>
+             and do hereby give an undertaking that I am a full time teacher in 
+            <?php echo $current_appointment['department'] ?>, working from  9 A.M. to 5 P.M. daily at this Institute.
+          </td>
+     </tr>
+     <tr>
+		  <td  valign="top">
+			  2.
+		 </td>
+		 <td>
+			 I have not presented myself to any other Institution as a faculty in the current academic year for the purpose of MCI assessment.
+		 </td>
+	 </tr>
+     <tr>
+		 <td  valign="top">
+			 <button  type=button style="background-color:yellow;" onclick="alert('If doing private practice fill details, when declaration form is printed')">
+				 3
+			 </button>
+		</td>
+        <td>
+	       <table>
+	          <tr> 
+				  <td>
+		             I am not having private practice anywhere.
+	              </td>
+	          </tr>
+	          <tr>
+				  <td>
+	                 I am practicing at ___________ in the city of __________ and my hours of practice are _____ to _____ .Further I state that I am not doing any Private Practice or not working in any other hospital during college hours.
+	              </td>
+	          </tr>
+	       </table>
+         </td>
+      </tr>
 <tr><td valign="top">4.</td><td>Complete details with regard to work experience has been provided; nothing has been concealed by me.</td></tr>
 <tr><td valign="top">5.</td><td>It is declared that each statement and/or contents of this declaration and /or documents, certificates submitted along with the declaration form, by the undersigned are absolutely true, correct and authentic.  In the event of any statement made in this declaration subsequently turning out to be incorrect or false the undersigned has understood and accepted that such misdeclaration in respect to any content of this declaration shall also be treated as a gross misconduct thereby rendering the undersigned liable for necessary disciplinary action (including removal of his name from Indian Medical Register).</td></tr>
 </table>
 
 
-</p>
-<p>
 <table class=noborder style="width:90%">
 	<tr><td  style="width:15%">Date:</td><td  style="width:15%"><input readonly type=text placeholder="to written when signed"></td><td   align=right style="width:50%">SIGNATURE OF THE EMPLOYEE</td></tr>
 	<tr><td >Place:</td><td><input readonly type=text placeholder="to written when signed"></td><td align=right ><input type=text readonly placeholder="to be signed physically"></td></tr>
 </table>
-</p>
-
-
 <H3 align=center>ENDORSEMENT</H3>
 <p>1. This endorsement is the certification that the undersigned has satisfied himself /herself about the correctness and veracity of each content of this declaration and endorses the above mentioned declaration as true and correct.I have verified the certificates / documents submitted by the candidate with the original certificates/documents as submitted by the teacher to the Institute and with the concerned Institute and have found themto be correct and authentic.
 </p>
@@ -1230,7 +1258,7 @@ echo $staff_detail['fullname'];
 </table>
 </p>
 
-<p>
+
 <H3 align=center>REMARKS</H3>
 <table class=border align=center>
 <tr><td>S.No</td><td>Documents</td><td>Submitted</td></tr>
@@ -1247,16 +1275,14 @@ echo $staff_detail['fullname'];
 <tr><td>11</td><td>Form 16 (TDS certificate) for the last financial year. </td><td>Yes / No</td></tr>
 <tr><td>12</td><td>Letter head (in case of teachers who are practicing)</td><td>Yes / No</td></tr>
 </table>
-</p>
 
-<p>
 <table>
 <tr><th>Signed by the Teacher</th><th>Signed by the HOD</th></tr>
 <tr><td><input readonly type=text placeholder="Sign in physical copy"></td><td><input type=text readonly placeholder="Sign in physical copy"></td></tr>
 <tr><td>Date</td><td>Date</td></tr>
 <tr><td><input type=text readonly placeholder="Enter in physical copy"></td><td><input type=text readonly placeholder="Enter in physical copy"></td></tr>
 </table>
-</p>
+
 
 <p>
 <table>
@@ -1281,19 +1307,42 @@ echo $staff_detail['fullname'];
 <p>3. All the teachers must submit the revised declaration form in this format only. (Any declaration form submitted in an old format will not be accepted and he will not be counted as a teacher.)</p>
 </div>
 
+<?php
+$prp=get_raw($link,'select * from misc_upload where staff_id=\''.$_SESSION['login'].'\' and description=\'permanent_residence_proof\'');
+$ec=get_raw($link,'select * from misc_upload where staff_id=\''.$_SESSION['login'].'\' and description=\'exp_cert\'');
+$f16=get_raw($link,'select * from misc_upload where staff_id=\''.$_SESSION['login'].'\' and description=\'f16\'');
+$ugr=get_raw($link,'select * from misc_upload where staff_id=\''.$_SESSION['login'].'\' and description=\'ug_rec\'');
+$pgr=get_raw($link,'select * from misc_upload where staff_id=\''.$_SESSION['login'].'\' and description=\'pg_rec\'');
+$adr=get_raw($link,'select * from misc_upload where staff_id=\''.$_SESSION['login'].'\' and description=\'aadhar\'');
+
+?>
+
+<div id=misc_upload style="display:none;" class="section main_div">
+
+	<table border=1>
+		<tr><td>Permanent Residence Proof</td><td><input type=file  name=permanent_residence_proof></td><td>uploaded <span style="color:blue;"><?php echo $prp['filename']; ?></span></td></tr>
+		<tr><td>Experience certificate</td><td><input type=file  name=exp_cert></td><td>uploaded <span style="color:blue;"><?php echo $ec['filename']; ?></span></td></tr>
+		<tr><td>Form 16</td><td><input type=file  name=f16></td><td>uploaded <span style="color:blue;"><?php echo $f16['filename']; ?></span></td></tr>
+		<tr><td>UG Teacher recognition</td><td><input type=file  name=ug_rec></td><td>uploaded <span style="color:blue;"><?php echo $ugr['filename']; ?></span></td></tr>
+		<tr><td>PG teacher recognition</td><td><input type=file  name=pg_rec></td><td>uploaded <span style="color:blue;"><?php echo $pgr['filename']; ?></span></td></tr>		
+		<tr><td>Aadhar Card</td><td><input type=file  name=aadhar></td><td>uploaded <span style="color:blue;"><?php echo $adr['filename']; ?></span></td></tr>		
+	</table>
+
+</div>
+
 </form>
 </body>
 </html>
 
 <?php
-
 function add_qualification_raw($link)
 {
 
 	echo '<tr style="background-color:lightblue;">
-			<td></td><td>';
+			<td></td>
+			<td>';
 	mk_select_from_table($link,'qualification_degree','','');
-	
+	echo '<br>';
 	$sql_qs='select department from department';
 	mk_select_from_sql($link,$sql_qs,'department','qualification_subject','','');
 	
@@ -1306,7 +1355,7 @@ function add_qualification_raw($link)
 			read_year('year_qualification',date("Y")-100,date("Y"));
 			echo '</td>
 			<td >
-				<table class=noborder><tr><td>
+				<table class=border><tr><td >
 				<input placeholder="Reg. No" type=text name=reg_no_qualification id=reg_no_qualification>
 				</td></tr><tr><td>
 				<input placeholder="Reg. Dt" readonly name=reg_date_qualification id=reg_date_qualification class="datepicker" >
@@ -1321,7 +1370,7 @@ function add_qualification_raw($link)
 			</tr>
 			';
 	echo '<tr>
-			<td colspan=7><button type=submit name=action value=add_qualification style="background-color:lightgreen;"  >Add Qualification</button></td>
+			<td colspan=7><button type=submit name=action value=add_qualification style="color:black;background-color:lightgreen;color:black;margin:15px;border:2px solid black;border-radius:8px;">Add Qualification</button></td>
 			</tr>';
 }
 
@@ -1341,8 +1390,10 @@ function view_table_qualification($link)
 	
 	while($ra=mysqli_fetch_assoc($result))
 	{		
-	$raw_html='<tr style="background-color:lightgray;">
-			<td><button type=submit name=delete_qualification value=\''.$ra['qualification_id'].'\'>X</button></td><td>
+	$raw_html='
+	        <tr style="background-color:lightblue;">
+			<td>
+			<button style="background-color:lightblue;color:red;" type=submit name=delete_qualification value=\''.$ra['qualification_id'].'\'>X</button></td><td>
 			'.$ra['qualification'].'('.$ra['subject'].')
 			</td>
 			<td  >'.$ra['college'].'</td>
@@ -1352,6 +1403,10 @@ function view_table_qualification($link)
 				'.$ra['registration_number'].', date:'.mysql_to_india_date($ra['registration_date']).'
 			</td>
 			<td>'.$ra['medical_council'].'</td>
+			<td>'. find_qualification_attachment_name($link,$ra['qualification_id'],'degree_certificate').'</td>
+			
+			<td>'.find_qualification_attachment_name($link,$ra['qualification_id'],'reg_certificate').'</td>
+		
 			</tr>
 			';
 			echo $raw_html;
@@ -1359,8 +1414,6 @@ function view_table_qualification($link)
 			$GLOBALS['reg_attachment_str'].=find_qualification_attachment_name($link,$ra['qualification_id'],'reg_certificate').',';
 		}
 }
-
-
 
 function add_experience_raw($link)
 {
@@ -1421,71 +1474,87 @@ function add_experience_raw($link)
 			</tr>
 			';
 	echo '<tr>
-	<td colspan=7><button type=submit name=action value=add_experience style="background-color:lightgreen;"  >Add Experience</button></td>';
+	<td colspan=7><button type=submit name=action value=add_experience style="background-color:lightgreen" class="menub" >Add Experience</button></td>';
 	echo '</tr>';
 }
 
-
-function view_table_experience($link)
-{
-	//Designation 	Type 	Department 	Name of Institution 	From - To - Total
-
-	$sql='select * from staff_movement where staff_id=\''.$_SESSION['login'].'\' order by `from_date`';
-	if(!$result=mysqli_query($link,$sql)){return FALSE;}
-	while($ra=mysqli_fetch_assoc($result))
-	{		
-	if(strlen($ra['to_date'])==0)
-	{
-		$to_date='<span style="background-color:lightpink;">till_date</span>';
-		$diff=get_date_diff_as_ymd($ra['from_date'],date('Y-m-d'));
-	}
-	else
-	{
-		$to_date=$ra['to_date'];
-		$diff=get_date_diff_as_ymd($ra['from_date'],$ra['to_date']);
-	}
-	/*$raw_html='<tr style="background-color:lightgray;">
-			<td><button type=submit name=delete_experience value=\''.$ra['movement_id'].'\'>X</button></td><td>
-			'.$ra['post'].'
-			</td>
-			<td  >'.$ra['type'].'</td>
-			<td  >'.$ra['department'].'</td>
-			<td  >'.$ra['institute'].'</td>
-			<td>From:'.$ra['from_date'].','.$ra['from_time'].'<br>To:'.$to_date.','.$ra['to_time'].'<br>
-			Total:'.$diff.'</td>
-			';
-			* */
-			
-	$raw_html='<tr style="background-color:lightgray;">
-			<td><button type=submit name=delete_experience value=\''.$ra['movement_id'].'\'>X</button></td><td>
-			'.$ra['post'].'
-			</td>
-			<td  >'.$ra['type'].'</td>
-			<td  >'.$ra['department'].'</td>
-			<td  >'.$ra['institute'].'</td>
-			<td>'.$ra['from_date'].','.$ra['from_time'].'>>'.$to_date.','.$ra['to_time'].' ('.$diff.')</td>
-			';
-			echo $raw_html;
-		}
-}
-
-
-function view_table_mci($link)
+function view_table_mci_x($link)
 {
 	//Designation 	Type 	Department 	Name of Institution 	From - To - Total
 
 	$sql='select * from mci where staff_id=\''.$_SESSION['login'].'\' order by `date`';
 	if(!$result=mysqli_query($link,$sql)){return FALSE;}
-	echo '<table class=border style="background-color:lightblue;">';
-	echo '<tr><th>Del</th><th>MCI appearance dates</th></tr>';
+	echo '<table border="1" style="background-color:lightblue;">';
+	echo '<tr><th>Del</th></tr>';
 	while($ra=mysqli_fetch_assoc($result))
 	{	
 		echo '<tr>
-				<td><button type=submit name=delete_mci value=\''.mysql_to_india_date($ra['date']).'\'>X</button></td>
+				<td><button style="background-color:lightblue;color:red;"type=submit name=delete_mci 
+				value=\''.$ra['date'].'\'>X</button></td>
 				<td>'.mysql_to_india_date($ra['date']).'</td>
 			</tr>';
 	}
 	echo '</table>';
+}
+
+
+function view_table_mci($link)
+{
+        $sql='select * from mci where staff_id=\''.$_SESSION['login'].'\' order by `date`';
+        if(!$result=mysqli_query($link,$sql)){return FALSE;}
+        echo '<table border=1>';
+        echo '<tr><th>del</th><th>Designation</th><th>Subject</th><th>College</th><th>Dates</th></tr>';
+        while($ra=mysqli_fetch_assoc($result))
+        {       
+                echo '<tr>
+				<td><button style="background-color:lightblue;color:red;"type=submit 
+					name=delete_mci value=\''.$ra['date'].'\'>X</button></td>
+                                <td>'.$ra['designation'].'</td>
+                                <td>'.$ra['subject'].'</td>
+                                <td>'.$ra['college'].'</td>
+                                <td>'.$ra['date'].'</td>
+
+                        </tr>';
+	}
+
+       	echo '</table>';
+}
+
+
+
+
+function upload_misc_attachment($link,$files,$staff_id)
+{	
+	//echo '<pre>'; print_r( $files);print_r($_POST);echo '</pre>';
+
+	
+    $misc_upload=array('permanent_residence_proof','exp_cert','f16','ug_rec','pg_rec','aadhar');
+    
+    foreach($misc_upload as $value)
+    {
+		if(isset($files[$value]))
+		{
+			if($files[$value]['size']>0)
+			{
+				$fblob=file_to_str($link,$files[$value]);
+				$filename=$files[$value]['name'];//echo '<h1>'.$filename.'</h1>';
+				$sql='insert into misc_upload values(\''.$staff_id.'\',\''.$value.'\',\''.$filename.'\',\''.$fblob.'\') 
+							ON DUPLICATE KEY UPDATE
+							filename=\''.$filename.'\' ,
+							file=\''.$fblob.'\'
+							';
+				if(!$result=mysqli_query($link,$sql))
+				{		
+					echo 'Error()';
+					echo mysqli_error($link);
+				}
+				else
+				{
+					echo 'uploaded '.$value.'<br>';
+				}
+			}
+		}
+	}
 }
 
 ?>
@@ -1501,5 +1570,7 @@ function view_table_mci($link)
 //echo if_in_interval("2010-11-01","2012-11-01","2009-11-01");
 //echo get_exterience("2016-12-12","2016-12-13");
 //echo '</pre>';
-
 ?>
+
+
+

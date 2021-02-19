@@ -1,7 +1,13 @@
+<head>
+
+ 
+      <link rel="stylesheet" href="../css/style.css">
+</head>
 <?php
 session_start();
 require_once '../common/common.php';
 require_once 'save.php';
+
 
 $link=connect();
 
@@ -49,10 +55,10 @@ function download_blob($post)
 //echo '<pre>';
 //print_r($GLOBALS);
 
-menu();
+menu($link);
 
 
-echo '<table border=1>';
+echo '<table border=1 style="background-color:lightgray;color:black;" >';
 /////////PAN//////////////
 echo '<form method=post action=download.php target=_blank>';
 $sql_pan='select staff_id,pan from pan where staff_id=\''.$_SESSION['login'].'\'';
@@ -70,7 +76,7 @@ echo '<input type=hidden name=filename value=attachment_filename>';
 echo '<input type=hidden name=file value=attachment>';
 $wr=base64_encode('where staff_id=\''.$_SESSION['login'].'\'');
 echo '<input type=hidden name=where value=\''.$wr.'\' >';
-echo '<button>download</button>';
+echo '<button  style="background-color:lightgreen"class="menub" >download</button>';
 echo '</td>';
 echo '</tr>';
 //echo '</table>';
@@ -92,7 +98,7 @@ echo '<input type=hidden name=filename value=filename>';
 echo '<input type=hidden name=file value=proof>';
 $wr=base64_encode('where id=\''.$_SESSION['login'].'\'');
 echo '<input type=hidden name=where value=\''.$wr.'\' >';
-echo '<button>download</button>';
+echo '<button style="background-color:lightgreen"class="menub">download</button>';
 echo '</td>';
 echo '</tr>';
 //echo '</table>';
@@ -115,7 +121,7 @@ echo '<input type=hidden name=filename value=photo_id_filename>';
 echo '<input type=hidden name=file value=photo_id>';
 $wr=base64_encode('where id=\''.$_SESSION['login'].'\'');
 echo '<input type=hidden name=where value=\''.$wr.'\' >';
-echo '<button>download</button>';
+echo '<button  style="background-color:lightgreen"class="menub">download</button>';
 echo '</td>';
 echo '</tr>';
 //echo '</table>';
@@ -145,7 +151,7 @@ if(!$result=mysqli_query($link,$sql_qa)){echo mysqli_error($link);return FALSE;}
 			echo '<input type=hidden name=file value=attachment>';
 			$wr=base64_encode('where attachment_id=\''.$ar['attachment_id'].'\'');
 			echo '<input type=hidden name=where value=\''.$wr.'\' >';
-			echo '<button>download</button>';
+			echo '<button  style="background-color:lightgreen"class="menub">download</button>';
 			echo '</td>';
 			echo '</tr>';
 			//echo '</table>';
@@ -166,7 +172,6 @@ if(!$result=mysqli_query($link,$sql_qa)){echo mysqli_error($link);return FALSE;}
 		while($ar=mysqli_fetch_assoc($result))
 		{
 			echo '<form method=post action=download.php target=_blank>';
-			//echo '<table border=1>';
 			echo '<tr>';
 			echo '<td>'.$ar['staff_id'].'</td>';
 			echo '<td>'.$ar['movement_id'].'</td>';
@@ -178,13 +183,43 @@ if(!$result=mysqli_query($link,$sql_qa)){echo mysqli_error($link);return FALSE;}
 			echo '<input type=hidden name=file value=attachment>';
 			$wr=base64_encode('where attachment_id=\''.$ar['attachment_id'].'\'');
 			echo '<input type=hidden name=where value=\''.$wr.'\' >';
-			echo '<button>download</button>';
+			echo '<button  style="background-color:lightgreen"class="menub">download</button>';
 			echo '</td>';
 			echo '</tr>';
-			//echo '</table>';
 			echo '</form>';			
 		}
 	}
+
+
+
+
+
+///////////misc upload
+
+echo '<form method=post action=download.php target=_blank>';
+$sql_mup='select * from misc_upload where staff_id=\''.$_SESSION['login'].'\'';
+
+
+if(!$result=mysqli_query($link,$sql_mup)){echo mysqli_error($link);return FALSE;}
+while($mup=mysqli_fetch_assoc($result))
+{
+	echo '<form method=post action=download.php target=_blank>';
+	echo '<tr>';
+	echo '<td>'.$mup['staff_id'].'</td><td></td>';
+	echo '<td>'.$mup['description'].'</td>';
+	echo '<td>'.$mup['filename'].'</td>';
+	echo '<td>';
+	echo '<input type=hidden name=table value=misc_upload>';
+	echo '<input type=hidden name=filename value=\'filename\'>';
+	echo '<input type=hidden name=file value=file>';
+	$wr=base64_encode('where staff_id=\''.$_SESSION['login'].'\' and description=\''.$mup['description'].'\'');
+	echo '<input type=hidden name=where value=\''.$wr.'\' >';
+	echo '<button  style="background-color:lightgreen"class="menub">download</button>';
+	echo '</td>';
+	echo '</tr>';
+	echo '</form>';
+}
+
 
 echo '</table>';	
 

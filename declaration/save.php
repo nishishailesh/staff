@@ -17,7 +17,11 @@ function save($link)
 	//update_field_by_id($link,'staff','id',$_POST['id'],'department',$_POST['present_department']);
 	update_field_by_id($link,'staff','id',$_POST['id'],'dob',india_to_mysql_date($_POST['dob']));
 //	update_field_by_id($link,'staff','id',$_POST['id'],'residencial_address',rtrim($_POST['residencial_address']));
-	update_field_by_id($link,'staff','id',$_POST['id'],'residencial_address',mysqli_real_escape_string($link,rtrim($_POST['residencial_address'])));
+	update_field_by_id($link,'staff','id',$_POST['id'],'present_residential_address',mysqli_real_escape_string($link,rtrim($_POST['present_residential_address'])));
+	
+	update_field_by_id($link,'staff','id',$_POST['id'],'permanent_residential_address',mysqli_real_escape_string($link,rtrim($_POST['permanent_residential_address'])));
+	
+	
 	//following may not be existing for a given user, so update, if it fail, insert is required
 	//photo and photo id
 	//empty select will give Notice, if no proof_type added
@@ -308,7 +312,7 @@ if(isset($_POST['delete_qualification']))
     [action] => add_experience
 
 */
-
+/*
 	if(isset($_POST['action']))
 	{
 		//removed to use save button
@@ -383,24 +387,54 @@ if(isset($_POST['delete_qualification']))
 	}	
 	//680765
 	///////////Experience management ends here//////////////
+*/
 
-	if(isset($_POST['action']))
+	/*if(isset($_POST['action']))
+	{
+		if($_POST['action']=='add_mci_info')
+		{		
+			if(strlen($_POST['mci_date'])>0)
+			{
+				insert_field_by_id_mci($link,'mci','staff_id',$_POST['id'],'date',india_to_mysql_date($_POST['mci_date'],'mci_college_name',$_POST['institute']));
+			
+		//Try to insert
+	//	$sqli='INSERT INTO `mci`(`staff_id`, `date`, `mci_college_name`) VALUES (\''.$_POST['id'].'\',\''.india_to_mysql_date($_POST['mci_date']).'\',\''.$_POST['institute'].'\')';
+		//echo $sqli;
+		if(!$resulti=mysqli_query($link,$sqli)){echo mysqli_error($link);return FALSE;}
+		else
+		{
+			return mysqli_insert_id($link);
+	
+			}
+		
+		}
+	}
+}*/
+    if(isset($_POST['action']))
 	{
 		if($_POST['action']=='add_mci_date')
 		{		
 			if(strlen($_POST['mci_date'])>0)
 			{
-				insert_field_by_id($link,'mci','staff_id',$_POST['id'],'date',india_to_mysql_date($_POST['mci_date']));
+				$isql='insert into mci values
+					(
+					\''.$_POST['id'].'\',
+					\''.$_POST['mci_designation'].'\',
+					\''.$_POST['mci_subject'].'\',
+					\''.$_POST['mci_college'].'\',
+					\''.$_POST['mci_date'].'\'
+					)';
+				if(!$result=mysqli_query($link,$isql)){echo mysqli_error($link);}
+
 			}
 		}
 	}
-	
 	if(isset($_POST['delete_mci']))
 	{
 				$d_sql='delete from mci where 
 						staff_id=\''.$_POST['id'].'\' and 
-						`date`=\''.india_to_mysql_date($_POST['delete_mci']).'\'';
-				//echo $d_sql;
+						`date`=\''.$_POST['delete_mci'].'\'';
+				echo $d_sql;
 				if(!$result=mysqli_query($link,$d_sql))
 				{		
 					echo mysqli_error($link);

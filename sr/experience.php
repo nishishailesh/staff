@@ -5,7 +5,7 @@ require_once '../common/common.php';
 $link=connect_office();
 if(!isset($_POST['experience']))
 {
-	menu();
+	menu_office();
 	echo '<form method=post target=_blank>';
 	get_staff_id($link);
 	echo '<input type=submit name=experience>';

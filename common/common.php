@@ -1,6 +1,4 @@
 <?php
-
-
 require_once 'menu.php';
 require_once '/var/gmcs_config/staff.conf';
 
@@ -17,7 +15,7 @@ function select_database($link)
 	return mysqli_select_db($link,'staff');
 }
 
-
+/*
 function check_user($link,$u,$p)
 {
 	$sql='select * from staff where id=\''.$u.'\'';
@@ -28,6 +26,107 @@ function check_user($link,$u,$p)
 		return true;
 	}
 	else
+	{
+		return false;
+	}
+}
+*/
+
+//New with MD5 to encrypt transition
+function check_user($link,$u,$p)
+{
+	$sql='select * from staff where id=\''.$u.'\'';
+	//echo $sql;
+	if(!$result=mysqli_query($link,$sql)){return FALSE;}
+	$result_array=mysqli_fetch_assoc($result);
+	//check validation
+	
+	
+	//First verify encrypted password
+	if(password_verify($p,$result_array['epassword']))
+	{
+		//echo strtotime($result_array['expirydate']).'<'.strtotime(date("Y-m-d"));
+		
+		if(strtotime($result_array['expirydate']) < strtotime(date("Y-m-d")))
+	    {
+		echo '<body>
+	            <link rel="stylesheet" href="../css/style.css"> <div id="container">
+	            <br><br>
+	            <div style="margin-left:450px;padding:15px">
+               <form method=post>
+                   <table  cellspacing="10" width="40%" style="background-color:lightgrey; border: 1px solid black;">
+                    <tr>
+		                  <th colspan=2 class="head">
+		                      Password Expired
+		                  </th>
+		                
+		            </tr>
+		            <tr>
+		                  <td></td>
+		                  <td></td>
+		            </tr>
+	                <tr>
+		                 <th>
+			                  Login Id
+		                 </th>
+		                 <td>
+			                  <input type=text readonly name=login id=id value=\''.$_SESSION['login'].'\'>
+		                 </td>
+	                </tr>';
+                    //<tr>
+		                 //<th>
+		                  	//Password
+		                 //</th>
+		                 //<td>
+			                 //<input type=password readonly name=password id=name value=\''.$_SESSION['password'].'\'>
+	                 	//</td>
+	               //</tr>
+	             echo'  <tr>
+		                <td></td>
+		                <td>
+                           <button style="background-color:lightgreen" class="menub" name=action type=submit value=change_password_step_1 formaction='.$GLOBALS['rootpath'].'/common/change_expired_pass.php ">Change Password</button>
+	               	    </td>
+	               </tr>
+	              </table>
+	              </form>
+	              </div>';
+
+			exit(0);
+	    }
+	    else
+	    {
+			//do nothing
+	    }
+		return true;	
+	}
+	
+	//donot enter if password length stored is 0
+	else if(strlen($result_array['password'])>0)
+    {	
+		if(md5($p)==$result_array['password'])		//last chance for md5
+		{
+			 $sqli="update staff set epassword='".password_hash($p,PASSWORD_BCRYPT)."' where id='$u'";	
+	         //echo $sqli;
+	         $user_pwd=run_query($link,'staff',$sqli);
+	        // echo $user_pwd;
+	         if($user_pwd>0)
+	         {
+		         //erase md5 password, set length 0
+		         $sqlm="update staff set password='' where id='$u'";
+				 //echo $sqlm;
+				 $user_pwd=run_query($link,'staff',$sqlm);
+				return true;	
+
+			 }
+	         else
+	         {
+		        return false;	//if encrypted password is not written
+	         }
+	         
+		}
+	}
+	
+	else //if encrypt fail and md5 lenght is zero, get out
 	{
 		return false;
 	}
@@ -193,6 +292,74 @@ function mk_select_from_sql_with_separate_id($link,$sql,$field_name,$form_name,$
 		return TRUE;
 }
 
+function mk_combo($link,$sql,$field_name,$form_name,$id_name,$disabled,$default)
+{
+	$selected='no';
+	if(!$result=mysqli_query($link,$sql)){return FALSE;}
+		echo '<table class=border><tr><td>';
+		echo '<select  '.$disabled.' name='.$form_name.' id='.$id_name.'>';
+		while($result_array=mysqli_fetch_assoc($result))
+		{
+			if($result_array[$field_name]==$default)
+			{
+				echo '<option selected  > '.$result_array[$field_name].' </option>';
+				$selected='yes';
+			}
+			else
+			{
+				echo '<option  > '.$result_array[$field_name].' </option>';
+			}
+		}
+		echo '</select></td><td>';
+		
+		if($selected=='no'){
+								echo 'tick if not in List:<input type=checkbox checked
+								id=\''.$id_name.'_text_check\' name=\''.$form_name.'_text_check\' >';
+								echo '</td><td><input type=text name=\''.$form_name.'_text\'  value=\''.$default.'\' >';
+								
+							}
+		else
+			{
+				echo 'Tick if not in List:<input type=checkbox 
+								id=\''.$id_name.'_text_check\' name=\''.$form_name.'_text_check\' >';
+				echo '</td><td><input type=text      		 name=\''.$form_name.'_text\' >';
+			}
+		echo '</td></tr></table>';
+		return TRUE;
+}
+
+
+function mk_combo_new($link,$sql,$field_name,$form_name,$id_name,$disabled,$default)
+{
+	if(!$result=mysqli_query($link,$sql)){return FALSE;}
+		echo '<table class=border><tr><td>';
+		echo '<select  '.$disabled.' name='.$form_name.' id='.$id_name.'>';
+		while($result_array=mysqli_fetch_assoc($result))
+		{
+				echo '<option  > '.$result_array[$field_name].' </option>';
+		}
+		echo '</select></td><td>';
+		
+		echo 'tick if not in List:<input type=checkbox
+								id=\''.$id_name.'_text_check\' name=\''.$form_name.'_text_check\' >';	
+		
+		echo '</td><td><input type=text name=\''.$form_name.'_text\' placeholder="write here if not in list">';
+		echo '</td></tr></table>';
+		return TRUE;
+}
+function mk_combo_new1($link,$sql,$field_name,$form_name,$id_name,$disabled,$default)
+{
+	if(!$result=mysqli_query($link,$sql)){return FALSE;}
+		echo '<table class=border><tr><td>';
+		echo '<select  '.$disabled.' name='.$form_name.' id='.$id_name.'>';
+		while($result_array=mysqli_fetch_assoc($result))
+		{
+				echo '<option  > '.$result_array[$field_name].' </option>';
+		}
+		echo '</select></td>';
+	    echo '</tr></table>';
+		return TRUE;
+}
 
 function combo_entry($link,$sql,$name,$disabled,$default)
 {
@@ -224,7 +391,7 @@ function update_field_by_id($link,$table,$id_field,$id_value,$field,$value)
 	//echo $sql;
 	
 	
-	if(!$result=mysqli_query($link,$sql)){mysql_error();return FALSE;}
+	if(!$result=mysqli_query($link,$sql)){mysqli_error($link);return FALSE;}
 	else
 	{
 		return mysqli_affected_rows($link);
@@ -427,7 +594,7 @@ function insert_attachment($link,$table,$id_field,$id_value,$files_field,$files_
 function read_year($name,$y,$yy)
 {
 	echo '<select name=\''.$name.'\'>';
-	for($i=$y;$i<$yy;$i++)
+	for($i=$y;$i<=$yy;$i++)
 	{
 			echo '<option>'.$i.'</option>';
 	}
@@ -713,6 +880,165 @@ function get_experience_mci($link,$id)
 	//print_r($mrg);
 }
 
+function view_table_experience($link)
+{
+	//Designation 	Type 	Department 	Name of Institution 	From - To - Total
 
+	$sql='select * from staff_movement where staff_id=\''.$_SESSION['login'].'\' order by `from_date`';
+	if(!$result=mysqli_query($link,$sql)){return FALSE;}
+	while($ra=mysqli_fetch_assoc($result))
+	{		
+	if(strlen($ra['to_date'])==0)
+	{
+		$to_date='<span style="background-color:lightpink;">till_date</span>';
+		$diff=get_date_diff_as_ymd($ra['from_date'],date('Y-m-d'));
+	}
+	else
+	{
+		$to_date=mysql_to_india_date($ra['to_date']);
+		$diff=get_date_diff_as_ymd($ra['from_date'],$ra['to_date']);
+	}
+			
+	$raw_html='<tr style="background-color:lightgray;">
+			<td>
+			'.$ra['post'].'
+			</td>
+			<td  >'.$ra['type'].'</td>
+			<td  >'.$ra['department'].'</td>
+			<td  >'.$ra['institute'].'</td>
+			<td>'.mysql_to_india_date($ra['from_date']).','.$ra['from_time'].'>>'.$to_date.','.$ra['to_time'].' ('.$diff.')</td>
+			';
+			echo $raw_html;
+		}
+}
+
+function run_query($link,$db,$sql)
+{
+	$db_success=mysqli_select_db($link,$db);
+	
+	if(!$db_success)
+	{
+		echo 'error2:'.mysqli_error($link); return false;
+	}
+	else
+	{
+		$result=mysqli_query($link,$sql);
+	}
+	
+	if(!$result)
+	{
+		echo 'error3:'.mysqli_error($link); return false;
+	}
+	else
+	{
+	return $result;
+	}	
+}
+
+//when user reach here, encrypt is already functioning
+function check_old_password($link,$user,$password)
+{
+	$sql='select * from  staff where id=\''.$user.'\' ';
+	//echo $sql;
+	if(!$result=mysqli_query($link,$sql))
+	{
+		//echo mysql_error();
+		return FALSE;
+	}
+	if(mysqli_num_rows($result)<=0)
+	{
+		//echo 'No such user';
+		echo '<h3>wrong username/password</h3>';
+		return false;
+	}
+	$array=mysqli_fetch_assoc($result);
+	
+	if(password_verify($password,$array['epassword']))
+	//if(MD5($password)==$array['password'])
+	{
+	  	//echo 'You have supplied correct username and password';
+		return true;
+	}
+	else
+	{
+		//echo 'You have suppled wrong password for correct user';
+                echo '<h3>wrong username/password</h3>';
+		return false;
+	}
+}
+
+function update_password($link,$user,$new_password)
+{
+
+	//$eDate = date('Y-m-d');
+    //$eDate = date('Y-m-d', strtotime("+6 months", strtotime($eDate)));
+    $eDate = date('Y-m-d', strtotime("+12 months"));
+    // echo $eDate;	
+	$sqli="update staff set epassword='".password_hash($new_password,PASSWORD_BCRYPT)."',expirydate='$eDate' where id='$user'";	
+	$user_pwd=run_query($link,'staff',$sqli);
+	if($user_pwd>0)
+	{
+		return true;	
+	}
+	else
+	{
+		return false;	
+	}
+}
+
+function is_valid_password($pwd){
+// accepted password length minimum 8 its contain lowerletter,upperletter,number,special character.
+    if (preg_match("/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).{8,}$/", $pwd))
+   {
+	  // $msgpwd='<p>contain at least one lowercase letter, one uppercase letter, one numeric digit, and one special character at least 8 or more characters</p>';
+   
+        return true;
+	}
+    else{
+		
+        return false;
+	}
+}
+
+function read_password()
+{
+	echo '<center></center><table border=1 class="style2" style="background-color:lightgray;margin:10px;padding:20px;"><form method=post>';
+	echo '<tr><th colspan=2 class="head">Change Password for access to Staff Database</th></tr>';
+	echo '<tr><td>Login ID</td>	<td><input readonly=yes type=text name=id value=\''.$_SESSION['login'].'\'></td></tr>'; 
+	echo '<tr><td>Old Password</td>	<td><input style="width:100%;" type=password name=old_password></td></tr>';
+		echo '<tr><td>New Password</td>	<td><input style="width:100%;" type=password name=password_1  
+			pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).{8,}" 
+			title=" contain at least one lowercase letter, one uppercase letter, one numeric digit, and one special character at least 8 or more characters" required>
+			</td></tr>';
+	echo '<tr><td>Repeat New Password</td>	<td><input  style="width:100%;" type=password name=password_2></td></tr>';
+	echo '<tr><td colspan=2 align=center><button  style="background-color:lightgreen"class="menub"  type=submit name=action value=change_password>Change Password</button></td></tr>';
+	echo '</form></table>';
+	echo '	<table width="65%" border="2" style="background-color:white;margin:10px;padding:30px;">
+			<tr><th colspan=3>Password Hints</th></tr>
+			<tr><td>iamgood</td><td>Unacceptable</td><td>No capital, no number, no special character, less than 8</td></tr>
+			<tr><td>Iamgood007</td><td>Unacceptable</td><td>no special character</td></tr>
+			<tr><td>Iamgood007$</td><td>Acceptable</td><td>special characters-> ! @ # $ % ^ & * ( ) _ - += { [ } ] | \ / < , > . ; : " \'</td></tr>
+            </table>';
+            
+echo
+'<br><table  border=1 class="style2"  style="background-color:white;margin:10px;padding:30px;color:black;" >
+		<tr><td>Change password frequently</td></tr>
+		<tr><td>Donot reveal your password to anybody.</td></tr>
+		<tr><td>If your colleague needs access, ask them to request appropriate authority</td></tr>
+		<tr><td>If you can not access your account, request appropriate authority</td></tr>
+ </table>';            
+}
+
+function expirydate($link,$d,$u)
+{
+     $sql='select * from staff where id=\''.$u.'\'';
+     $result_ld=run_query($link,'staff',$sql);
+     $row_ld=get_raw($link,$sql);
+     $t_name=$row_ld['expirydate'];
+     //$t_username=$row_ld['fullname'];
+     //echo $t_name;
+     return $t_name ;
+
+ }
 
 ?>
