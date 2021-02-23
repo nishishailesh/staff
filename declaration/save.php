@@ -197,6 +197,22 @@ function save($link)
     [council_qualification] => 
     [action] => qualification
 
+
++---------------------+--------------+------+-----+---------+----------------+
+| Field               | Type         | Null | Key | Default | Extra          |
++---------------------+--------------+------+-----+---------+----------------+
+| qualification_id    | bigint(20)   | NO   | PRI | NULL    | auto_increment |
+| staff_id            | bigint(20)   | NO   | MUL | NULL    |                |
+| qualification       | varchar(50)  | NO   |     | NULL    |                |
+| subject             | varchar(200) | NO   |     | NULL    |                |
+| college             | varchar(200) | NO   |     | NULL    |                |
+| university          | varchar(200) | NO   |     | NULL    |                |
+| year                | int(11)      | NO   |     | NULL    |                |
+| registration_number | varchar(100) | NO   |     | NULL    |                |
+| registration_date   | date         | YES  |     | NULL    |                |
+| medical_council     | varchar(100) | NO   |     | NULL    |                |
++---------------------+--------------+------+-----+---------+----------------+
+
 */
 if(isset($_POST['action']))
 	{
@@ -208,8 +224,12 @@ if(isset($_POST['action']))
 				strlen($_POST['year_qualification'])>0
 				)
 			{
-				$q_sql='insert into qualification values (
-							\'\',
+				$q_sql='insert into qualification 
+
+						(staff_id,qualification,subject,college,university,year,
+							registration_number,registration_date,medical_council)
+							values (
+							
 							\''.$_SESSION['login'].'\',
 							\''.$_POST['qualification_degree'].'\',
 							\''.$_POST['qualification_subject'].'\',
@@ -219,7 +239,7 @@ if(isset($_POST['action']))
 							\''.$_POST['reg_no_qualification'].'\',
 							\''.india_to_mysql_date($_POST['reg_date_qualification']).'\',
 							\''.$_POST['council_qualification'].'\')';
-				///echo $q_sql;
+				//echo $q_sql;
 				if(!$result=mysqli_query($link,$q_sql))
 				{		
 					echo mysqli_error($link);
