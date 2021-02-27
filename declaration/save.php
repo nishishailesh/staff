@@ -251,9 +251,8 @@ if(isset($_POST['action']))
 					if($_FILES['file_qualification_degree']['size']>0)
 					{
 						$sql_q_a='insert into qualification_attachment
-									(attachment_id,qualification_id,type,attachment,attachment_filename)
+									(qualification_id,type,attachment,attachment_filename)
 									 values(
-										\'\',
 										\''.$insert_id.'\',
 										\'degree_certificate\',
 										\''.file_to_str($link,$_FILES['file_qualification_degree']).'\',
@@ -262,7 +261,7 @@ if(isset($_POST['action']))
 							
 						if(!$result=mysqli_query($link,$sql_q_a))
 						{		
-							echo mysqli_error($link);
+							echo mysqli_error($link).'sql:'.$sql_q_a;
 						}
 						else
 						{
@@ -274,9 +273,8 @@ if(isset($_POST['action']))
 					if($_FILES['file_qualification_reg']['size']>0)
 					{
 						$sql_q_a='insert into qualification_attachment
-									(attachment_id,qualification_id,type,attachment,attachment_filename)
+									(qualification_id,type,attachment,attachment_filename)
 									 values(
-										\'\',
 										\''.$insert_id.'\',
 										\'reg_certificate\',
 										\''.file_to_str($link,$_FILES['file_qualification_reg']).'\',
