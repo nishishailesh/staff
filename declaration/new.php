@@ -359,7 +359,7 @@ echo '</td></tr></table>';
 <h1 style="color:white;">
 	<p align=center>
 		<b>
-			DECLARATION FORM : 2020 - 2021 - FACULTY
+			DECLARATION FORM : 2023 - 2024 - FACULTY
 		</b>
 	</p>
 </h1>
@@ -489,7 +489,7 @@ echo '</td></tr></table>';
 									Photo ID submitted
 								</td>
 								<td colspan=2>';
-									mk_select_from_sql($link,'select * from photo_id_proof_type','photo_id_proof_type','photo_id','',$photo['proof_type']);
+		mk_select_from_sql($link,'select * from photo_id_proof_type','photo_id_proof_type','photo_id','',$photo['proof_type']);
 						  echo '</td>
 							</tr>
 							<tr>
@@ -839,7 +839,15 @@ onclick="showhide('qualification_table');"
              <?php echo '<input name=present_appointment_order type=file >';?>
          </td>
          <td>
-               <?php echo 'Uploaded:<div style="color:blue;display:inline">'.$current_appointment_order['attachment_filename'];?></div>
+               		<?php 
+				if(isset($current_appointment_order['attachment_filename']))
+				{
+					echo 'Uploaded:<div style="color:blue;display:inline">'.$current_appointment_order['attachment_filename'];
+				}
+			?>
+	</div>
+
+
         </td>
     </tr>
 
@@ -887,7 +895,13 @@ onclick="showhide('qualification_table');"
 		</td>
 		<td>
 			 Uploaded:<div style="color:blue;display:inline">
-			 <?php  echo $current_joining_order['attachment_filename'] ?>
+			 <?php
+				if(isset($current_joining_order['attachment_filename']))
+				{
+					echo $current_joining_order['attachment_filename']; 
+				}
+
+				?>
 			 </div>
 		</td>
 
@@ -916,7 +930,14 @@ onclick="showhide('qualification_table');"
 			 </td>
 			 <td>
 				 Uploaded:<div <div style="color:blue;display:inline">
-				 <?php  echo $previous_relieving_order['attachment_filename']; ?>
+				
+				 <?php  
+					if(isset($previous_relieving_order['attachment_filename']))
+					{
+						echo $previous_relieving_order['attachment_filename']; 
+					}
+
+				?>
 				 </div>
 			 </td>                 
 			</td>
@@ -1087,7 +1108,7 @@ else
 				<input name=mci_designation placeholder=designation>
 				<input name=mci_subject placeholder=subject>
 				<input name=mci_college placeholder=college>
-				<input name=mci_date placeholder=dates>
+				<input name=mci_date placeholder=dates type=date>
                 <input style="background-color:lightgreen;height:40;" class="menub" class=submitbutton 
 		name=action value=add_mci_date type=submit>
 	    </td></tr>

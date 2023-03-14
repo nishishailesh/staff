@@ -156,7 +156,7 @@ if(isset($_POST['action']))
 <body>
         <div style="display:table;width:20cm;margin:1cm 1cm 1cm 1cm;">
 
-<h2 align="center"><u>FACULTY DECLARATION FORM(For AY 2021-22)</b></h2><b>';
+<h2 align="center"><u>FACULTY DECLARATION FORM(For AY 2023-24)</b></h2><b>';
 echo'</b>
 <br>
 <h4>Name of the College :';
@@ -181,7 +181,7 @@ echo '</h4><br>
 </table>
 <p style="font-size:0.7em">Note: It is the responsibility of the Dean to ensure that the submitted Declaration form is ONLY of a Faculty memberwhois working 
 as a full-time employee has notappeared for assessment in anyother college for any 
-discipline and in any capacity during the stated academic year.</p>
+discipline and in any capacity during the stated academic year.</p><p></p><p></p>
 
 <table cellpadding="2px">
   <tr>
@@ -207,9 +207,9 @@ discipline and in any capacity during the stated academic year.</p>
   </tr>
 </table>
 
-            <p style="font-size:0.8em">Note:<br>
-(i)   Declaration forms without a valid government issued photo ID will NOT be accepted.<br>
-(ii)  It is mandatory to produce Original certificate at the time of verification.<br>
+            <p style="font-size:0.8em">Note:<br><br>
+(i)   Declaration forms without a valid government issued photo ID will NOT be accepted.<br><br>
+(ii)  It is mandatory to produce Original certificate at the time of verification.<br><br>
 (iii) Only certificates/documents/certified translation in the English language will be accepted.<br></p>
 
 <br><br>4.Present Designation:';
@@ -231,28 +231,31 @@ echo'<li>e. Appointment:<ul>';
  else {echo '<li>(i) Regular';}
 
         echo '<li>(ii) Full time/Part time <li>(iii) With / Without private practice</ul>';
+		$lm=isset($last_mci_details['institute'])?$last_mci_details['institute']:'';
+		$lp=isset($last_mci_details['post'])?$last_mci_details['post']:'';
+		$li=isset($last_mci_details['institute'])?$last_mci_details['institute']:'';
 
-		if($last_mci_details['institute']==$current_appointment['institute'] && strlen($current_appointment['institute'])>0)
+		if($lm==$current_appointment['institute'] && strlen($current_appointment['institute'])>0)
 		{
 			$last_mci_in_current_institute='Yes';
 		}
 		else
-		{			
+		{
 			$last_mci_in_current_institute='No';
 		}
 
-		if($last_mci_details['post']==$current_appointment['post'] && strlen($current_appointment['post'])>0)
+		if($lp==$current_appointment['post'] && strlen($current_appointment['post'])>0)
 		{
 			$last_mci_as_current_post='Yes';
 		}
 		else
-		{			
+		{
 			$last_mci_as_current_post='No';
 		}
-		
-		echo '<li>f. Date of appearance in Last MCI/NMC assessment:'.$last_mci_date['md'].' in '.$last_mci_details['institute'];
-                echo '<ul><li>i.   UG / PG / Any other:'. $last_mci_date['md'].' in '.$last_mci_details['institute'];
-		echo '<li>ii.  Name of College:'. $last_mci_details['institute'];
+		echo '<br><br>';
+		echo '<li>f. Date of appearance in Last MCI/NMC assessment:'.$last_mci_date['md'].' in '.$li;
+                echo '<ul><li>i.   UG / PG / Any other:'. $last_mci_date['md'].' in '.$li;
+		echo '<li>ii.  Name of College:'. $li;
 		echo '<li>iii. Whether appeared and accepted at the same College: '.$last_mci_in_current_institute;
 		echo '<li>Iv.  Whether appeared and accepted for the same Designation '.$last_mci_as_current_post;
 		echo '<li>v.   Whether retired from Government Medical College - Yes/No';
@@ -346,13 +349,14 @@ echo'</table>
 <p>c.PhD Subject:________
 
 
-<p style="font-size:0.8em">Note: For PG & Post PG qualification, particulars of Registration of Additinal Qualification 
+<p style="font-size:0.8em">Note: For PG & Post PG qualification, particulars of Registration of Additinal Qualification
 Certificates are to be furnished for them to be Accepted Strike out whichever Section is not applicable.</p>
+<p style="page-break-after:always;"></p>
 
 <p>12. Copies of educational qualifications:</p>
-<ul><li>a. Copy of Degree certificates  of MBBS and PG degree attached:'; 
+<ul><li>a. Copy of Degree certificates  of MBBS and PG degree verified and attached:'; 
 	if(strlen($degree_attachment_str)>0){echo 'Yes';}else{echo 'No';} 
-echo'<li>b. </b>Copy of Registration of MBBS and PG degree attached';
+echo'<li>b. </b>Copy of Registration of MBBS and PG degree verified and attached';
 	if(strlen($reg_attachment_str)>0){echo 'Yes';}else{echo 'No';} 
 echo'</ul>';
 
@@ -409,14 +413,20 @@ view_table_mci($link);
 //echo mysql_to_india_date($last_mci_date['md']);
 //echo'';
  $previous_institute_details=find_staff_movement_details_of_previous_institute($link,$current_appointment['institute']);
+
                   echo' <p>15.Details of Employement Before joining present institution.</p>';
-                   echo '<li>a. Name of College/Institute:- ';echo $current_appointment['institute'];echo '</li>';        
-			echo '<li>b. Designation:- ';echo $current_appointment['post'];echo '</li>';
+           
+		$pi=isset($previous_institute_details['institute'])?$previous_institute_details['institute']:' ';
+
+	        echo '<li>a. Name of College/Institute:- '; echo $pi ; echo '</li>';
+			echo '<li>b. Designation:- '; echo $pi; echo 'Date on which relieved:</li>';
 		echo'<li>c.Reason for being Relieved: Tendered resignation / Retired / Transferred / Terminated';'</li>';
 		echo'<li>d.Relieving order issued by previous institution verified and attached: YES/NO';echo'</li>';
 //echo $current_appointment['post'];
 
 			echo'';
+echo '<p style="page-break-after:always;"></p>';
+
 echo' <p>16. PAN Card No. is :';
                                           echo $pan['pan'];
     echo'
@@ -430,18 +440,18 @@ echo' <p>16. PAN Card No. is :';
 <br><br>
 <table border="1" width="100%">	
 	<tr align="center"><th width="20%" align="center"><b>Month</b></th><th width="40%" align="center"><b>Amount Received</b></th><th width="40%" align="center"><b>TDS</b></th></tr>
-	<tr align="center"><td>Apr 2020</td><td></td><td></td></tr>	
-	<tr align="center"><td>May 2020</td><td></td><td></td></tr>	
-	<tr align="center"><td>Jun 2020</td><td></td><td></td></tr>	
-	<tr align="center"><td>Jul 2020</td><td></td><td></td></tr>	
-	<tr align="center"><td>Aug 2020</td><td></td><td></td></tr>	
-	<tr align="center"><td>Sep 2020</td><td></td><td></td></tr>	
-	<tr align="center"><td>Oct 2020</td><td></td><td></td></tr>	
-	<tr align="center"><td>Nov 2020</td><td></td><td></td></tr>	
-	<tr align="center"><td>Dec 2020</td><td></td><td></td></tr>	
-	<tr align="center"><td>Jan 2021</td><td></td><td></td></tr>	
-	<tr align="center"><td>Feb 2021</td><td></td><td></td></tr>	
-	<tr align="center"><td>Mar 2021</td><td></td><td></td></tr>	
+	<tr align="center"><td>Apr 2022</td><td></td><td></td></tr>	
+	<tr align="center"><td>May 2022</td><td></td><td></td></tr>	
+	<tr align="center"><td>Jun 2022</td><td></td><td></td></tr>	
+	<tr align="center"><td>Jul 2022</td><td></td><td></td></tr>	
+	<tr align="center"><td>Aug 2022</td><td></td><td></td></tr>	
+	<tr align="center"><td>Sep 2022</td><td></td><td></td></tr>	
+	<tr align="center"><td>Oct 2022</td><td></td><td></td></tr>	
+	<tr align="center"><td>Nov 2022</td><td></td><td></td></tr>	
+	<tr align="center"><td>Dec 2022</td><td></td><td></td></tr>	
+	<tr align="center"><td>Jan 2023</td><td></td><td></td></tr>	
+	<tr align="center"><td>Feb 2023</td><td></td><td></td></tr>	
+	<tr align="center"><td>Mar 2023</td><td></td><td></td></tr>	
 	</table>
 <br><br>
 <table>
@@ -463,7 +473,8 @@ echo '
 <ul>
 <li>a.Number of Books Published:
 <li>b.Number of Chapter in Books:
-</ul>';
+</ul>
+<p style="page-break-after:always;"></p>';
 
 echo '<H3 align="center"><u>DECLARATION</u></H3>
 <table>
@@ -505,6 +516,8 @@ echo', working from  9 A.M. to 5 P.M. daily at this Institute.</td></tr>
 	<tr><td ><br><br>Place:</td><td><br><br>________________</td><td align="right"><br><br>________________</td></tr>
 </table>
 <br>
+<p style="page-break-after:always;"></p>
+
 <H3 align="center"><u>ENDORSEMENT</u></H3>
 <table>
 <tr><td align="top" style="width:5%;">1.</td><td style="width:95%;">
@@ -520,9 +533,9 @@ and Conformed the same with the concerned Institute and have found them to be co
 echo $staff_detail['fullname'];
 
 echo'
-is not practicing or carrying out any other activity during college working hours i.e. from 9.00 AM to 5 PM , since he/she has joined the Institute.</td></tr>
+is not indulging in provate practice of any kind or carrying out any other commercial activity during college working hours i.e. from ____ AM to ____ PM , since he/she has joined the Institute.</td></tr>
 <tr><td></td></tr>
-<tr><td>3.</td><td>In the event of this declaration turning out to be either incorrect or any part of this declaration subsequently turning out to be incorrect or false it is understood and accepted that the undersigned shall also be equally responsible besides the declarant himself/herself for any such misdeclaration or misstatement.                             </td></tr>
+<tr><td>3.</td><td>In the event of this declaration turning out to be either incorrect or any part of this declaration subsequently turning out to be incorrect or it comes to light that there has been supression of any material informtion, it is understood and accepted that the undersigned shall also be equally responsible besides the declarant himself/herself for any such misdeclaration or misstatement.                             </td></tr>
 </table>
 <br><br>
 <table style="width:100%">
@@ -628,7 +641,7 @@ function find_qualification_attachment_name($link,$qualification_id,$type)
 	if(!$result=mysqli_query($link,$sql)){return FALSE;}
 	
 	$ra=mysqli_fetch_assoc($result);
-	return $ra['attachment_filename'];
+	return isset($ra['attachment_filename'])?$ra['attachment_filename']:'';
 }
 function view_table_qualification($link)
 {

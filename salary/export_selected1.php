@@ -154,17 +154,18 @@ function export_one_h_salary($link,$staff_id,$bill_group,$format_table='')
 	$ptbl='';
 	$mtbl='';
 	
-	
+		
 	while($ar=mysqli_fetch_assoc($result))
 	{
 		$dt=get_raw($link,'select * from salary where 
 								staff_id=\''.$staff_id.'\' and 
 								bill_group=\''.$bill_group.'\' and 
 								salary_type_id=\''.$ar['salary_type_id'].'\'');
-		
-		if($ar['type']=='+'){$ptbl=$ptbl.'"'.$dt['amount'].'",';}
+		$amt=isset($dt['amount'])?$dt['amount']:0;
+
+		if($ar['type']=='+'){$ptbl=$ptbl.'"'.$amt.'",';}
 										
-		elseif($ar['type']=='-'){$mtbl=$mtbl.'"'.$dt['amount'].'",';}	
+		elseif($ar['type']=='-'){$mtbl=$mtbl.'"'.$amt.'",';}	
 	}
 	
 	$tbl=$ptbl.$mtbl;
@@ -310,7 +311,7 @@ function print_one_nonsalary_slip($link,$staff_id,$bill_group,$format_table='')
 		if($count%3==2){$tt='</tr>';}else{$tt='';}
 		
 		$ptbl=$ptbl.$t.'<td width="13%">'.substr($ar['name'],0,7).'</td>
-										<td width="20%">'.$dt['data'].'</td>'.$tt;
+						<td width="20%">'.(isset($dt['data'])?$dt['data']:'').'</td>'.$tt;
 		$count=$count+1;
 	}
 		if($count%3!=0){$ptbl=$ptbl.'</tr>';}
@@ -336,16 +337,19 @@ function print_one_salary_slip($link,$staff_id,$bill_group,$format_table='')
 								staff_id=\''.$staff_id.'\' and 
 								bill_group=\''.$bill_group.'\' and 
 								salary_type_id=\''.$ar['salary_type_id'].'\'');
-								
+		$amt=isset($dt['amount'])?$dt['amount']:0;
+		$rmk=isset($dt['remark'])?$dt['remark']:'';
+
+
 		if($ar['type']=='+'){$ptbl=$ptbl.'<tr>
 										<td width="60%">'.substr($ar['name'],0,20).'</td>
-										<td width="20%">'.$dt['amount'].'</td>
-										<td width="20%">'.$dt['remark'].'</td></tr>';}
+										<td width="20%">'.$amt.'</td>
+										<td width="20%">'.$rmk.'</td></tr>';}
 										
 		elseif($ar['type']=='-'){$mtbl=$mtbl.'<tr>
 										<td width="60%">'.substr($ar['name'],0,20).'</td>
-										<td width="20%">'.$dt['amount'].'</td>
-										<td width="20%">'.$dt['remark'].'</td></tr>';}
+										<td width="20%">'.$amt.'</td>
+										<td width="20%">'.$rmk.'</td></tr>';}
 		
 	}
 	

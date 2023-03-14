@@ -1,13 +1,13 @@
--- MySQL dump 10.13  Distrib 5.5.44, for debian-linux-gnu (i686)
+-- MariaDB dump 10.19  Distrib 10.5.11-MariaDB, for debian-linux-gnu (x86_64)
 --
--- Host: localhost    Database: staff
+-- Host: 127.0.0.1    Database: staff
 -- ------------------------------------------------------
--- Server version	5.5.44-0+deb7u1
+-- Server version	10.5.11-MariaDB-1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -51,11 +51,11 @@ DROP TABLE IF EXISTS `departmental_exam`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `departmental_exam` (
   `staff_id` bigint(20) NOT NULL,
-  `cccplus` varchar(10) NOT NULL,
-  `gujarati` varchar(10) NOT NULL,
-  `hindi` varchar(10) NOT NULL,
+  `cccplus` varchar(10) DEFAULT NULL,
+  `gujarati` varchar(10) DEFAULT NULL,
+  `hindi` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`staff_id`),
-  CONSTRAINT `sid_ex` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`id`) ON UPDATE CASCADE
+  CONSTRAINT `departmental_exam_ibfk_2` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -105,7 +105,7 @@ CREATE TABLE `leavee` (
   PRIMARY KEY (`application_id`),
   UNIQUE KEY `sid_leave` (`staff_id`),
   CONSTRAINT `leavee_ibfk_1` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -117,9 +117,12 @@ DROP TABLE IF EXISTS `mci`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `mci` (
   `staff_id` bigint(20) NOT NULL,
-  `date` date NOT NULL,
+  `designation` varchar(100) DEFAULT NULL,
+  `subject` varchar(100) DEFAULT NULL,
+  `college` varchar(100) DEFAULT NULL,
+  `date` varchar(100) NOT NULL,
   PRIMARY KEY (`staff_id`,`date`),
-  CONSTRAINT `mci_ibfk_1` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`id`) ON UPDATE CASCADE
+  CONSTRAINT `mci_ibfk_3` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -132,13 +135,30 @@ DROP TABLE IF EXISTS `met`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `met` (
   `id` bigint(20) NOT NULL,
-  `center` varchar(100) NOT NULL,
-  `place` varchar(100) NOT NULL,
-  `observer` varchar(100) NOT NULL,
+  `center` varchar(100) DEFAULT NULL,
+  `place` varchar(100) DEFAULT NULL,
+  `observer` varchar(100) DEFAULT NULL,
   `date` date DEFAULT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `met_ibfk_1` FOREIGN KEY (`id`) REFERENCES `staff` (`id`) ON UPDATE CASCADE
+  CONSTRAINT `met_ibfk_3` FOREIGN KEY (`id`) REFERENCES `staff` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `misc_upload`
+--
+
+DROP TABLE IF EXISTS `misc_upload`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `misc_upload` (
+  `staff_id` bigint(20) NOT NULL,
+  `description` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
+  `filename` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `file` mediumblob DEFAULT NULL,
+  PRIMARY KEY (`staff_id`,`description`),
+  CONSTRAINT `misc_upload_ibfk_1` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -153,7 +173,8 @@ CREATE TABLE `office_staff` (
   `fullname` varchar(300) NOT NULL,
   `office` varchar(200) NOT NULL,
   `catagory` varchar(100) NOT NULL,
-  `password` varchar(300) NOT NULL
+  `password` varchar(300) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -166,11 +187,11 @@ DROP TABLE IF EXISTS `pan`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `pan` (
   `staff_id` bigint(20) NOT NULL,
-  `pan` varchar(20) NOT NULL,
-  `attachment` mediumblob NOT NULL,
-  `attachment_filename` varchar(300) NOT NULL,
+  `pan` varchar(20) DEFAULT NULL,
+  `attachment` mediumblob DEFAULT NULL,
+  `attachment_filename` varchar(300) DEFAULT NULL,
   PRIMARY KEY (`staff_id`),
-  CONSTRAINT `pan_ibfk_1` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`id`) ON UPDATE CASCADE
+  CONSTRAINT `pan_ibfk_3` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -183,15 +204,15 @@ DROP TABLE IF EXISTS `photo`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `photo` (
   `id` bigint(20) NOT NULL,
-  `proof_type` varchar(30) NOT NULL,
-  `proof_number` varchar(30) NOT NULL,
-  `proof_issued_by` varchar(100) NOT NULL,
-  `photo_id` mediumblob NOT NULL,
-  `photo_id_filename` varchar(300) NOT NULL,
-  `photo` mediumblob NOT NULL,
-  `photo_filename` varchar(300) NOT NULL,
+  `proof_type` varchar(30) DEFAULT NULL,
+  `proof_number` varchar(30) DEFAULT NULL,
+  `proof_issued_by` varchar(100) DEFAULT NULL,
+  `photo_id` mediumblob DEFAULT NULL,
+  `photo_id_filename` varchar(300) DEFAULT NULL,
+  `photo` mediumblob DEFAULT NULL,
+  `photo_filename` varchar(300) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `photo_ibfk_1` FOREIGN KEY (`id`) REFERENCES `staff` (`id`) ON UPDATE CASCADE
+  CONSTRAINT `photo_ibfk_3` FOREIGN KEY (`id`) REFERENCES `staff` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -217,12 +238,31 @@ DROP TABLE IF EXISTS `publication`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `publication` (
   `staff_id` bigint(20) NOT NULL,
-  `international` int(11) NOT NULL,
-  `national` int(11) NOT NULL,
-  `state` int(11) NOT NULL,
+  `international` varchar(11) DEFAULT NULL,
+  `national` varchar(11) DEFAULT NULL,
+  `state` varchar(11) DEFAULT NULL,
   PRIMARY KEY (`staff_id`),
-  CONSTRAINT `publication_ibfk_1` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`id`) ON UPDATE CASCADE
+  CONSTRAINT `publication_ibfk_3` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `publication_upload`
+--
+
+DROP TABLE IF EXISTS `publication_upload`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `publication_upload` (
+  `publication_id` int(11) NOT NULL AUTO_INCREMENT,
+  `staff_id` bigint(11) NOT NULL,
+  `topic` varchar(300) COLLATE utf8_unicode_ci NOT NULL,
+  `level` enum('National','International','State') COLLATE utf8_unicode_ci NOT NULL,
+  `year` int(11) NOT NULL,
+  `_file` mediumblob NOT NULL,
+  `_file_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`publication_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=645 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -245,8 +285,8 @@ CREATE TABLE `qualification` (
   `medical_council` varchar(100) NOT NULL,
   PRIMARY KEY (`qualification_id`),
   KEY `sidq` (`staff_id`),
-  CONSTRAINT `qualification_ibfk_1` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=763 DEFAULT CHARSET=latin1;
+  CONSTRAINT `qualification_ibfk_3` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=1125 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -264,8 +304,8 @@ CREATE TABLE `qualification_attachment` (
   `attachment_filename` varchar(300) NOT NULL,
   PRIMARY KEY (`attachment_id`),
   KEY `qid_qa` (`qualification_id`),
-  CONSTRAINT `qualification_attachment_ibfk_1` FOREIGN KEY (`qualification_id`) REFERENCES `qualification` (`qualification_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=843 DEFAULT CHARSET=latin1;
+  CONSTRAINT `qualification_attachment_ibfk_3` FOREIGN KEY (`qualification_id`) REFERENCES `qualification` (`qualification_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=1254 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -290,10 +330,10 @@ DROP TABLE IF EXISTS `residencial_address_proof`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `residencial_address_proof` (
   `id` bigint(20) NOT NULL,
-  `proof` mediumblob NOT NULL,
-  `filename` varchar(300) NOT NULL,
+  `proof` mediumblob DEFAULT NULL,
+  `filename` varchar(300) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `residencial_address_proof_ibfk_1` FOREIGN KEY (`id`) REFERENCES `staff` (`id`) ON UPDATE CASCADE
+  CONSTRAINT `residencial_address_proof_ibfk_3` FOREIGN KEY (`id`) REFERENCES `staff` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -306,14 +346,17 @@ DROP TABLE IF EXISTS `staff`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `staff` (
   `id` bigint(20) NOT NULL,
-  `password` varchar(200) NOT NULL DEFAULT '',
-  `fullname` varchar(100) DEFAULT NULL,
+  `password` varchar(200) DEFAULT '',
+  `epassword` varchar(400) DEFAULT NULL,
+  `expirydate` date DEFAULT NULL,
+  `fullname` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
   `dob` date DEFAULT NULL,
-  `residencial_address` varchar(1000) NOT NULL,
-  `residencial_phone` varchar(15) NOT NULL,
-  `office_phone` varchar(15) NOT NULL,
-  `mobile` varchar(15) NOT NULL,
-  `email` varchar(100) NOT NULL,
+  `present_residential_address` varchar(1000) DEFAULT NULL,
+  `permanent_residential_address` varchar(1000) DEFAULT NULL,
+  `residencial_phone` varchar(15) DEFAULT NULL,
+  `office_phone` varchar(15) DEFAULT NULL,
+  `mobile` varchar(15) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
   `catagory` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -354,14 +397,14 @@ CREATE TABLE `staff_movement` (
   `department` varchar(300) NOT NULL,
   `post` varchar(300) NOT NULL,
   `from_date` date DEFAULT NULL,
-  `from_time` varchar(20) NOT NULL,
+  `from_time` varchar(20) DEFAULT NULL,
   `to_date` date DEFAULT NULL,
-  `to_time` varchar(20) NOT NULL,
+  `to_time` varchar(20) DEFAULT NULL,
   `type` varchar(100) NOT NULL,
   PRIMARY KEY (`movement_id`),
   KEY `sidsm` (`staff_id`),
-  CONSTRAINT `staff_movement_ibfk_1` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1377 DEFAULT CHARSET=latin1;
+  CONSTRAINT `staff_movement_ibfk_3` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=1863 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -378,9 +421,25 @@ CREATE TABLE `staff_movement_attachment` (
   `attachment` mediumblob NOT NULL,
   `attachment_filename` varchar(300) NOT NULL,
   PRIMARY KEY (`attachment_id`),
-  KEY `movement_id` (`movement_id`),
-  CONSTRAINT `staff_movement_attachment_ibfk_1` FOREIGN KEY (`movement_id`) REFERENCES `staff_movement` (`movement_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=483 DEFAULT CHARSET=latin1;
+  KEY `movement_id` (`movement_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=796 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `statelist`
+--
+
+DROP TABLE IF EXISTS `statelist`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `statelist` (
+  `city_id` int(5) NOT NULL,
+  `city_name` varchar(50) NOT NULL,
+  `latitude` varchar(10) NOT NULL,
+  `longitude` varchar(10) NOT NULL,
+  `state` varchar(50) NOT NULL,
+  PRIMARY KEY (`city_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -407,4 +466,4 @@ CREATE TABLE `view_data` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-07-28 11:20:21
+-- Dump completed on 2023-03-14 12:58:17
